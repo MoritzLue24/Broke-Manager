@@ -1,0 +1,11 @@
+# Build results
+bin/
+obj/
+
+# VS Code
+.vscode/
+
+# Environment / secrets
+.env
+.env.*
+appsettings.Development.json
