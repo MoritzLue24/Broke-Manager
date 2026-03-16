@@ -1,7 +1,5 @@
 # Finance App Backend Spec
 
-Test
-
 ## 1. Ziele
 
 Der Benutzter kommuniziert mit einer REST-API und kann:
