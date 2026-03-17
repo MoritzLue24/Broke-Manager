@@ -8,7 +8,7 @@ Der Benutzter kommuniziert mit einer REST-API und kann:
 * Transaktionen automatisch kategorisieren
 * Kategorien erstellen, bearbeiten, löschen
 * Standart Kategorie ist "Anderes", und wird dem User nicht zum bearbeiten bzw löschen angezeigt 
-* Transaktionen kategoriesieren, indem nach Sender- bzw Titel-Schlüsselwörter gesucht werden
+* Transaktionen kategoriesieren, indem nach Sender/Empfänger- bzw Titel-Schlüsselwörter gesucht werden
 * Finanzübersichten einsehen
 * Transaktionen durchsuchen & nach Kategorie filtern 
 * Banktransaktionen als CSV importieren
@@ -33,7 +33,8 @@ classDiagram
         +date: Date
         +amount: Decimal
         +title: String
-        +recipient: String
+        +counterParty: String
+        +category: Category
     }
 
     class Category {
@@ -41,7 +42,7 @@ classDiagram
         +name: String
         +intervall: Intervall
         +titleKeywords: String[]
-        +recipientKeywords: String[]
+        +counterPartyKeywords: String[]
     }
 
     class Interval {
