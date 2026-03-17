@@ -68,40 +68,12 @@ classDiagram
     CSVImport "One" --> "Many" Transaction : imports
 ```
 
-### 2.1 User
-Eigenschaften:
-* Email
-* Password
-* Transaktionen
-* Kategorien
-* Kann Transaktionen als CSV importieren
-
-### 2.2 Transaction
-Eine Transaction repräsentiert eine Zahlung bzw. Einnahme.
-Eigenschaften:
-* Datum (ohne Uhrzeit)
-* Amount
-* Sender (Recipient)
-* Title
-* Kategorie
-
-### 2.3 Category
-Eine Category dient zur Gruppierung von Transaktionen.
-Eigenschaften:
-* Name: z.B. Essen
-* TitleKeywords: z.B. Rewe, Edeka
-* SenderKeywords: z.B. "Mama" für Unterhalt
-* Interval: "Once" / "Weekly" / "Monthly" / "Yearly"
-
 ## 3. Geschäftsregeln
 
 * **Ownership**: Ein User darf nur seine eigenen Daten einsehen & modifizieren
 * **Kategorien & Transaktionen**: Eine Transaktion muss genau(!) eine Kategorie haben (standardmäßig "Anderes")
-* **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw Recipient- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Wertungen
-    * Zu wieviel % entspricht der Titel (/Empfänger) dem Schlüsselwort?
-    * Mehrere Treffer der selben Kategorie schlagen weniger Treffer einer anderen.
-    * Bei Gleichstand: Fehler wird zurückgegeben, kategorie ist 'anderes'
-* **Password**: Wird als Hash Gespeichert (+ Salt)
+* **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw Recipient- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
+    * Ein Fenster erscheint, der User entscheidet welche Kategorie angenommen wird.
 * **Beträge**: Positiv = Einnahme, Negativ = Ausgabe
 * **CSV-Import**: Stimmen bereits existierende Transaktionen mit Transaktionen aus dem CSV-Import überein, werden diese nicht dupliziert.
 
@@ -109,19 +81,19 @@ Eigenschaften:
 
 ### 4.1 Users
 
-| Id (pk) | Email | PasswordHash | 
+| Id (pk) | Email | Password | 
 | ----------- | ----------- | ----------- |
-| 1 | example.mail@gmx.de | 5e9a987v.. |
+| 1 | example.mail@gmx.de | myPassword123! |
 
 ### 4.2 Transaction
 
-| Id (pk) | UserId (fk) | Date | Amount | Recipient | Title | CategoryId (fk) |
+| Id (pk) | UserId (fk) | Date | Amount | CounterParty | Title | CategoryId (fk) |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | --------- |
 | 1 | 1 | 24.01.2006 | -53.67 | Finanzamt | Schulden für keineahnung | 5 |
 
 ### 4.3 Category
 
-| Id (pk) | UserId (fk) | Name | TitleKeywords | RecipientKeywords | Interval |
+| Id (pk) | UserId (fk) | Name | TitleKeywords | CounterPartyKeywords | Interval |
 | ----------- | ----------- | ----------- | ----------- | ---------- | ---------- |
 | 1 | 1 | Essen | [Rewe Kartenzahlung,..] | [Rewe,..] | Once |
 
@@ -140,8 +112,8 @@ Eigenschaften:
 | ----------- | ----------- | ----------- |
 | Date | Date | Id |
 | Amount | Amount | Date |
-| Recipient | Recipient | Amount |
-| Title | Title | Recipient |
+| CounterParty | CounterParty | Amount |
+| Title | Title | CounterParty |
 |  |  | Title |
 
 ### 5.3 Category
@@ -149,8 +121,9 @@ Eigenschaften:
 | CategoryCreate | CategoryUpdate | CategoryResponse |
 | ----------- | ----------- | ----------- |
 | Name | Name | Id |
-| Keywords | Keywords | Name |
-| Interval | Interval | Keywords |
+| TitleKeywords | TitleKeywords | Name |
+| CounterPartyKeywords | CounterPartyKeywords | TitleKeywords |
+| Interval | Interval | CounterPartyKeywords |
 |  |  | Interval |
 
 ## 6. API-Endpunkte
