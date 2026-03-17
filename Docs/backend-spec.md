@@ -1,7 +1,5 @@
 # Finance App Backend Spec
 
-test
-
 ## 1. Ziele
 
 Der Benutzter kommuniziert mit einer REST-API und kann:
@@ -22,10 +20,57 @@ Die RESTful-API wird mit ASP.NET Core implementiert und nutzt den Microsoft SQL-
 
 ## 2. Domänenmodell
 
-### 2.1 User (bzw. Account)
+```mermaid
+classDiagram
+    class User {
+        +id: Int
+        +email: String
+        +password: String
+    }
+
+    class Transaction {
+        +id: Int
+        +date: Date
+        +amount: Decimal
+        +title: String
+        +recipient: String
+    }
+
+    class Category {
+        +id: Int 
+        +name: String
+        +intervall: Intervall
+        +titleKeywords: String[]
+        +recipientKeywords: String[]
+    }
+
+    class Interval {
+        <<enumeration>>
+        ONCE
+        WEEKLY
+        MONTHLY
+        QUARTERLY
+        YEARLY
+    }
+
+    class CSVImport {
+        datei: Datei
+    }
+
+    
+
+    User "One" --> "Many" Transaction : defines
+    User "One" --> "Many" Category : defines
+    Category "One" --> "One" Interval : has
+    Category "One" --> "Many" Transaction : categorises
+    User "One" --> "One" CSVImport : runs
+    CSVImport "One" --> "Many" Transaction : imports
+```
+
+### 2.1 User
 Eigenschaften:
 * Email
-* Password (Hash)
+* Password
 * Transaktionen
 * Kategorien
 * Kann Transaktionen als CSV importieren
