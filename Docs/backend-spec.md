@@ -34,7 +34,6 @@ classDiagram
         +amount: Decimal
         +title: String
         +counterParty: String
-        +category: Category
     }
 
     class Category {
@@ -64,6 +63,7 @@ classDiagram
     User "One" --> "Many" Category : defines
     Category "One" --> "One" Interval : has
     Category "One" --> "Many" Transaction : categorises
+    Transaction "One" --> "One" Category : has
     User "One" --> "One" CSVImport : runs
     CSVImport "One" --> "Many" Transaction : imports
 ```
