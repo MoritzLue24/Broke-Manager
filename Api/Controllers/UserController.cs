@@ -58,7 +58,7 @@ namespace Api.Controllers
                 return NotFound();
             }
             user.Email = updatedUser.Email;
-            user.Password = updatedUser.Password;
+            user.PasswordHash = updatedUser.PasswordHash;
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
