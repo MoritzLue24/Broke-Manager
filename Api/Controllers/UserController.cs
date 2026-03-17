@@ -20,12 +20,6 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            /*
-            var users = await _dbContext.Users
-                .Include(u => u.Transactions)
-                .Include(u => u.Categories)
-                .ToListAsync();
-            */
             var users = await _dbContext.Users.ToListAsync();
             return Ok(users);
         }
@@ -58,7 +52,7 @@ namespace Api.Controllers
                 return NotFound();
             }
             user.Email = updatedUser.Email;
-            user.PasswordHash = updatedUser.PasswordHash;
+            user.Password = updatedUser.Password;
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
