@@ -102,21 +102,21 @@ classDiagram
 
 ### 4.2 Transaction
 
-| Id (pk) | UserId (fk) | Date | Amount | CounterParty | Title | CategoryId (fk) |
+| Id (pk) | Date | Amount | CounterParty | Title | UserId (fk) | CategoryId (fk) |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | --------- |
-| 1 | 1 | 24.01.2006 | -53.67 | Finanzamt | Schulden für keineahnung | 5 |
+| 1 | 24.01.2006 | -53.67 | Finanzamt | Schulden für keineahnung | 1 | 5 |
 
 ### 4.3 Category
 
-| Id (pk) | UserId (fk) | Name | Interval |
+| Id (pk) | Name | Interval | UserId (fk) |
 | ----------- | ----------- | ----------- | ----------- |
-| 1 | 1 | Essen | Once |
+| 1 | Essen | Once | 1 |
 
 ### 4.4 Keyword
 
-| Id (pk) | CategoryId (fk) | Value | KeywordType |
+| Id (pk) | Value | KeywordType | CategoryId (fk) |
 | ----------- | ----------- | ----------- | ----------- |
-| 2 | 1 | Rewe | CounterParty |
+| 2 | Rewe | CounterParty | 1 |
 
 ## 5. DTOs
 
