@@ -40,8 +40,6 @@ classDiagram
         +id: Int 
         +name: String
         +intervall: Intervall
-        +titleKeywords: String[]
-        +counterPartyKeywords: String[]
     }
 
     class Interval {
@@ -53,6 +51,18 @@ classDiagram
         YEARLY
     }
 
+    class Keyword {
+        +id: Int
+        +value: String
+        +KeywordType: KeywordType
+    }
+
+    class KeywordType {
+        <<enumeration>>
+        TitleKeyword,
+        CounterPartyKeyword
+    }
+
     class CSVImport {
         datei: Datei
     }
@@ -61,8 +71,13 @@ classDiagram
 
     User "One" --> "Many" Transaction : defines
     User "One" --> "Many" Category : defines
+
     Category "One" --> "One" Interval : has
     Category "One" --> "Many" Transaction : categorises
+    Category "One" --> "Many" Keyword : has
+
+    Keyword "One" --> "One" KeywordType : has
+
     Transaction "One" --> "One" Category : has
     User "One" --> "One" CSVImport : runs
     CSVImport "One" --> "Many" Transaction : imports
@@ -72,7 +87,7 @@ classDiagram
 
 * **Ownership**: Ein User darf nur seine eigenen Daten einsehen & modifizieren
 * **Kategorien & Transaktionen**: Eine Transaktion muss genau(!) eine Kategorie haben (standardmäßig "Anderes")
-* **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw Recipient- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
+* **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw CounterParty- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
     * Ein Fenster erscheint, der User entscheidet welche Kategorie angenommen wird.
 * **Beträge**: Positiv = Einnahme, Negativ = Ausgabe
 * **CSV-Import**: Stimmen bereits existierende Transaktionen mit Transaktionen aus dem CSV-Import überein, werden diese nicht dupliziert.
@@ -93,9 +108,15 @@ classDiagram
 
 ### 4.3 Category
 
-| Id (pk) | UserId (fk) | Name | TitleKeywords | CounterPartyKeywords | Interval |
-| ----------- | ----------- | ----------- | ----------- | ---------- | ---------- |
-| 1 | 1 | Essen | [Rewe Kartenzahlung,..] | [Rewe,..] | Once |
+| Id (pk) | UserId (fk) | Name | Interval |
+| ----------- | ----------- | ----------- | ----------- |
+| 1 | 1 | Essen | Once |
+
+### 4.4 Keyword
+
+| Id (pk) | CategoryId (fk) | Value | KeywordType |
+| ----------- | ----------- | ----------- | ----------- |
+| 2 | 1 | Rewe | CounterParty |
 
 ## 5. DTOs
 
