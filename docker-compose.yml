@@ -17,9 +17,9 @@ services:
     container_name: ef_migrator
     volumes:
       - ./Api:/src 
-    working_dir: /src/Api 
+    working_dir: /src
     environment:
-      - ConnectionStrings__DefaultConnection=Server=database;Database=MonatsEndgegnerDB;User Id=sa;Password=DeinStarkesPasswort123!;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=database;Database=BrokeManagerDb;User Id=sa;Password=${MICROSOFT_SQL_PASSWORD};TrustServerCertificate=True;
     command: >
       bash -c "dotnet tool install --global dotnet-ef &&
       export PATH=\"$$PATH:/root/.dotnet/tools\" &&
