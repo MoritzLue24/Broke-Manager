@@ -8,8 +8,8 @@ namespace Api.Models
         public string CounterParty { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public int UserId { get; set; }     // fk
-        public User? User { get; set; }     // Navigation Property: Ermöglicht den Zugriff auf die zugehörigen User-Daten
+        public User User { get; set; } = null!;     // Navigation Property: Ermöglicht den Zugriff auf die zugehörigen User-Daten
         public int CategoryId { get; set; }
-        public Category? Category { get; set; }
+        public Category Category { get; set; } = null!;
     }
 }
