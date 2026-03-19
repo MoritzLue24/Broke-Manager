@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Api.Models;
 
+
 namespace Api.DTOs.Keywords
 {
     public class KeywordResponseDto
@@ -9,5 +10,4 @@ namespace Api.DTOs.Keywords
         public required string Value { get; set; }
         public int CategoryId { get; set; } 
     }
-    
 }
