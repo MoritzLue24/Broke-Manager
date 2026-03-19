@@ -86,11 +86,6 @@ namespace Api.Data
                 e.HasKey(k => k.Id);
                 e.Property(k => k.Value).HasMaxLength(500);
 
-                // Store KeywordType as string, not as int (/enum in C#)
-                e.Property(c => c.KeywordType)
-                    .HasConversion<string>()
-                    .HasMaxLength(128);
-
                 // Keyword, Category relation already configured
             });
         }
