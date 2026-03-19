@@ -137,6 +137,12 @@ classDiagram
 | Interval | Interval | Keywords |
 |  |  | Interval |
 
+### 5.4 Keyword
+| KeywordCreate | KeywordUpdate | KeywordResponse |
+| ------------- | ------------- | --------------- |
+| Value         | Value         | Value           |
+| Category      |               | Category        |
+
 ## 6. API-Endpunkte
 
 **User**
