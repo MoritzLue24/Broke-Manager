@@ -61,11 +61,6 @@ namespace Api.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("KeywordType")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasMaxLength(500)
