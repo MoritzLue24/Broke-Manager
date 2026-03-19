@@ -1,5 +1,6 @@
+using Api.DTOs;
 using Api.DTOs.Keywords;
-using Api.DTOs.Intervals;
+
 
 namespace Api.DTOs.Categories
 {
