@@ -8,7 +8,7 @@ Der Benutzter kommuniziert mit einer REST-API und kann:
 * Transaktionen automatisch kategorisieren
 * Kategorien erstellen, bearbeiten, löschen
 * Standart Kategorie ist "Anderes", und wird dem User nicht zum bearbeiten bzw löschen angezeigt 
-* Transaktionen kategoriesieren, indem nach Sender/Empfänger- bzw Titel-Schlüsselwörter gesucht werden
+* Transaktionen kategoriesieren, indem nach Sender/Empfänger- und Titel-Schlüsselwörter gesucht werden
 * Finanzübersichten einsehen
 * Transaktionen durchsuchen & nach Kategorie filtern 
 * Banktransaktionen als CSV importieren
@@ -54,13 +54,6 @@ classDiagram
     class Keyword {
         +id: Int
         +value: String
-        +KeywordType: KeywordType
-    }
-
-    class KeywordType {
-        <<enumeration>>
-        TitleKeyword,
-        CounterPartyKeyword
     }
 
     class CSVImport {
@@ -75,8 +68,6 @@ classDiagram
     Category "One" --> "One" Interval : has
     Category "One" --> "Many" Transaction : categorises
     Category "One" --> "Many" Keyword : has
-
-    Keyword "One" --> "One" KeywordType : has
 
     Transaction "One" --> "One" Category : has
     User "One" --> "One" CSVImport : runs
@@ -114,9 +105,9 @@ classDiagram
 
 ### 4.4 Keyword
 
-| Id (pk) | Value | KeywordType | CategoryId (fk) |
-| ----------- | ----------- | ----------- | ----------- |
-| 2 | Rewe | CounterParty | 1 |
+| Id (pk) | Value | CategoryId (fk) |
+| ----------- | ----------- | ----------- |
+| 2 | Rewe | 1 |
 
 ## 5. DTOs
 
@@ -142,9 +133,8 @@ classDiagram
 | CategoryCreate | CategoryUpdate | CategoryResponse |
 | ----------- | ----------- | ----------- |
 | Name | Name | Id |
-| TitleKeywords | TitleKeywords | Name |
-| CounterPartyKeywords | CounterPartyKeywords | TitleKeywords |
-| Interval | Interval | CounterPartyKeywords |
+| Keywords | Keywords | Name |
+| Interval | Interval | Keywords |
 |  |  | Interval |
 
 ## 6. API-Endpunkte
