@@ -1,8 +1,19 @@
+using System.ComponentModel.DataAnnotations;
+
 public class TransactionCreateDto
 {
-    public DateOnly Date { get; set; } // DateTime? oder was war das anders? 
+    [Required(ErrorMessage = "Date is required")]
+    public DateOnly Date { get; set; } 
+    
+    [Required(ErrorMessage = "Amount is required")]
     public decimal Amount { get; set; } 
+    
+    [Required(ErrorMessage = "CounterParty is required")]
     public string CounterParty { get; set; } 
+    
+    [Required(ErrorMessage = "Title is required")]
     public string Title { get; set; }
+    
+    [Required(ErrorMessage = "CategoryId is required")]
     public int CategoryId { get; set; }
 }
