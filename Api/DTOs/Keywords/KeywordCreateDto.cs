@@ -11,6 +11,5 @@ namespace Api.DTOs.Keywords
 
         [Required(ErrorMessage = "CategoryId is required")]
         public int CategoryId { get; set; } 
-        
     }
 }
