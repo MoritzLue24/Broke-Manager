@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Api.DTOs.Intervals;
+using Api.DTOs;
 using Api.DTOs.Keywords;
 
 
