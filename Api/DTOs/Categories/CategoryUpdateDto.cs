@@ -6,6 +6,7 @@ public class CategoryUpdateDto
     public string Name { get; set; }
     
     [Required(ErrorMessage = "TitleKeywords is required")]
+    [MinLength(1, ErrorMessage = "At least one keyword required")]
     public string[] TitleKeywords { get; set; }
     
     [Required(ErrorMessage = "CounterPartyKeywords is required")]

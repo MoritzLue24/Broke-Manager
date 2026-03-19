@@ -6,6 +6,7 @@ public class CategoryCreateDto
     public string Name { get; set; }
 
     [Required(ErrorMessage = "TitleKeywords is required")]
+    [MinLength(1, ErrorMessage = "At least one keyword required")]
     public string[] TitleKeywords { get; set; }
 
     
@@ -13,6 +14,6 @@ public class CategoryCreateDto
     public string[] CounterPartyKeywords { get; set; }
     
     [Required(ErrorMessage = "Interval is required")]
-    public string Interval { get; set; }
+    public Interval Interval { get; set; }
 
 }
