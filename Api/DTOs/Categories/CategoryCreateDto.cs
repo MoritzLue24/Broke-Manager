@@ -1,0 +1,19 @@
+using System.ComponentModel.DataAnnotations;
+using Api.DTOs;
+using Api.DTOs.Keywords;
+
+
+namespace Api.DTOs.Categories
+{
+    public class CategoryCreateDto
+    {
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(255, ErrorMessage = "Name must not exceed 255 characters")]
+        public required string Name { get; set; }
+
+        public List<KeywordCreateDto> Keywords { get; set; } = []; // = new List<KeywordCreateDto>();
+        
+        public IntervalDto Interval { get; set; } = IntervalDto.Once; 
+
+    }
+}
