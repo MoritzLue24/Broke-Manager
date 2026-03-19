@@ -8,7 +8,7 @@ Der Benutzter kommuniziert mit einer REST-API und kann:
 * Transaktionen automatisch kategorisieren
 * Kategorien erstellen, bearbeiten, löschen
 * Standart Kategorie ist "Anderes", und wird dem User nicht zum bearbeiten bzw löschen angezeigt 
-* Transaktionen kategoriesieren, indem nach Sender/Empfänger- bzw Titel-Schlüsselwörter gesucht werden
+* Transaktionen kategoriesieren, indem nach Sender/Empfänger- und Titel-Schlüsselwörter gesucht werden
 * Finanzübersichten einsehen
 * Transaktionen durchsuchen & nach Kategorie filtern 
 * Banktransaktionen als CSV importieren
@@ -40,8 +40,6 @@ classDiagram
         +id: Int 
         +name: String
         +intervall: Intervall
-        +titleKeywords: String[]
-        +counterPartyKeywords: String[]
     }
 
     class Interval {
@@ -53,6 +51,11 @@ classDiagram
         YEARLY
     }
 
+    class Keyword {
+        +id: Int
+        +value: String
+    }
+
     class CSVImport {
         datei: Datei
     }
@@ -61,8 +64,11 @@ classDiagram
 
     User "One" --> "Many" Transaction : defines
     User "One" --> "Many" Category : defines
+
     Category "One" --> "One" Interval : has
     Category "One" --> "Many" Transaction : categorises
+    Category "One" --> "Many" Keyword : has
+
     Transaction "One" --> "One" Category : has
     User "One" --> "One" CSVImport : runs
     CSVImport "One" --> "Many" Transaction : imports
@@ -72,7 +78,7 @@ classDiagram
 
 * **Ownership**: Ein User darf nur seine eigenen Daten einsehen & modifizieren
 * **Kategorien & Transaktionen**: Eine Transaktion muss genau(!) eine Kategorie haben (standardmäßig "Anderes")
-* **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw Recipient- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
+* **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw CounterParty- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
     * Ein Fenster erscheint, der User entscheidet welche Kategorie angenommen wird.
 * **Beträge**: Positiv = Einnahme, Negativ = Ausgabe
 * **CSV-Import**: Stimmen bereits existierende Transaktionen mit Transaktionen aus dem CSV-Import überein, werden diese nicht dupliziert.
@@ -87,15 +93,21 @@ classDiagram
 
 ### 4.2 Transaction
 
-| Id (pk) | UserId (fk) | Date | Amount | CounterParty | Title | CategoryId (fk) |
+| Id (pk) | Date | Amount | CounterParty | Title | UserId (fk) | CategoryId (fk) |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | --------- |
-| 1 | 1 | 24.01.2006 | -53.67 | Finanzamt | Schulden für keineahnung | 5 |
+| 1 | 24.01.2006 | -53.67 | Finanzamt | Schulden für keineahnung | 1 | 5 |
 
 ### 4.3 Category
 
-| Id (pk) | UserId (fk) | Name | TitleKeywords | CounterPartyKeywords | Interval |
-| ----------- | ----------- | ----------- | ----------- | ---------- | ---------- |
-| 1 | 1 | Essen | [Rewe Kartenzahlung,..] | [Rewe,..] | Once |
+| Id (pk) | Name | Interval | UserId (fk) |
+| ----------- | ----------- | ----------- | ----------- |
+| 1 | Essen | Once | 1 |
+
+### 4.4 Keyword
+
+| Id (pk) | Value | CategoryId (fk) |
+| ----------- | ----------- | ----------- |
+| 2 | Rewe | 1 |
 
 ## 5. DTOs
 
@@ -121,10 +133,15 @@ classDiagram
 | CategoryCreate | CategoryUpdate | CategoryResponse |
 | ----------- | ----------- | ----------- |
 | Name | Name | Id |
-| TitleKeywords | TitleKeywords | Name |
-| CounterPartyKeywords | CounterPartyKeywords | TitleKeywords |
-| Interval | Interval | CounterPartyKeywords |
+| Keywords | Keywords | Name |
+| Interval | Interval | Keywords |
 |  |  | Interval |
+
+### 5.4 Keyword
+| KeywordCreate | KeywordUpdate | KeywordResponse |
+| ------------- | ------------- | --------------- |
+| Value         | Value         | Value           |
+| Category      |               | Category        |
 
 ## 6. API-Endpunkte
 
