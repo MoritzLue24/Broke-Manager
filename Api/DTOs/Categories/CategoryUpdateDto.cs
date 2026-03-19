@@ -1,17 +1,17 @@
 using System.ComponentModel.DataAnnotations;
+using Api.Models;
+using Api.DTOs.Keywords;
 
-public class CategoryUpdateDto
+namespace Api.DTOs.Categories
 {
-    [Required(ErrorMessage = "Name is required")]
-    public string Name { get; set; }
-    
-    [Required(ErrorMessage = "TitleKeywords is required")]
-    [MinLength(1, ErrorMessage = "At least one keyword required")]
-    public string[] TitleKeywords { get; set; }
-    
-    [Required(ErrorMessage = "CounterPartyKeywords is required")]
-    public string[] CounterPartyKeywords { get; set; }
-    
-    [Required(ErrorMessage = "Interval is required")]
-    public string Interval { get; set; }
+    public class CategoryUpdateDto
+    {
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(255, ErrorMessage = "Name must not exceed 255 characters")]
+        public required string Name { get; set; }
+        
+         public List<KeywordUpdateDto> TitleKeywords { get; set; } = []; // = new List<KeywordCreateDto>();
+        
+        public Interval Interval { get; set; } = Interval.Once; 
+    }
 }

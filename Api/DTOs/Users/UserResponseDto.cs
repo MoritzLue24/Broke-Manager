@@ -1,5 +1,9 @@
-public class UserResponseDto
+
+namespace Api.DTOs.Users
 {
-    public int Id { get; set; } 
-    public string Email { get; set; }
+    public class UserResponseDto
+    {
+        public required int Id { get; set; } 
+        public required string Email { get; set; }
+    }
 }
