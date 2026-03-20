@@ -10,7 +10,9 @@ namespace Api.DTOs.Categories
         public required string Name { get; set; }
 
         public List<KeywordResponseDto> Keywords { get; set; } = []; // = new List<KeywordResponseDto>();
-        
+
         public IntervalDto Interval { get; set; }
+
+        public bool IsDefault { get; set; } = false;
     }
 }
