@@ -21,7 +21,14 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _dbContext.Users.ToListAsync();
+            var users = await _dbContext.Users
+                .Select(u => new UserResponseDto
+                {
+                    Id = u.Id,
+                    Email = u.Email
+                })
+                .ToListAsync();
+
             return Ok(users);
         }
 
@@ -33,27 +40,55 @@ namespace Api.Controllers
             {
                 return NotFound();
             }
-            return Ok(user);
+
+            var userDto = new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email
+            };
+            return Ok(userDto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User newUser)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userDto)
         {
+            var newUser = new User
+            {
+                Email = userDto.Email,
+                Password = userDto.Password
+            };
+
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
+
+            var createdUserDto = new UserResponseDto
+            {
+                Id = newUser.Id,
+                Email = newUser.Email
+            };
+
+
+            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, createdUserDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User updatedUser)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDto userDto)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            user.Email = updatedUser.Email;
-            user.Password = updatedUser.Password;
+
+            if (!string.IsNullOrEmpty(userDto.Email))
+            {
+                user.Email = userDto.Email;
+            }
+            if (!string.IsNullOrEmpty(userDto.Password))
+            {
+                user.Password = userDto.Password;
+            }
+
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
