@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Api.Data;
+using Api.Models;
+using Api.DTOs.Transactions;
 
 namespace BrokeManager.Api.Controllers
 {
@@ -8,39 +10,32 @@ namespace BrokeManager.Api.Controllers
     [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
+        private readonly AppDbContext _dbContext;
+
+        public TransactionController(AppDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetTransactions()
+        public async Task<IActionResult> GetAllTransactions()
         {
-            // TODO: Implement logic to retrieve transactions
-            return Ok();
-        }
+            
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<object>> GetTransaction(int id)
-        {
-            // TODO: Implement logic to retrieve a specific transaction
-            return Ok();
-        }
+            var transactions = await _dbContext.Transactions
+                .Select(t => new TransactionResponseDto
+                {
+                    Id = t.Id,
+                    Date = t.Date,
+                    Amount = t.Amount,
+                    CounterParty = t.CounterParty,
+                    Title = t.Title,
+                    CategoryId = t.CategoryId,
+                    CategoryName = t.Category.Name 
+                })
+                .ToListAsync();
 
-        [HttpPost]
-        public async Task<ActionResult> CreateTransaction([FromBody] object transaction)
-        {
-            // TODO: Implement logic to create a new transaction
-            return CreatedAtAction(nameof(GetTransaction), new { id = 1 }, transaction);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTransaction(int id, [FromBody] object transaction)
-        {
-            // TODO: Implement logic to update a transaction
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransaction(int id)
-        {
-            // TODO: Implement logic to delete a transaction
-            return NoContent();
+            return Ok(transactions);
         }
     }
 }

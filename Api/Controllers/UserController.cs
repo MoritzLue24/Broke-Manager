@@ -90,7 +90,7 @@ namespace Api.Controllers
             }
 
             await _dbContext.SaveChangesAsync();
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
