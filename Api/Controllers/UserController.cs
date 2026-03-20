@@ -80,15 +80,10 @@ namespace Api.Controllers
                 return NotFound();
             }
 
-            if (!string.IsNullOrEmpty(userDto.Email))
-            {
-                user.Email = userDto.Email;
-            }
-            if (!string.IsNullOrEmpty(userDto.Password))
-            {
-                user.Password = userDto.Password;
-            }
-
+            user.Email = userDto.Email;
+            
+            user.Password = userDto.Password;
+        
             await _dbContext.SaveChangesAsync();
             return NoContent();
         }
