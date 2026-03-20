@@ -9,11 +9,11 @@ namespace Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
 
-        public UsersController(AppDbContext dbContext)
+        public UserController(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
