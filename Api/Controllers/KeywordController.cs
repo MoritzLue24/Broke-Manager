@@ -26,12 +26,30 @@ namespace Api.Controllers
                 Value = keywordDto.Value,
                 CategoryId = keywordDto.CategoryId
             };
+            _dbContext.Keywords.Add(newKeyword);
+            
+            
+            var createdKeywordDto = new KeywordResponseDto
+            {
+                Id = newKeyword.Id,
+                Value = newKeyword.Value,
+                CategoryId = newKeyword.CategoryId
+            };
+            
+            await _dbContext.SaveChangesAsync();
+            return Created("", createdKeywordDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateKeyword(int id, [FromBody] string keyword)
+        public async Task<ActionResult> UpdateKeyword(int id, [FromBody] KeywordUpdateDto keywordDto)
         {
-            // TODO: Implement update keyword logic
+            var keyword = await _dbContext.Keywords.FindAsync(id);
+            if (keyword == null)
+            {
+                return NotFound();
+            }
+            keyword.Value = keywordDto.Value;
+            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
 
