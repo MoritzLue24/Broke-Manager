@@ -40,6 +40,7 @@ classDiagram
         +id: Int 
         +name: String
         +intervall: Intervall
+        +isDefault: bool
     }
 
     class Interval {
@@ -59,8 +60,6 @@ classDiagram
     class CSVImport {
         datei: Datei
     }
-
-    
 
     User "One" --> "Many" Transaction : defines
     User "One" --> "Many" Category : defines
@@ -99,9 +98,9 @@ classDiagram
 
 ### 4.3 Category
 
-| Id (pk) | Name | Interval | UserId (fk) |
-| ----------- | ----------- | ----------- | ----------- |
-| 1 | Essen | Once | 1 |
+| Id (pk) | Name | Interval | isDefault (bit) | UserId (fk) |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+| 1 | Essen | Once | 0 | 1 |
 
 ### 4.4 Keyword
 
@@ -110,43 +109,6 @@ classDiagram
 | 2 | Rewe | 1 |
 
 ## 5. DTOs
-
-
-
-
-### 5.1 User
-
-| UserCreate | UserUpdate | UserResponse |
-| ----------- | ----------- | ----------- |
-| Email | Email | Id |
-| Password | Password | Email |
-
-### 5.2 Transaction
-
-| TransactionCreate | TransactionUpdate | TransactionResponse |
-| ----------- | ----------- | ----------- |
-| Date | Date | Id |
-| Amount | Amount | Date |
-| CounterParty | CounterParty | Amount |
-| Title | Title | CounterParty |
-|  |  | Title |
-
-### 5.3 Category
-
-| CategoryCreate | CategoryUpdate | CategoryResponse |
-| ----------- | ----------- | ----------- |
-| Name | Name | Id |
-| Keywords | Keywords | Name |
-| Interval | Interval | Keywords |
-|  |  | Interval |
-
-### 5.4 Keyword
-| KeywordCreate | KeywordUpdate | KeywordResponse |
-| ------------- | ------------- | --------------- |
-| Value         | Value         | Value           |
-| Category      |               | Category        |
-
-
 
 ### 5.1 User
 
@@ -232,6 +194,23 @@ classDiagram
 **KeywordUpdateDto**
 * Value
 
+### 5.5 Other
+
+**SummaryResponseDto**
+* LoadedTransactions
+* Income
+* Expenses
+* CategorySummaryDto[]
+* ??????...
+
+**CategorySummaryDto**
+* Name
+* Amount
+* ??????...
+
+**ForecastResponseDto**
+* Balance
+* ??????...
 
 ## 6. API-Endpunkte
 
@@ -273,6 +252,11 @@ POST /api/categories/{id}/keywords
 PUT /api/categories/{id}/keywords/{idKw}
 DELETE /api/categories/{id}/keywords
 DELETE /api/categories/{id}/keywords/{idKw}
+```
+
+```
+GET /api/summary/{days}
+GET /api/forecast/{days}
 ```
 
 ## 7. Offene Entscheidungen
