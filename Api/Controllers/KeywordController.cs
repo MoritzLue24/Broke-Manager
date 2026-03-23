@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Api.Data;
-using Api.Models;
 using Api.DTOs.Keywords;
 
 
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/keywords")]
     public class KeywordController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -19,36 +17,21 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateKeyword([FromBody] KeywordCreateDto keywordDto)
+        public async Task<ActionResult<KeywordResponseDto>> CreateKeyword([FromBody] KeywordCreateDto createDto)
         {
-            var newKeyword = new Keyword
-            {
-                Value = keywordDto.Value,
-                CategoryId = keywordDto.CategoryId
-            };
-            _dbContext.Keywords.Add(newKeyword);
-            
-            
-            var createdKeywordDto = new KeywordResponseDto
-            {
-                Id = newKeyword.Id,
-                Value = newKeyword.Value,
-                CategoryId = newKeyword.CategoryId
-            };
-            
-            await _dbContext.SaveChangesAsync();
-            return Created("", createdKeywordDto);
+            return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateKeyword(int id, [FromBody] KeywordUpdateDto keywordDto)
+        public async Task<ActionResult> UpdateKeyword(int id, [FromBody] KeywordUpdateDto updateDto)
         {
+            // TODO: Check Keyword-Owner
             var keyword = await _dbContext.Keywords.FindAsync(id);
             if (keyword == null)
             {
                 return NotFound();
             }
-            keyword.Value = keywordDto.Value;
+            keyword.Value = updateDto.Value;
             await _dbContext.SaveChangesAsync();
             return NoContent();
         }
@@ -56,6 +39,7 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteKeyword(int id)
         {
+            // TODO: Check Owner
             var keyword = await _dbContext.Keywords.FindAsync(id);
             if (keyword == null)
             {

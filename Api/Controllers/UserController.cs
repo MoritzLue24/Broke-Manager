@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
-using Api.Models;
 using Api.DTOs.Users;
 
 
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -18,8 +17,9 @@ namespace Api.Controllers
             _dbContext = dbContext;
         }
 
+        // TODO: Als admin
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
         {
             var users = await _dbContext.Users
                 .Select(u => new UserResponseDto
@@ -29,12 +29,13 @@ namespace Api.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(users);
+            return users;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
+        [HttpGet("me")]
+        public async Task<ActionResult<UserResponseDto>> GetUser()
         {
+            int id = 0;     // TODO
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
@@ -46,33 +47,11 @@ namespace Api.Controllers
                 Id = user.Id,
                 Email = user.Email
             };
-            return Ok(userDto);
+            return userDto;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userDto)
-        {
-            var newUser = new User
-            {
-                Email = userDto.Email,
-                Password = userDto.Password
-            };
-
-            _dbContext.Users.Add(newUser);
-            await _dbContext.SaveChangesAsync();
-
-            var createdUserDto = new UserResponseDto
-            {
-                Id = newUser.Id,
-                Email = newUser.Email
-            };
-
-
-            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, createdUserDto);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDto userDto)
+        [HttpPut("me")]
+        public async Task<ActionResult> UpdateUser(int id, [FromBody] UserUpdateDto updateDto)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
@@ -80,16 +59,29 @@ namespace Api.Controllers
                 return NotFound();
             }
 
-            user.Email = userDto.Email;
-            
-            user.Password = userDto.Password;
-        
+            user.Email = updateDto.Email;
+
             await _dbContext.SaveChangesAsync();
             return NoContent();
         }
 
+        [HttpDelete("me")]
+        public async Task<ActionResult> DeleteUser()
+        {
+            int id = 0;     // TODO
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+        // TODO: Als Admin
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser([FromRoute] int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)

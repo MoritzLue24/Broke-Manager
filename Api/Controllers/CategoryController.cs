@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
-using Api.Models;
 using Api.DTOs.Categories;
 using Api.DTOs.Keywords;
 using Api.DTOs;
@@ -10,7 +9,7 @@ using Api.DTOs;
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -21,8 +20,9 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<ActionResult<List<CategoryResponseDto>>> GetAllCategories()
         {
+            // TODO: Check if c.userId equals current userId
             var categoriesDtos = await _dbContext.Categories
                 .Include(c => c.Keywords)
                 .Select(c => new CategoryResponseDto
@@ -39,12 +39,13 @@ namespace Api.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(categoriesDtos);
+            return categoriesDtos;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategory([FromRoute] int id)
+        public async Task<ActionResult<CategoryResponseDto>> GetCategory([FromRoute] int id)
         {
+            // TODO: Check if c.userId equals current userId
             var categoryDto = await _dbContext.Categories
                 .Where(c => c.Id == id)
                 .Select(c => new CategoryResponseDto
@@ -65,58 +66,36 @@ namespace Api.Controllers
             {
                 return NotFound();
             }
-            return Ok(categoryDto);
+            return categoryDto;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto categoryDto)
+        public async Task<ActionResult<CategoryResponseDto>> CreateCategory([FromBody] CategoryCreateDto createDto)
         {
-            var newCategory = new Category
-            {
-                Name = categoryDto.Name,
-                Interval = (Interval)categoryDto.Interval,
-                UserId = 1,     // TODO
-            };
-            _dbContext.Categories.Add(newCategory);
-
-            // Keywords
-            var newKeywords = categoryDto.Keywords.Select(k => new Keyword
-            {
-                Value = k.Value,
-                CategoryId = k.CategoryId,
-            });
-            foreach (var kw in newKeywords)
-            {
-                _dbContext.Keywords.Add(kw);
-            }
-
-            await _dbContext.SaveChangesAsync();
-
-            var createdCategoryDto = new CategoryResponseDto
-            {
-                Id = newCategory.Id,
-                Name = newCategory.Name,
-                Keywords = newKeywords.Select(k => new KeywordResponseDto
-                {
-                    Id = k.Id,
-                    Value = k.Value,
-                    CategoryId = k.CategoryId
-                }).ToList(),
-                Interval = (IntervalDto)newCategory.Interval
-            };
-
-            return CreatedAtAction(nameof(GetCategory), new { id = newCategory.Id }, createdCategoryDto);
+            return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto userDto)
+        public async Task<ActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto updateDto)
         {
-            
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAllCategories()
+        {
+            // TODO: Get Current UserId
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<ActionResult> DeleteCategory([FromRoute] int id)
+        {
+            return NoContent();
+        }
+
+        [HttpDelete("{id}/keywords")]
+        public async Task<ActionResult> DeleteKeywords([FromRoute] int id)
         {
             return NoContent();
         }

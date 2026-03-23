@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
-using Api.Models;
 using Api.DTOs.Transactions;
-using Api.DTOs.Categories;
 
-namespace BrokeManager.Api.Controllers
+
+namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/transactions")]
     public class TransactionController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -19,10 +18,11 @@ namespace BrokeManager.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTransactions()
+        public async Task<ActionResult<List<TransactionResponseDto>>> GetAllTransactions()
         {
-            
+            int userId = 0;     // TODO
             var transactions = await _dbContext.Transactions
+                .Where(t => t.UserId == userId)
                 .Select(t => new TransactionResponseDto
                 {
                     Id = t.Id,
@@ -35,17 +35,18 @@ namespace BrokeManager.Api.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(transactions);
+            return transactions;
         }
     
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTransaction([FromRoute] int id)
+        public async Task<ActionResult<TransactionResponseDto>> GetTransaction([FromRoute] int id)
         {
-            
+            // TODO: Check if transaction.userId equals current userId
+
             var transaction = await _dbContext.Transactions
                 .Include(t => t.Category)
                 .FirstOrDefaultAsync(t => t.Id == id);
-            
+
             if (transaction == null)
             {
                 return NotFound();
@@ -61,94 +62,62 @@ namespace BrokeManager.Api.Controllers
                 CategoryId = transaction.CategoryId,
                 CategoryName = transaction.Category.Name
             };
-            return Ok(transactionDto);
+            return transactionDto;
         }
     
         [HttpPost]
-        public async Task<IActionResult> CreateTransaction([FromBody] TransactionCreateDto transactionDto)
+        public async Task<ActionResult<TransactionResponseDto>> CreateTransaction([FromBody] TransactionCreateDto createDto)
         {
             var defaultCategory = await _dbContext.Categories
                 .Where(c => c.IsDefault)
                 .FirstOrDefaultAsync();
-            
 
-            if (defaultCategory == null && transactionDto.CategoryId == null)
+            if (defaultCategory == null && createDto.CategoryId == null)
             {
                 return BadRequest("Default category not found. Please create a default category before adding transactions.");
             }
 
+            // TODO
 
-
-            var newTransaction = new Transaction
-            {
-                Date = transactionDto.Date,
-                Amount = transactionDto.Amount,
-                CounterParty = transactionDto.CounterParty,
-                Title = transactionDto.Title,
-                CategoryId = transactionDto.CategoryId == null ? defaultCategory.Id : transactionDto.CategoryId,
-                UserId = 1 // TODO: SPÄTER
-            };
-
-            _dbContext.Transactions.Add(newTransaction);
-            await _dbContext.SaveChangesAsync();
-
-            var createdTransactionDto = new TransactionResponseDto
-            {
-                Id = newTransaction.Id,
-                Date = newTransaction.Date,
-                Amount = newTransaction.Amount,
-                CounterParty = newTransaction.CounterParty,
-                Title = newTransaction.Title,
-                CategoryId = newTransaction.CategoryId,
-                CategoryName = newTransaction.Category.Name
-            };
-
-            return CreatedAtAction(nameof(GetTransaction), new { id = newTransaction.Id }, createdTransactionDto);
-
+            return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTransaction(int id, [FromBody] TransactionUpdateDto transactionDto)
+        public async Task<ActionResult> UpdateTransaction(int id, [FromBody] TransactionUpdateDto updateDto)
         {
              var defaultCategory = await _dbContext.Categories
                 .Where(c => c.IsDefault)
                 .FirstOrDefaultAsync();
-            
 
-            if (defaultCategory == null && transactionDto.CategoryId == null)
+            if (defaultCategory == null && updateDto.CategoryId == null)
             {
                 return BadRequest("Default category not found. Please create a default category before adding transactions.");
             }
-            
+
             var transaction = await _dbContext.Transactions.FindAsync(id);
             if (transaction == null)            
             {
                 return NotFound();
             }
 
-            
+            // TODO
 
-            transaction.Date = transactionDto.Date;
-            transaction.Amount = transactionDto.Amount;
-            transaction.CounterParty = transactionDto.CounterParty;
-            transaction.Title = transactionDto.Title;
-            
-            if (transactionDto.CategoryId.HasValue)
-            {
-                transaction.CategoryId = transactionDto.CategoryId.Value;
-            }
-            else
-            {
-                transaction.CategoryId = defaultCategory.Id;
-            }
-
-            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
-    
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransaction(int id)
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAllTransactions()
         {
+            int userId = 0;     // TODO
+            // TODO
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteTransaction(int id)
+        {
+            // TODO: Check if transaction.userId equals current userId
             var transaction = await _dbContext.Transactions.FindAsync(id);
             if (transaction == null)
             {
@@ -157,6 +126,12 @@ namespace BrokeManager.Api.Controllers
 
             _dbContext.Transactions.Remove(transaction);
             await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPost("import")]
+        public async Task<ActionResult> ImportCSV(IFormFile file)
+        {
             return NoContent();
         }
     }
