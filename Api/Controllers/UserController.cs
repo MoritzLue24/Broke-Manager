@@ -1,64 +1,87 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
-using Api.Models;
+using Api.DTOs.Users;
 
 
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    [Route("api/users")]
+    public class UserController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
 
-        public UsersController(AppDbContext dbContext)
+        public UserController(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
+        // TODO: Als admin
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
         {
-            var users = await _dbContext.Users.ToListAsync();
-            return Ok(users);
+            var users = await _dbContext.Users
+                .Select(u => new UserResponseDto
+                {
+                    Id = u.Id,
+                    Email = u.Email
+                })
+                .ToListAsync();
+
+            return users;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
+        [HttpGet("me")]
+        public async Task<ActionResult<UserResponseDto>> GetUser()
         {
+            int id = 0;     // TODO
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
-            return Ok(user);
+
+            var userDto = new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email
+            };
+            return userDto;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User newUser)
-        {
-            _dbContext.Users.Add(newUser);
-            await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User updatedUser)
+        [HttpPut("me")]
+        public async Task<ActionResult> UpdateUser(int id, [FromBody] UserUpdateDto updateDto)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            user.Email = updatedUser.Email;
-            user.Password = updatedUser.Password;
+
+            user.Email = updateDto.Email;
+
             await _dbContext.SaveChangesAsync();
-            return Ok();
+            return NoContent();
         }
 
+        [HttpDelete("me")]
+        public async Task<ActionResult> DeleteUser()
+        {
+            int id = 0;     // TODO
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+        // TODO: Als Admin
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser([FromRoute] int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
