@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Api.DTOs.Users;
+using Api.DTOs.Auth;
 
 
 namespace Api.Controllers
