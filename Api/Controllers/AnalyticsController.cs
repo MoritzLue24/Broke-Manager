@@ -1,4 +1,6 @@
+using Api.DTOs.Analytics;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Api.Controllers
 {
@@ -8,17 +10,17 @@ namespace Api.Controllers
     {
         public AnalyticsController()
         {
-            
+
         }
 
         [HttpGet("summary/{days}")]
-        public async Task<ActionResult> GetSummary([FromRoute] int days)
+        public async Task<ActionResult<SummaryResponseDto>> GetSummary([FromRoute] int days)
         {
             return NoContent();
         }
 
         [HttpGet("forecast/{days}")]
-        public async Task<ActionResult> GetForecast([FromRoute] int days)
+        public async Task<ActionResult<ForecastResponseDto>> GetForecast([FromRoute] int days)
         {
             return NoContent();
         }
