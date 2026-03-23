@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+
 namespace Api.DTOs.Auth
 {
     public class LoginRequestDto
@@ -11,6 +12,7 @@ namespace Api.DTOs.Auth
 
         [Required(ErrorMessage = "Password is required")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
+        [StringLength(255, ErrorMessage = "Password must not exceed 255 characters")]
         public required string Password { get; set; }
     }
 }

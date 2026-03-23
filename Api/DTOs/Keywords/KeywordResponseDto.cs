@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Api.Models;
-
-
 namespace Api.DTOs.Keywords
 {
     public class KeywordResponseDto
