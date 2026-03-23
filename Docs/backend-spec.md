@@ -257,8 +257,8 @@ DELETE /api/keywords/{id}
 ```
 
 ```
-GET /api/summary/{days}
-GET /api/forecast/{days}
+GET /api/analytics/summary/{days}
+GET /api/analytics/forecast/{days}
 ```
 
 ## 7. Offene Entscheidungen
