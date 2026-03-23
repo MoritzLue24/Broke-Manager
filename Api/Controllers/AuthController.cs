@@ -13,13 +13,13 @@ namespace Api.Controllers
 
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public async Task<ActionResult> RegisterUser([FromBody] RegisterRequestDto registerDto)
         {
             return NoContent();
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<ActionResult> LoginUser([FromBody] LoginRequestDto loginDto)
         {
             return NoContent();
