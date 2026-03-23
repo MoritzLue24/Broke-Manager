@@ -186,6 +186,7 @@ classDiagram
 **KeywordResponseDto**
 * Id
 * Value
+* CategoryId
 
 **KeywordCreateDto**
 * Value
@@ -248,10 +249,11 @@ DELETE /api/categories/{id}
 ```
 
 ```
-POST /api/categories/{id}/keywords
-PUT /api/categories/{id}/keywords/{idKw}
-DELETE /api/categories/{id}/keywords
-DELETE /api/categories/{id}/keywords/{idKw}
+POST /api/keywords
+PUT /api/keywords/{id}
+DELETE /api/keywords/{id}
+
+DELETE /api/categories/{categoryId}/keywords
 ```
 
 ```
