@@ -12,5 +12,7 @@ namespace Api.DTOs.Categories
         public List<KeywordResponseDto> Keywords { get; set; } = []; // = new List<KeywordResponseDto>();
         
         public IntervalDto Interval { get; set; }
+
+        public Boolean isDefault { get; set; }
     }
 }
