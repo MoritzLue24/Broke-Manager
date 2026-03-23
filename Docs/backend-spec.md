@@ -40,6 +40,7 @@ classDiagram
         +id: Int 
         +name: String
         +intervall: Intervall
+        +isDefault: bool
     }
 
     class Interval {
@@ -59,8 +60,6 @@ classDiagram
     class CSVImport {
         datei: Datei
     }
-
-    
 
     User "One" --> "Many" Transaction : defines
     User "One" --> "Many" Category : defines
@@ -99,9 +98,9 @@ classDiagram
 
 ### 4.3 Category
 
-| Id (pk) | Name | Interval | UserId (fk) |
-| ----------- | ----------- | ----------- | ----------- |
-| 1 | Essen | Once | 1 |
+| Id (pk) | Name | Interval | isDefault (bit) | UserId (fk) |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+| 1 | Essen | Once | 0 | 1 |
 
 ### 4.4 Keyword
 
@@ -113,70 +112,155 @@ classDiagram
 
 ### 5.1 User
 
-| UserCreate | UserUpdate | UserResponse |
-| ----------- | ----------- | ----------- |
-| Email | Email | Id |
-| Password | Password | Email |
+**RegisterRequestDto**
+* Email (required, email)
+* Password (required, mind. 8 Zeichen)
+* ConfirmPassword (required, mind. 8 Zeichen)
+
+**LoginRequestDto**
+* Email (required, email)
+* Password (required)
+
+**UserResponseDto**
+* Id
+* Email
+
+**UserUpdateDto**
+* Email (optional, email)
+
+**ChangePasswordDto**
+* CurrentPassword (required)
+* NewPassword (required)
+* ConfirmNewPassword (required)
 
 ### 5.2 Transaction
 
-| TransactionCreate | TransactionUpdate | TransactionResponse |
-| ----------- | ----------- | ----------- |
-| Date | Date | Id |
-| Amount | Amount | Date |
-| CounterParty | CounterParty | Amount |
-| Title | Title | CounterParty |
-|  |  | Title |
+**TransactionResponseDto**
+* Id
+* Date
+* Amount
+* CounterParty
+* Title
+* CategoryId
+* CategoryName
+
+**TransactionCreateDto**
+* Date      (required, DateOnly)
+* Amount    (required, decimal(12,2))
+* CounterParty  (optional, maxLength(255))
+* Title     (optional, maxLength(500))
+* CategoryId    (optional)
+
+**TransactionUpdateDto**
+* Date  (optional)
+* Amount    (optional)
+* CounterParty  (optional)
+* Title     (optional)
+* CategoryId    (optional)
+* detectCategory    (bool, optional)    <---?? nicht sicher, seperater api call?
+
+**TransactionImportResposneDto**
+* ImportedRows
+* Errors
 
 ### 5.3 Category
 
-| CategoryCreate | CategoryUpdate | CategoryResponse |
-| ----------- | ----------- | ----------- |
-| Name | Name | Id |
-| Keywords | Keywords | Name |
-| Interval | Interval | Keywords |
-|  |  | Interval |
+**CategoryResponseDto**
+* Id
+* Name
+* Interval  (string)
+* Keywords  (KeywordResponseDto[])
+* isDefault (bool)
+
+**CategoryCreateDto**
+* Name      (required, maxLength(255))
+* Interval  (optional, default: Once)
+* Keywords  (optional, KeywordCreateDto[])
+
+**CategoryUpdateDto**
+* Name      (optional)
+* Interval  (optional)
 
 ### 5.4 Keyword
-| KeywordCreate | KeywordUpdate | KeywordResponse |
-| ------------- | ------------- | --------------- |
-| Value         | Value         | Value           |
-| Category      |               | Category        |
+
+**KeywordResponseDto**
+* Id
+* Value
+* CategoryId
+
+**KeywordCreateDto**
+* Value
+* CategoryId
+
+**KeywordUpdateDto**
+* Value
+
+### 5.5 Other
+
+**SummaryResponseDto**
+* LoadedTransactions
+* Income
+* Expenses
+* CategorySummaryDto[]
+* ??????...
+
+**CategorySummaryDto**
+* Name
+* Amount
+* ??????...
+
+**ForecastResponseDto**
+* Balance
+* ??????...
 
 ## 6. API-Endpunkte
 
-**User**
 ```
-GET /api/users        --> UserResponse[]
-GET /api/users/{id}   --> UserResponse
-POST /api/users       <-- UserCreate
-PUT /api/users/{id}   <-- UserUpdate
-DELETE /api/users/{id}
+POST /api/auth/register
+POST /api/auth/login
 ```
 
-**Transaction**
 ```
-GET /api/users/{userId}/transactions  --> TransactionResponse[]
-GET /api/transactions/{id}            --> TransactionResponse
-POST /api/users/{userId}/transactions <-- TransactionCreate
-PUT /api/transactions/{id}            <-- TransactionUpdate
+GET /api/users          (als Admin)
+GET /api/users/me
+PUT /api/users/me
+DELETE /api/users/me
+DELETE /api/users/{id}  (als Admin)
+```
+
+```
+GET /api/transactions
+GET /api/transactions/{id}
+POST /api/transactions
+PUT /api/transactions/{id}
+DELETE /api/transactions
 DELETE /api/transactions/{id}
+
+POST /api/transactions/import
 ```
 
-**Category**
 ```
-GET /api/users/{userId}/categories  --> CategoryResponse[]
-GET /api/categories/{id}            --> CategoryResponse
-POST /api/users/{userId}/categories <-- CategoryCreate
-PUT /api/categories/{id}            <-- CategoryUpdate
+GET /api/categories
+GET /api/categories/{id}
+POST /api/categories
+PUT /api/categories/{id}
+DELETE /api/categories
 DELETE /api/categories/{id}
+
+DELETE /api/categories/{categoryId}/keywords
 ```
 
-**CSV-Import**
 ```
-TODO
+POST /api/keywords
+PUT /api/keywords/{id}
+DELETE /api/keywords/{id}
+```
+
+```
+GET /api/analytics/summary/{days}
+GET /api/analytics/forecast/{days}
 ```
 
 ## 7. Offene Entscheidungen
-* CSV-Format ? 
+* Mehrere CSV formate?
 * Title mit KI Kurzfassen
