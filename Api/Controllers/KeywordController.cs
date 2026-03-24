@@ -6,7 +6,7 @@ using Api.DTOs.Keywords;
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/keywords")]
+    [Route("api/categories/{categoryId}/keywords")]
     public class KeywordController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
@@ -17,36 +17,34 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<KeywordResponseDto>> CreateKeyword([FromBody] KeywordCreateDto createDto)
+        public async Task<ActionResult<KeywordResponseDto>> CreateKeyword(
+            [FromRoute] int categoryId,
+            [FromBody] KeywordCreateDto createDto)
         {
             return NoContent();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateKeyword(int id, [FromBody] KeywordUpdateDto updateDto)
+        [HttpPut("{keywordId}")]
+        public async Task<ActionResult> UpdateKeyword(
+            [FromRoute] int categoryId,
+            [FromRoute] int keywordId,
+            [FromBody] KeywordUpdateDto updateDto)
         {
-            // TODO: Check Keyword-Owner
-            var keyword = await _dbContext.Keywords.FindAsync(id);
-            if (keyword == null)
-            {
-                return NotFound();
-            }
-            keyword.Value = updateDto.Value;
-            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteKeyword(int id)
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAll(
+            [FromRoute] int categoryId)
         {
-            // TODO: Check Owner
-            var keyword = await _dbContext.Keywords.FindAsync(id);
-            if (keyword == null)
-            {
-                return NotFound();
-            }
-            _dbContext.Keywords.Remove(keyword);
-            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{keywordId}")]
+        public async Task<ActionResult> DeleteKeyword(
+            [FromRoute] int categoryId,
+            [FromRoute] int keywordId)
+        {
             return NoContent();
         }
     }

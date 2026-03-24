@@ -40,14 +40,9 @@ namespace Api.Services.Categories
         public async Task<CategoryResponseDto> GetByIdAsync(int userId, int categoryId)
         {
             var category = await _dbContext.Categories
-                .Where(c => c.Id == categoryId)
+                .Where(c => c.Id == categoryId && c.UserId == userId)
                 .SingleOrDefaultAsync() 
                 ?? throw new KeyNotFoundException("Category not found.");
-
-            if (category.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("Category is not owned by specified user.");
-            }
 
             return new CategoryResponseDto
             {
@@ -64,25 +59,26 @@ namespace Api.Services.Categories
             };
         }
 
-        public async Task<CategoryResponseDto> CreateAsync(int userId, int categoryId, CategoryCreateDto createDto)
+        public async Task<CategoryResponseDto> CreateAsync(int userId, CategoryCreateDto createDto)
         {
             // Category
             Category newCategory = new Category
             {
                 Name = createDto.Name,
                 Interval = (Interval)createDto.Interval,
-                IsDefault = createDto.IsDefault,        // TODO: Always false?
+                IsDefault = false,
                 UserId = userId
             };
-            var categoryResponse = (await _dbContext.Categories.AddAsync(newCategory)).Entity;
+            await _dbContext.Categories.AddAsync(newCategory);
+            await _dbContext.SaveChangesAsync();
 
             CategoryResponseDto responseDto = new CategoryResponseDto
             {
-                Id = categoryResponse.Id,
-                Name = categoryResponse.Name,
+                Id = newCategory.Id,
+                Name = newCategory.Name,
                 Keywords = [],
-                Interval = (IntervalDto)categoryResponse.Interval,
-                IsDefault = categoryResponse.IsDefault
+                Interval = (IntervalDto)newCategory.Interval,
+                IsDefault = newCategory.IsDefault
             };
 
             // Keywords
@@ -91,7 +87,7 @@ namespace Api.Services.Categories
                 Keyword newKeyword = new Keyword
                 {
                     Value = keyword.Value,
-                    CategoryId = keyword.CategoryId     // TODO: Use categoryId and change KeywordCreateDto??
+                    CategoryId = responseDto.Id
                 };
                 var keywordResponse = (await _dbContext.Keywords.AddAsync(newKeyword)).Entity;
                 responseDto.Keywords.Add(new KeywordResponseDto
@@ -106,16 +102,11 @@ namespace Api.Services.Categories
             return responseDto;
         }
 
-        public async void UpdateAsync(int userId, int categoryId, CategoryUpdateDto updateDto)
+        public async Task UpdateAsync(int userId, int categoryId, CategoryUpdateDto updateDto)
         {
             var category = await _dbContext.Categories
-                .SingleOrDefaultAsync(c => c.Id == categoryId) 
+                .SingleOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId) 
                 ?? throw new KeyNotFoundException("Category not found.");
-
-            if (category.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("Category is not owned by specified user");
-            }
 
             if (updateDto.Name != null)
             {
@@ -128,38 +119,31 @@ namespace Api.Services.Categories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async void DeleteAllByUserAsync(int userId)
+        public async Task DeleteAllByUserAsync(int userId)
         {
             _dbContext.RemoveRange(_dbContext.Categories.Where(c => c.UserId == userId));
             await _dbContext.SaveChangesAsync();
         }
 
-        public async void DeleteByIdAsync(int userId, int categoryId)
+        public async Task DeleteByIdAsync(int userId, int categoryId)
         {
             var category = await _dbContext.Categories
-                .SingleOrDefaultAsync(c => c.Id == userId)
+                .SingleOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId)
                 ?? throw new KeyNotFoundException("Category not found");
 
-            if (category.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("Category not owned by specified user");
-            } 
             _dbContext.Remove(category);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async void DeleteKeywordsByCategoryAsync(int userId, int categoryId)
+        public async Task DeleteKeywordsByCategoryAsync(int userId, int categoryId)
         {
             var category = await _dbContext.Categories
-                .Where(c => c.Id == categoryId)
+                .Where(c => c.Id == categoryId && c.UserId == userId)
                 .SingleOrDefaultAsync()
                 ?? throw new KeyNotFoundException("Category not found");
-            
-            if (category.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("Category not owned by specified user");
-            }
+
             _dbContext.Keywords.RemoveRange(category.Keywords);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

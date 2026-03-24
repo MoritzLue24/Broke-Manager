@@ -7,7 +7,7 @@ namespace Api.DTOs.Categories
     {
         public int Id { get; set; }
         public required string Name { get; set; }
-        public List<KeywordResponseDto> Keywords { get; set; } = []; // = new List<KeywordResponseDto>();
+        public List<KeywordResponseDto> Keywords { get; set; } = [];
         public IntervalDto Interval { get; set; }
         public bool IsDefault { get; set; }
     }

@@ -22,61 +22,27 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<CategoryResponseDto>>> GetAllCategories()
         {
-            // TODO: Check if c.userId equals current userId
-            var categoriesDtos = await _dbContext.Categories
-                .Include(c => c.Keywords)
-                .Select(c => new CategoryResponseDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Keywords = c.Keywords.Select(k => new KeywordResponseDto
-                    {
-                        Id = k.Id,
-                        Value = k.Value,
-                        CategoryId = c.Id
-                    }).ToList(),
-                    Interval = (IntervalDto)c.Interval
-                })
-                .ToListAsync();
-
-            return categoriesDtos;
+            return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryResponseDto>> GetCategory([FromRoute] int id)
+        public async Task<ActionResult<CategoryResponseDto>> GetCategory(
+            [FromRoute] int id)
         {
-            // TODO: Check if c.userId equals current userId
-            var categoryDto = await _dbContext.Categories
-                .Where(c => c.Id == id)
-                .Select(c => new CategoryResponseDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Keywords = c.Keywords.Select(k => new KeywordResponseDto
-                    {
-                        Id = k.Id,
-                        Value = k.Value,
-                        CategoryId = c.Id
-                    }).ToList(),
-                    Interval = (IntervalDto)c.Interval
-                })
-                .FirstOrDefaultAsync();
-
-            if (categoryDto == null)
-            {
-                return NotFound();
-            }
-            return categoryDto;
+            return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryResponseDto>> CreateCategory([FromBody] CategoryCreateDto createDto)
+        public async Task<ActionResult<CategoryResponseDto>> CreateCategory(
+            [FromBody] CategoryCreateDto createDto)
         {
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto updateDto)
+        public async Task<ActionResult> UpdateCategory(
+            [FromRoute] int id,
+            [FromBody] CategoryUpdateDto updateDto)
         {
             return NoContent();
         }
@@ -84,18 +50,12 @@ namespace Api.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteAllCategories()
         {
-            // TODO: Get Current UserId
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteCategory([FromRoute] int id)
-        {
-            return NoContent();
-        }
-
-        [HttpDelete("{id}/keywords")]
-        public async Task<ActionResult> DeleteKeywords([FromRoute] int id)
+        public async Task<ActionResult> DeleteCategory(
+            [FromRoute] int id)
         {
             return NoContent();
         }
