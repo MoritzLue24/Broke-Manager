@@ -7,6 +7,6 @@ namespace Api.Services.Keywords
     {
         Task<KeywordResponseDto> CreateAsync(int userId, KeywordCreateDto createDto);
         void UpdateAsync(int userId, int keywordId, KeywordUpdateDto updateDto);
-        void DeleteById(int userId, int keywordId);
+        void DeleteByIdAsync(int userId, int keywordId);
     }
 }

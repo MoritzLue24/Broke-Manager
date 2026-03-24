@@ -59,7 +59,7 @@ namespace Api.Services.Keywords
             await _dbContext.SaveChangesAsync();
         }
 
-        public async void DeleteById(int userId, int keywordId)
+        public async void DeleteByIdAsync(int userId, int keywordId)
         {
             var keyword = await _dbContext.Keywords
                 .SingleOrDefaultAsync(k => k.Id == keywordId)
