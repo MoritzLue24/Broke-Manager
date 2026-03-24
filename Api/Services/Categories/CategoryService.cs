@@ -130,17 +130,36 @@ namespace Api.Services.Categories
 
         public async void DeleteAllByUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            _dbContext.RemoveRange(_dbContext.Categories.Where(c => c.UserId == userId));
+            await _dbContext.SaveChangesAsync();
         }
 
         public async void DeleteByIdAsync(int userId, int categoryId)
         {
-            throw new NotImplementedException();
+            var category = await _dbContext.Categories
+                .SingleOrDefaultAsync(c => c.Id == userId)
+                ?? throw new KeyNotFoundException("Category not found");
+
+            if (category.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("Category not owned by specified user");
+            } 
+            _dbContext.Remove(category);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async void DeleteKeywordsByCategoryAsync(int userId, int categoryId)
         {
-            throw new NotImplementedException();
+            var category = await _dbContext.Categories
+                .Where(c => c.Id == categoryId)
+                .SingleOrDefaultAsync()
+                ?? throw new KeyNotFoundException("Category not found");
+            
+            if (category.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("Category not owned by specified user");
+            }
+            _dbContext.Keywords.RemoveRange(category.Keywords);
         }
     }
 }
