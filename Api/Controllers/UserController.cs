@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Api.Data;
 using Api.DTOs.Users;
 using Api.Services.User;
+using System.Security.Claims;
 
 
 
@@ -10,6 +12,7 @@ namespace Api.Controllers
 {
     [ApiController]
     [Route("api/users")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -19,80 +22,100 @@ namespace Api.Controllers
             _userService = userService;
         }
 
-        // TODO: Als admin
-        [HttpGet]
-        public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
-        {
-            var users = await _dbContext.Users
-                .Select(u => new UserResponseDto
-                {
-                    Id = u.Id,
-                    Email = u.Email
-                })
-                .ToListAsync();
 
-            return users;
+        // --- HILFSMETHODE ---
+        // HOLT USER-ID AUS DEM JWT TOKEN
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            return userId;
         }
 
-        [HttpGet("me")]
-        public async Task<ActionResult<UserResponseDto>> GetUser()
+        // --------------------------------------------------
+        // ADMIN ZONE
+        // --------------------------------------------------
+        
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
         {
-            int id = 0;     // TODO
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
+            var users = await _userService.GetAllUsersAsync();
+            return users;
+
+        }
+        
+        
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")] 
+        public async Task<ActionResult> UpdateUserById([FromRoute] int id, [FromBody] UserUpdateDto updateDto)
+        {
+            
+            var success = await _userService.UpdateUserAsync(id, updateDto);
+            
+            if (!success) 
             {
-                return NotFound();
+                return NotFound(new { message = "User not found" });
             }
 
-            var userDto = new UserResponseDto
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteUserById([FromRoute] int id)
+        {
+            var succes = await _userService.DeleteAsync(id);
+            if (!succes)
             {
-                Id = user.Id,
-                Email = user.Email
-            };
-            return userDto;
+                return NotFound(new { Message = "User not found" });
+            }
+            return NoContent();
+            
+        }
+
+        // TODO  1. GET BY ID (ADMIN) 2.ROLE CHANGE BY ADMIN 3. PASSWORT ÄNDERN (ME) 4. PASSWORT ÄNDERN (ADMIN)
+
+
+        // --------------------------------------------------
+        // USER   ZONE
+        // --------------------------------------------------
+
+        [HttpGet("me")]
+        public async Task<ActionResult<UserResponseDto>> GetMe()
+        {
+            int id = GetCurrentUserId();     
+            var user = await _userService.GetUserAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            return user;
         }
 
         [HttpPut("me")]
-        public async Task<ActionResult> UpdateUser(int id, [FromBody] UserUpdateDto updateDto)
+        public async Task<ActionResult> UpdateMe(int id, [FromBody] UserUpdateDto updateDto)
         {
-            var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
+            int CurrentUserId = GetCurrentUserId();
+            var success = await _userService.UpdateUserAsync(CurrentUserId, updateDto);
+            if (!success)
             {
-                return NotFound();
+                return NotFound(new { Message = "User not found" });
             }
-
-            user.Email = updateDto.Email;
-
-            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpDelete("me")]
-        public async Task<ActionResult> DeleteUser()
+        public async Task<ActionResult> DeleteMe()
         {
-            int id = 0;     // TODO
-            var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
+            int CurrentUserId = GetCurrentUserId();
+            var success = await _userService.DeleteAsync(CurrentUserId);
+            if (!success)
             {
-                return NotFound();
+                return NotFound(new { Message = "User not found" });
             }
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
 
-        // TODO: Als Admin
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteUser([FromRoute] int id)
-        {
-            var user = await _dbContext.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
-            return NoContent();
-        }
     }
 }
