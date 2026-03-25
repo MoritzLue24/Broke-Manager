@@ -1,133 +1,105 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
 using Api.DTOs.Transactions;
+using System.Security.Claims;
+using Api.Services.Transaction;
+
 
 
 namespace Api.Controllers
 {
     [ApiController]
     [Route("api/transactions")]
+    [Authorize] 
     public class TransactionController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly ITransactionService _transactionService;
 
-        public TransactionController(AppDbContext dbContext)
+        public TransactionController(ITransactionService transactionService)
         {
-            _dbContext = dbContext;
+            _transactionService = transactionService;
+        }
+
+        // Hilfsmethode, um die UserId aus JWT-Claims zu extrahieren
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int.TryParse(userIdClaim, out int userId);
+            return userId;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<TransactionResponseDto>>> GetAllTransactions()
+        public async Task<ActionResult<List<TransactionResponseDto>>> GetAll()
         {
-            int userId = 0;     // TODO
-            var transactions = await _dbContext.Transactions
-                .Where(t => t.UserId == userId)
-                .Select(t => new TransactionResponseDto
-                {
-                    Id = t.Id,
-                    Date = t.Date,
-                    Amount = t.Amount,
-                    CounterParty = t.CounterParty,
-                    Title = t.Title,
-                    CategoryId = t.CategoryId,
-                    CategoryName = t.Category.Name 
-                })
-                .ToListAsync();
-
-            return transactions;
+            int userId = GetCurrentUserId();
+            var transactions = await _transactionService.GetAllTransactionsForUserAsync(userId);
+            return Ok(transactions);
         }
-    
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TransactionResponseDto>> GetTransaction([FromRoute] int id)
-        {
-            // TODO: Check if transaction.userId equals current userId
 
-            var transaction = await _dbContext.Transactions
-                .Include(t => t.Category)
-                .FirstOrDefaultAsync(t => t.Id == id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TransactionResponseDto>> GetById([FromRoute] int id)
+        {
+            int userId = GetCurrentUserId();
+            var transaction = await _transactionService.GetTransactionByIdAsync(userId, id);
 
             if (transaction == null)
             {
-                return NotFound();
+                return NotFound(new { message = "No transaction found or you don't have access to it." });
             }
 
-            var transactionDto = new TransactionResponseDto
-            {
-                Id = transaction.Id,
-                Date = transaction.Date,
-                Amount = transaction.Amount,
-                CounterParty = transaction.CounterParty,
-                Title = transaction.Title,
-                CategoryId = transaction.CategoryId,
-                CategoryName = transaction.Category.Name
-            };
-            return transactionDto;
+            return Ok(transaction);
         }
-    
+
         [HttpPost]
-        public async Task<ActionResult<TransactionResponseDto>> CreateTransaction([FromBody] TransactionCreateDto createDto)
+        public async Task<ActionResult<TransactionResponseDto>> Create([FromBody] TransactionCreateDto dto)
         {
-            var defaultCategory = await _dbContext.Categories
-                .Where(c => c.IsDefault)
-                .FirstOrDefaultAsync();
-
-            if (defaultCategory == null && createDto.CategoryId == null)
-            {
-                return BadRequest("Default category not found. Please create a default category before adding transactions.");
-            }
-
-            // TODO
-
-            return NoContent();
+            int userId = GetCurrentUserId();
+            var result = await _transactionService.CreateTransactionAsync(userId, dto);
+            
+            
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateTransaction(int id, [FromBody] TransactionUpdateDto updateDto)
+        public async Task<ActionResult> Update([FromRoute] int id, [FromBody] TransactionUpdateDto dto)
         {
-             var defaultCategory = await _dbContext.Categories
-                .Where(c => c.IsDefault)
-                .FirstOrDefaultAsync();
+            int userId = GetCurrentUserId();
+            var success = await _transactionService.UpdateTransactionAsync(userId, id, dto);
 
-            if (defaultCategory == null && updateDto.CategoryId == null)
+            if (!success)
             {
-                return BadRequest("Default category not found. Please create a default category before adding transactions.");
+                return NotFound(new { message = "Failed to update transaction." });
             }
 
-            var transaction = await _dbContext.Transactions.FindAsync(id);
-            if (transaction == null)            
-            {
-                return NotFound();
-            }
-
-            // TODO
-
-            return NoContent();
-        }
-
-        [HttpDelete]
-        public async Task<ActionResult> DeleteAllTransactions()
-        {
-            int userId = 0;     // TODO
-            // TODO
-
-            return NoContent();
+            return NoContent(); 
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteTransaction(int id)
+        public async Task<ActionResult> Delete([FromRoute] int id)
         {
-            // TODO: Check if transaction.userId equals current userId
-            var transaction = await _dbContext.Transactions.FindAsync(id);
-            if (transaction == null)
+            int userId = GetCurrentUserId();
+            var success = await _transactionService.DeleteTransactionAsync(userId, id);
+
+            if (!success)
             {
-                return NotFound();
+                return NotFound(new { message = "Transaction not found." });
             }
 
-            _dbContext.Transactions.Remove(transaction);
-            await _dbContext.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpDelete("all")]
+        public async Task<ActionResult> DeleteAll()
+        {
+            int userId = GetCurrentUserId();
+            int deletedCount = await _transactionService.DeleteAllTransactionsForUserAsync(userId);
+            
+            return Ok(new { message = $"Successfully deleted transactions: {deletedCount}" });
+        }
+    
+
 
         [HttpPost("import")]
         public async Task<ActionResult> ImportCSV(IFormFile file)

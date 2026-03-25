@@ -22,6 +22,6 @@ namespace Api.DTOs.Transactions
         public required string Title { get; set; }
         
         [Range(0, int.MaxValue, ErrorMessage = "CategoryId must be a non-negative integer")]
-        public int? CategoryId { get; set; }
+        public required int CategoryId { get; set; } // habe auf required geändert, wir müssen bei erstellen einen User schon Kategorie "Other" erstellen
     }
 }
