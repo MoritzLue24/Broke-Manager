@@ -4,6 +4,7 @@ using Api.Data;
 using Api.DTOs.Categories;
 using Api.DTOs.Keywords;
 using Api.DTOs;
+using Api.Services.Categories;
 
 
 namespace Api.Controllers
@@ -12,31 +13,34 @@ namespace Api.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(AppDbContext dbContext)
+        public CategoryController(ICategoryService categoryService)
         {
-            _dbContext = dbContext;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<CategoryResponseDto>>> GetAllCategories()
         {
-            return NoContent();
+            int userId = 1;
+            return await _categoryService.GetAllByUserAsync(userId);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryResponseDto>> GetCategory(
             [FromRoute] int id)
         {
-            return NoContent();
+            int userId = 1;
+            return await _categoryService.GetByIdAsync(userId, id);
         }
 
         [HttpPost]
         public async Task<ActionResult<CategoryResponseDto>> CreateCategory(
             [FromBody] CategoryCreateDto createDto)
         {
-            return NoContent();
+            int userId = 1;
+            return await _categoryService.CreateAsync(userId, createDto);
         }
 
         [HttpPut("{id}")]
@@ -44,20 +48,26 @@ namespace Api.Controllers
             [FromRoute] int id,
             [FromBody] CategoryUpdateDto updateDto)
         {
-            return NoContent();
+            int userId = 1;
+            await _categoryService.UpdateAsync(userId, id, updateDto);
+            return Ok();
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteAllCategories()
         {
-            return NoContent();
+            int userId = 1;
+            await _categoryService.DeleteAllByUserAsync(userId);
+            return Ok();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCategory(
             [FromRoute] int id)
         {
-            return NoContent();
+            int userId = 1;
+            await _categoryService.DeleteByIdAsync(userId, id);
+            return Ok();
         }
     }
 }

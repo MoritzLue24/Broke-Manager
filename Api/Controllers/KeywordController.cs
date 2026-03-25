@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Api.Data;
 using Api.DTOs.Keywords;
+using Api.Services.Keywords;
 
 
 namespace Api.Controllers
@@ -9,11 +10,11 @@ namespace Api.Controllers
     [Route("api/categories/{categoryId}/keywords")]
     public class KeywordController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IKeywordService _keywordService;
         
-        public KeywordController(AppDbContext dbContext)
+        public KeywordController(IKeywordService keywordService)
         {
-            _dbContext = dbContext;
+            _keywordService = keywordService;
         }
 
         [HttpPost]
@@ -21,7 +22,8 @@ namespace Api.Controllers
             [FromRoute] int categoryId,
             [FromBody] KeywordCreateDto createDto)
         {
-            return NoContent();
+            int userId = 1;
+            return await _keywordService.CreateAsync(userId, categoryId, createDto);
         }
 
         [HttpPut("{keywordId}")]
@@ -30,14 +32,18 @@ namespace Api.Controllers
             [FromRoute] int keywordId,
             [FromBody] KeywordUpdateDto updateDto)
         {
-            return NoContent();
+            int userId = 1;
+            await _keywordService.UpdateAsync(userId, categoryId, keywordId, updateDto);
+            return Ok();
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteAll(
             [FromRoute] int categoryId)
         {
-            return NoContent();
+            int userId = 1;
+            await _keywordService.DeleteAllAsync(userId, categoryId);
+            return Ok();
         }
 
         [HttpDelete("{keywordId}")]
@@ -45,7 +51,9 @@ namespace Api.Controllers
             [FromRoute] int categoryId,
             [FromRoute] int keywordId)
         {
-            return NoContent();
+            int userId = 1;
+            await _keywordService.DeleteByIdAsync(userId, categoryId, keywordId);
+            return Ok();
         }
     }
 }

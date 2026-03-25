@@ -108,9 +108,7 @@ namespace Api.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteAllTransactions()
         {
-            int userId = 0;     // TODO
-            // TODO
-
+            await Task.CompletedTask;
             return NoContent();
         }
 
@@ -132,6 +130,7 @@ namespace Api.Controllers
         [HttpPost("import")]
         public async Task<ActionResult> ImportCSV(IFormFile file)
         {
+            await Task.CompletedTask;
             return NoContent();
         }
     }

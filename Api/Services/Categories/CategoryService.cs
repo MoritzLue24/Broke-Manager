@@ -19,8 +19,10 @@ namespace Api.Services.Categories
 
         public async Task<List<CategoryResponseDto>> GetAllByUserAsync(int userId)
         {
-            return await _dbContext.Categories
+            return (await _dbContext.Categories
                 .Where(c => c.UserId == userId)
+                .Include(c => c.Keywords)
+                .ToListAsync())     // Wichtig, damit c.Interval richtig gemapped wird
                 // TODO: Automapper?
                 .Select(c => new CategoryResponseDto
                 {
@@ -34,13 +36,14 @@ namespace Api.Services.Categories
                     }).ToList(),
                     Interval = (IntervalDto)c.Interval,
                     IsDefault = c.IsDefault
-                }).ToListAsync();
+                }).ToList();
         }
 
         public async Task<CategoryResponseDto> GetByIdAsync(int userId, int categoryId)
         {
             var category = await _dbContext.Categories
                 .Where(c => c.Id == categoryId && c.UserId == userId)
+                .Include(c => c.Keywords)
                 .SingleOrDefaultAsync() 
                 ?? throw new KeyNotFoundException("Category not found.");
 
@@ -89,12 +92,14 @@ namespace Api.Services.Categories
                     Value = keyword.Value,
                     CategoryId = responseDto.Id
                 };
-                var keywordResponse = (await _dbContext.Keywords.AddAsync(newKeyword)).Entity;
+                await _dbContext.Keywords.AddAsync(newKeyword);
+                await _dbContext.SaveChangesAsync();
+
                 responseDto.Keywords.Add(new KeywordResponseDto
                 {
-                    Id = keywordResponse.Id,
-                    Value = keywordResponse.Value,
-                    CategoryId = keywordResponse.CategoryId
+                    Id = newKeyword.Id,
+                    Value = newKeyword.Value,
+                    CategoryId = newKeyword.CategoryId
                 });
             }
 
@@ -132,17 +137,6 @@ namespace Api.Services.Categories
                 ?? throw new KeyNotFoundException("Category not found");
 
             _dbContext.Remove(category);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteKeywordsByCategoryAsync(int userId, int categoryId)
-        {
-            var category = await _dbContext.Categories
-                .Where(c => c.Id == categoryId && c.UserId == userId)
-                .SingleOrDefaultAsync()
-                ?? throw new KeyNotFoundException("Category not found");
-
-            _dbContext.Keywords.RemoveRange(category.Keywords);
             await _dbContext.SaveChangesAsync();
         }
     }

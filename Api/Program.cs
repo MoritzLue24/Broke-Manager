@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
+using Api.Services.Categories;
+using Api.Services.Keywords;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,10 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IKeywordService, KeywordService>();
+
 
 var app = builder.Build();
 

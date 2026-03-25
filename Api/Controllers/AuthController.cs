@@ -16,12 +16,14 @@ namespace Api.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser([FromBody] RegisterRequestDto registerDto)
         {
+            await Task.CompletedTask;
             return NoContent();
         }
 
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser([FromBody] LoginRequestDto loginDto)
         {
+            await Task.CompletedTask;
             return NoContent();
         }
     }
