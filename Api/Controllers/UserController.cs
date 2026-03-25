@@ -44,6 +44,20 @@ namespace Api.Controllers
             return users;
 
         }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<UserResponseDto>> GetUserById([FromRoute] int id)
+        {
+            var user = await _userService.GetUserAsync(id);
+            
+            if (user == null) 
+            {
+            return NotFound(new { message = "User not found" });
+            }
+            
+            return user;
+        }
         
         
         [HttpPut("{id}")]
@@ -65,7 +79,7 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteUserById([FromRoute] int id)
         {
-            var succes = await _userService.DeleteAsync(id);
+            var succes = await _userService.DeleteUserAsync(id);
             if (!succes)
             {
                 return NotFound(new { Message = "User not found" });
@@ -74,7 +88,25 @@ namespace Api.Controllers
             
         }
 
-        // TODO  1. GET BY ID (ADMIN) 2.ROLE CHANGE BY ADMIN 3. PASSWORT ÄNDERN (ME) 4. PASSWORT ÄNDERN (ADMIN)
+        [HttpPatch("{id}/role")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ChangeUserRole([FromRoute] int id, [FromBody] string newRole)
+        {
+            
+            if (newRole != "Admin" && newRole != "User")
+            {
+                return BadRequest(new { message = "Allowable Roles: Admin or User" });
+            }
+
+            var success = await _userService.UpdateRoleAsync(id, newRole);
+            if (!success) 
+            {
+            return NotFound(new { message = "User not found" });
+            }
+
+            return Ok(new { message = $"Role updated successfully to {newRole}" });
+        }
+
 
 
         // --------------------------------------------------
@@ -94,7 +126,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("me")]
-        public async Task<ActionResult> UpdateMe(int id, [FromBody] UserUpdateDto updateDto)
+        public async Task<ActionResult> UpdateMe([FromBody] UserUpdateDto updateDto)
         {
             int CurrentUserId = GetCurrentUserId();
             var success = await _userService.UpdateUserAsync(CurrentUserId, updateDto);
@@ -109,12 +141,32 @@ namespace Api.Controllers
         public async Task<ActionResult> DeleteMe()
         {
             int CurrentUserId = GetCurrentUserId();
-            var success = await _userService.DeleteAsync(CurrentUserId);
+            var success = await _userService.DeleteUserAsync(CurrentUserId);
             if (!success)
             {
                 return NotFound(new { Message = "User not found" });
             }
             return NoContent();
+        }
+
+        [HttpPut("me/password")]
+        public async Task<ActionResult> ChangeMyPassword([FromBody] ChangePasswordDto dto)
+        {
+            
+            if (dto.NewPassword != dto.ConfirmNewPassword) 
+                return BadRequest(new { message = "New passwords do not match" });
+
+            int userId = GetCurrentUserId();
+
+            
+            var success = await _userService.ChangePasswordAsync(userId, dto.CurrentPassword, dto.NewPassword);
+            
+            if (!success) 
+            {
+            return BadRequest(new { message = "Invalid current password" });
+            }
+
+            return Ok(new { message = "Password updated successfully" });
         }
 
     }

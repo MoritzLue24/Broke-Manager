@@ -41,6 +41,7 @@ namespace Api.Services.User
             };
         }
 
+        // TODO unique email checkbei update
         public async Task<bool> UpdateUserAsync(int id, UserUpdateDto updateDto)
         {
             var user = await _dbContext.Users.FindAsync(id);
@@ -59,7 +60,7 @@ namespace Api.Services.User
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
@@ -67,6 +68,44 @@ namespace Api.Services.User
                 return false;
             }
             _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateRoleAsync(int id, string newRole)
+        {
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null) 
+            {
+                return false;
+            }
+
+            if (newRole != "Admin" && newRole != "User") 
+            {
+                return false;
+            }
+
+            user.Role = newRole; 
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null) 
+            {
+                return false;
+            }
+
+            // Check if the old password is correct
+            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+            {
+                return false; // Old password is incorrect
+            }
+
+            // Hash the new password and update the user's password hash
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             await _dbContext.SaveChangesAsync();
             return true;
         }
