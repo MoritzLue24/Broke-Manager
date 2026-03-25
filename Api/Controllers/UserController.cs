@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
 using Api.DTOs.Users;
+using Api.Services.User;
+
 
 
 namespace Api.Controllers
@@ -10,11 +12,11 @@ namespace Api.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IUserService _userService;
 
-        public UserController(AppDbContext dbContext)
+        public UserController(IUserService userService)
         {
-            _dbContext = dbContext;
+            _userService = userService;
         }
 
         // TODO: Als admin
