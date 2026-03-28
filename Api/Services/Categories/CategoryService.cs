@@ -4,6 +4,7 @@ using Api.DTOs.Categories;
 using Api.DTOs.Keywords;
 using Api.DTOs;
 using Api.Models;
+using Api.Exceptions;
 
 
 namespace Api.Services.Categories
@@ -44,8 +45,8 @@ namespace Api.Services.Categories
             var category = await _dbContext.Categories
                 .Where(c => c.Id == categoryId && c.UserId == userId)
                 .Include(c => c.Keywords)
-                .SingleOrDefaultAsync() 
-                ?? throw new KeyNotFoundException("Category not found.");
+                .SingleOrDefaultAsync()
+                ?? throw new NotFoundException("Category not found");
 
             return new CategoryResponseDto
             {
@@ -64,6 +65,9 @@ namespace Api.Services.Categories
 
         public async Task<CategoryResponseDto> CreateAsync(int userId, CategoryCreateDto createDto)
         {
+            if (!await _dbContext.Users.AnyAsync(u => u.Id == userId))
+                throw new NotFoundException("User not found");
+
             // Category
             Category newCategory = new Category
             {
@@ -85,6 +89,7 @@ namespace Api.Services.Categories
             };
 
             // Keywords
+            List<Keyword> keywords = [];
             foreach (var keyword in createDto.Keywords)
             {
                 Keyword newKeyword = new Keyword
@@ -92,9 +97,7 @@ namespace Api.Services.Categories
                     Value = keyword.Value,
                     CategoryId = responseDto.Id
                 };
-                await _dbContext.Keywords.AddAsync(newKeyword);
-                await _dbContext.SaveChangesAsync();
-
+                keywords.Add(newKeyword);
                 responseDto.Keywords.Add(new KeywordResponseDto
                 {
                     Id = newKeyword.Id,
@@ -103,6 +106,7 @@ namespace Api.Services.Categories
                 });
             }
 
+            await _dbContext.Keywords.AddRangeAsync(keywords);
             await _dbContext.SaveChangesAsync();
             return responseDto;
         }
@@ -111,7 +115,7 @@ namespace Api.Services.Categories
         {
             var category = await _dbContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId) 
-                ?? throw new KeyNotFoundException("Category not found.");
+                ?? throw new NotFoundException("Category not found");
 
             if (updateDto.Name != null)
             {
@@ -134,7 +138,7 @@ namespace Api.Services.Categories
         {
             var category = await _dbContext.Categories
                 .SingleOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId)
-                ?? throw new KeyNotFoundException("Category not found");
+                ?? throw new NotFoundException("Category not found");
 
             _dbContext.Remove(category);
             await _dbContext.SaveChangesAsync();

@@ -33,7 +33,7 @@ namespace Api.Controllers
         {
             int userId = 1;
             await _keywordService.UpdateAsync(userId, categoryId, keywordId, updateDto);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete]
@@ -42,7 +42,7 @@ namespace Api.Controllers
         {
             int userId = 1;
             await _keywordService.DeleteAllAsync(userId, categoryId);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{keywordId}")]
@@ -52,7 +52,7 @@ namespace Api.Controllers
         {
             int userId = 1;
             await _keywordService.DeleteByIdAsync(userId, categoryId, keywordId);
-            return Ok();
+            return NoContent();
         }
     }
 }

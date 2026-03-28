@@ -46,7 +46,7 @@ namespace Api.Controllers
         {
             int userId = 1;
             await _categoryService.UpdateAsync(userId, id, updateDto);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete]
@@ -54,7 +54,7 @@ namespace Api.Controllers
         {
             int userId = 1;
             await _categoryService.DeleteAllByUserAsync(userId);
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -63,7 +63,7 @@ namespace Api.Controllers
         {
             int userId = 1;
             await _categoryService.DeleteByIdAsync(userId, id);
-            return Ok();
+            return NoContent();
         }
     }
 }

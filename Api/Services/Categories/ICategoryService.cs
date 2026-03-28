@@ -1,4 +1,5 @@
 using Api.DTOs.Categories;
+using Api.Exceptions;
 
 
 namespace Api.Services.Categories
@@ -17,7 +18,7 @@ namespace Api.Services.Categories
         /// <param name="userId">The user id</param>
         /// <param name="categoryId">The category id</param>
         /// <returns>Async Task containing the CategoryResponseDto</returns>
-        /// <exception cref="KeyNotFoundException">If the category does not exist / is not owned by specified user.</exception>
+        /// <exception cref="NotFoundException">If the category does not exist / is not owned by specified user.</exception>
         Task<CategoryResponseDto> GetByIdAsync(int userId, int categoryId);
         /// <summary>
         /// Create a new category with the given Dto.
@@ -33,7 +34,7 @@ namespace Api.Services.Categories
         /// <param name="categoryId">The category id</param>
         /// <param name="updateDto">The properties to update (properties can be null to dont change)</param>
         /// <returns>Async Task</returns>
-        /// <exception cref="KeyNotFoundException">If the category does not exist / is not owned by specified user.</exception>
+        /// <exception cref="NotFoundException">If the category does not exist / is not owned by specified user.</exception>
         Task UpdateAsync(int userId, int categoryId, CategoryUpdateDto updateDto);
         /// <summary>
         /// Delete ALL categories owned by the specified user. (dangerous)

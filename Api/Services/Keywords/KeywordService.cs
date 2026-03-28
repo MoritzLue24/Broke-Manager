@@ -1,5 +1,6 @@
 using Api.Data;
 using Api.DTOs.Keywords;
+using Api.Exceptions;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,8 @@ namespace Api.Services.Keywords
             int categoryId,
             KeywordCreateDto createDto)
         {
-            var exists = await _dbContext.Categories.AnyAsync(c => c.Id == categoryId && c.UserId == userId);
-            if (!exists)
-                throw new KeyNotFoundException("Category not found");
+            if (!await _dbContext.Categories.AnyAsync(c => c.Id == categoryId && c.UserId == userId))
+                throw new NotFoundException("Category not found");
 
             Keyword newKeyword = new Keyword
             {
@@ -51,7 +51,7 @@ namespace Api.Services.Keywords
                     k => k.Id == keywordId && 
                     k.CategoryId == categoryId && 
                     k.Category.UserId == userId)
-                ?? throw new KeyNotFoundException("Keyword not found");
+                ?? throw new NotFoundException("Keyword not found");
 
             if (updateDto.Value != null)
                 keyword.Value = updateDto.Value;
@@ -64,7 +64,7 @@ namespace Api.Services.Keywords
                 .Include(c => c.Keywords)
                 .Where(c => c.Id == categoryId && c.UserId == userId)
                 .SingleOrDefaultAsync()
-                ?? throw new KeyNotFoundException("Category not found");
+                ?? throw new NotFoundException("Category not found");
 
             _dbContext.Keywords.RemoveRange(category.Keywords);
             await _dbContext.SaveChangesAsync();
@@ -74,8 +74,9 @@ namespace Api.Services.Keywords
         {
             var keyword = await _dbContext.Keywords     // FIXME: Vllt fehlt include()?
                 .SingleOrDefaultAsync(k => k.Id == keywordId && k.CategoryId == categoryId && k.Category.UserId == userId)
-                ?? throw new KeyNotFoundException("Keyword not found");
+                ?? throw new NotFoundException("Keyword not found");
             _dbContext.Keywords.Remove(keyword);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

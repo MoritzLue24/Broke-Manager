@@ -10,6 +10,8 @@ namespace Api.DTOs.Categories
         [StringLength(255, ErrorMessage = "Name must not exceed 255 characters")]
         public required string Name { get; set; }
         public List<KeywordCreateDto> Keywords { get; set; } = [];
+
+        [EnumDataType(typeof(IntervalDto), ErrorMessage = "Invalid interval value")]
         public IntervalDto Interval { get; set; } = IntervalDto.Once;
     }
 }
