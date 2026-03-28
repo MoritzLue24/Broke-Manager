@@ -8,7 +8,6 @@ namespace Api.Models
         public bool IsDefault { get; set; } = false;
         // Verknüpfung zum User (Jeder User hat eigene Kategorien)
         public int UserId { get; set; }
-        public bool IsDefault { get; set; }
         public User User { get; set; } = null!;
         public List<Keyword> Keywords { get; set; } = [];
     }

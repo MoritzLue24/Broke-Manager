@@ -190,10 +190,9 @@ classDiagram
 
 **KeywordCreateDto**
 * Value
-* CategoryId
 
 **KeywordUpdateDto**
-* Value
+* Value (optional)
 
 ### 5.5 Other
 
@@ -246,14 +245,13 @@ POST /api/categories
 PUT /api/categories/{id}
 DELETE /api/categories
 DELETE /api/categories/{id}
+```
 
+```
+POST /api/categories/{categoryId}/keywords
+PUT /api/categories/{categoryId}/keywords/{keywordId}
 DELETE /api/categories/{categoryId}/keywords
-```
-
-```
-POST /api/keywords
-PUT /api/keywords/{id}
-DELETE /api/keywords/{id}
+DELETE /api/categories/{categoryId}/keywords/{keywordId}
 ```
 
 ```
