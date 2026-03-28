@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Api.Data;
 using Api.DTOs.Categories;
-using Api.DTOs.Keywords;
-using Api.DTOs;
 using Api.Services.Categories;
 
 

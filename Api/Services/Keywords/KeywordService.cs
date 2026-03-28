@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Api.Data;
 using Api.DTOs.Keywords;
 using Api.Models;

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Api.Data;
 using Api.DTOs.Keywords;
 using Api.Services.Keywords;
 
