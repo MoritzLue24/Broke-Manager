@@ -1,30 +1,40 @@
 
 services:
-  database:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sql_server
-    ports:
-      - "1433:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${MICROSOFT_SQL_PASSWORD}
-    volumes:
-      - mssql_data:/var/opt/mssql # Damit deine Daten nicht weg sind, wenn der Container stoppt
+    api:
+        build:
+            context: ./Api
+            dockerfile: Dockerfile.dev
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./Api:/Api
+        depends_on:
+            - database
 
+    database:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: sql_server
+        ports:
+            - "1433:1433"
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=${MICROSOFT_SQL_PASSWORD}
+        volumes:
+            - mssql_data:/var/opt/mssql # Damit deine Daten nicht weg sind, wenn der Container stoppt
 
-  migrator:
-    image: mcr.microsoft.com/dotnet/sdk:8.0 # Wir brauchen das SDK für die Tools
-    container_name: ef_migrator
-    volumes:
-      - ./Api:/src 
-    working_dir: /src
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=database;Database=BrokeManagerDb;User Id=sa;Password=${MICROSOFT_SQL_PASSWORD};TrustServerCertificate=True;
-    command: >
-      bash -c "dotnet tool install --global dotnet-ef &&
-      export PATH=\"$$PATH:/root/.dotnet/tools\" &&
-      dotnet ef database update"
-    depends_on:
-      - database 
+    migrator:
+        image: mcr.microsoft.com/dotnet/sdk:8.0 # Wir brauchen das SDK für die Tools
+        container_name: ef_migrator
+        volumes:
+            - ./Api:/src 
+        working_dir: /src
+        command: >
+            bash -c "dotnet tool install --global dotnet-ef &&
+            export PATH=\"$$PATH:/root/.dotnet/tools\" &&
+            dotnet restore &&
+            dotnet ef database update"
+        depends_on:
+            - database
+
 volumes:
-  mssql_data:
+    mssql_data:

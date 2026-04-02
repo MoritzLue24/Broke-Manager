@@ -14,10 +14,12 @@
 3. `Api/appsettings.Development.json` Erstellen mit 
     * Default-Connection-String: `Server=localhost;Database=BrokeManagerDb;User Id=sa;Password=<DEIN_PASSWORD>;TrustServerCertificate=True;`
 
-3. SQL-Server starten & Migrationen:
-    * Zum starten: `docker compose up -d`
-    * Zum stoppen: `docker compose down`
-    * Und reset: `docker compose down -v`
+4. (optional) Migrieren:
+    `docker compose up migrations`
 
-4. Backend starten, in `/Api`
-    * `dotnet run`
+## Api Watch run
+Erstelle neuen container & führe `dotnet watch run` in /Api aus:
+`docker compose up api`
+
+## Build
+Todo
