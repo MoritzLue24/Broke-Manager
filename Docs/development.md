@@ -23,3 +23,7 @@ Erstelle neuen container & führe `dotnet watch run` in /Api aus:
 
 ## Build
 Todo
+
+
+## Bei Ownership Problemen ?
+`sudo chown -R "$(id -u):$(id -g)" Api/bin Api/obj`
