@@ -7,11 +7,25 @@ using Api.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
+string? dbProvider = builder.Configuration["DatabaseProvider"];
 
-builder.Services.AddDbContext<AppDbContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
+if (dbProvider == "SqlServer")
+{
+    builder.Services.AddDbContext<AppDbContext>(options => {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+    });
+}
+else if (dbProvider == "Sqlite")
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite"));
+    });
+}
+else
+{
+    throw new NotImplementedException("Invalid Database provider in appsettings");
+}
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => 

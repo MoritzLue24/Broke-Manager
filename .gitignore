@@ -9,3 +9,8 @@ obj/
 .env
 .env.*
 appsettings.Development.json
+
+# Sqlite
+*.db
+*.db-shm
+*.db-wal
