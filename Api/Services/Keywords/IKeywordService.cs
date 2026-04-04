@@ -14,6 +14,7 @@ namespace Api.Services.Keywords
         /// <param name="createDto">The new keyword to create</param>
         /// <returns>Async Task with the newly created keyword dto (containing its id)</returns>
         /// <exception cref="NotFoundException">If the category does not exist / is not owned by given user</exception>
+        /// <exception cref="KeywordExistsException">If the keyword already exists</exception>
         Task<KeywordResponseDto> CreateAsync(int userId, int categoryId, KeywordCreateDto createDto);
         /// <summary>
         /// Updates an existing keyword of a given category owned by specified user.
@@ -24,6 +25,7 @@ namespace Api.Services.Keywords
         /// <param name="updateDto">The properties to update the keyword with</param>
         /// <returns>Async Task</returns>
         /// <exception cref="NotFoundException">If the keyword does not exist / is not owned by given user OR the keyword is not from given category</exception>
+        /// <exception cref="KeywordExistsException">If the keyword already exists</exception>
         Task UpdateAsync(int userId, int categoryId, int keywordId, KeywordUpdateDto updateDto);
         /// <summary>
         /// Delete all keywords of a given category, owned by given user. (dangerous)

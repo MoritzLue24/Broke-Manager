@@ -77,6 +77,7 @@ classDiagram
 
 * **Ownership**: Ein User darf nur seine eigenen Daten einsehen & modifizieren
 * **Kategorien & Transaktionen**: Eine Transaktion muss genau(!) eine Kategorie haben (standardmäßig "Anderes")
+* **Keywords**: Ein Keyword kann in einer Kategorie nur 1x vorkommen.
 * **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw CounterParty- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
     * Ein Fenster erscheint, der User entscheidet welche Kategorie angenommen wird.
 * **Beträge**: Positiv = Einnahme, Negativ = Ausgabe
