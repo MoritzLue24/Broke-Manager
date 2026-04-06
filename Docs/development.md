@@ -37,3 +37,16 @@ Todo
 
 ## Bei Ownership Problemen ?
 `sudo chown -R "$(id -u):$(id -g)" Api/bin Api/obj`
+
+## Bei Database & Query Problemen
+z.B. `NOT NULL constraint failed: Users.Id`
+Passiert wenn man von SQL-Server zu SQLite wechselt (glaube ich).
+Man muss eine komplett neue Migration machen und so.
+
+1. Database komplett droppen: `dotnet ef database drop`
+2. Migrationen löschen? Gibt wahrscheinlich / mit sicherheit eine bessere option:
+    `dotnet ef migrations remove`
+    `dotnet ef migrations remove`
+    `dotnet ef migrations remove`
+3. Neue Migration: `dotnet ef migrations add MyMigration`
+4. Database updaten: `dotnet ef database update`
