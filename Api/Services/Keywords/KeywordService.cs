@@ -25,7 +25,7 @@ namespace Api.Services.Keywords
                 throw new NotFoundException("Category not found");
 
             if (await _dbContext.Keywords.AnyAsync(k => k.Value == createDto.Value))
-                throw new KeywordExistsException($"Keyword '{createDto.Value}' already exists");
+                throw new AlreadyExistsException($"Keyword '{createDto.Value}' already exists");
 
             Keyword newKeyword = new Keyword
             {
@@ -57,7 +57,7 @@ namespace Api.Services.Keywords
                 ?? throw new NotFoundException("Keyword not found");
             
             if (await _dbContext.Keywords.AnyAsync(k => k.Value == updateDto.Value))
-                throw new KeywordExistsException($"Keyword '{updateDto.Value}' already exists");
+                throw new AlreadyExistsException($"Keyword '{updateDto.Value}' already exists");
 
             if (updateDto.Value != null)
                 keyword.Value = updateDto.Value;
