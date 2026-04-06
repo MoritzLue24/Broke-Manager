@@ -31,7 +31,7 @@ namespace Api.Middlewares
             var statusCode = e switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
-                KeywordExistsException => StatusCodes.Status409Conflict,
+                AlreadyExistsException => StatusCodes.Status409Conflict,
 
                 DbUpdateConcurrencyException => StatusCodes.Status499ClientClosedRequest,
                 DbUpdateException => StatusCodes.Status500InternalServerError,

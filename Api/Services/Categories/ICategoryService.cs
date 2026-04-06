@@ -48,6 +48,7 @@ namespace Api.Services.Categories
         /// <param name="userId">The owner / user id</param>
         /// <param name="categoryId">The category id</param>
         /// <returns>Async task</returns>
+        /// <exception cref="NotFoundException">If the category does not exist / is not owned by specified user.</exception>
         Task DeleteByIdAsync(int userId, int categoryId);
     }
 }

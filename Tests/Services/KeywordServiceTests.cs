@@ -97,7 +97,7 @@ namespace Tests.Services
         }
 
         [Fact]
-        public async Task CreateAsync_ShouldThrowKeywordExistsException_WhenKeywordAlreadyExists()
+        public async Task CreateAsync_ShouldThrowAlreadyExistsException_WhenKeywordAlreadyExists()
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
@@ -122,7 +122,7 @@ namespace Tests.Services
             );
 
             // Execute & Assert
-            await Assert.ThrowsAsync<KeywordExistsException>(async () =>
+            await Assert.ThrowsAsync<AlreadyExistsException>(async () =>
             {
                 await service.CreateAsync(user.Id, 1, createDto);
             });
@@ -243,7 +243,7 @@ namespace Tests.Services
         }
     
         [Fact]
-        public async Task UpdateAsync_ShouldThrowKeywordExistsException_WhenKeywordAlreadyExists()
+        public async Task UpdateAsync_ShouldThrowAlreadyExistsException_WhenKeywordAlreadyExists()
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
@@ -270,7 +270,7 @@ namespace Tests.Services
             );
 
             // Execute & Assert
-            await Assert.ThrowsAsync<KeywordExistsException>(async () =>
+            await Assert.ThrowsAsync<AlreadyExistsException>(async () =>
             {
                 await service.UpdateAsync(user.Id, food.Id, keyword.Id, updateDto);
             });
