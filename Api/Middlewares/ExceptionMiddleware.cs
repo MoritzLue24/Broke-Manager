@@ -32,6 +32,7 @@ namespace Api.Middlewares
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 AlreadyExistsException => StatusCodes.Status409Conflict,
+                MissingConfigurationException => StatusCodes.Status500InternalServerError,
 
                 DbUpdateConcurrencyException => StatusCodes.Status499ClientClosedRequest,
                 DbUpdateException => StatusCodes.Status500InternalServerError,
