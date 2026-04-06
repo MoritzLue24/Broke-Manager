@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Api.Data;
 using DotNetEnv;
+using Api.Services.User;
+
 
 Env.Load();
 
@@ -14,6 +16,10 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<Api.Services.User.IUserService, Api.Services.User.UserService>();
+builder.Services.AddScoped<Api.Services.Transaction.ITransactionService, Api.Services.Transaction.TransactionService>();
+builder.Services.AddScoped<Api.Services.Token.ITokenService, Api.Services.Token.TokenService>();
 
 var app = builder.Build();
 
