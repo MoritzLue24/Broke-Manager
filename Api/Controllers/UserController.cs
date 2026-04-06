@@ -5,6 +5,7 @@ using Api.Data;
 using Api.DTOs.Users;
 using Api.Services.User;
 using System.Security.Claims;
+using Api.Models;
 
 
 
@@ -90,10 +91,10 @@ namespace Api.Controllers
 
         [HttpPatch("{id}/role")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> ChangeUserRole([FromRoute] int id, [FromBody] string newRole)
+        public async Task<ActionResult> ChangeUserRole([FromRoute] int id, [FromBody] Role newRole)
         {
             
-            if (newRole != "Admin" && newRole != "User")
+            if (newRole != Role.Admin && newRole != Role.User)
             {
                 return BadRequest(new { message = "Allowable Roles: Admin or User" });
             }
@@ -101,7 +102,7 @@ namespace Api.Controllers
             var success = await _userService.UpdateRoleAsync(id, newRole);
             if (!success) 
             {
-            return NotFound(new { message = "User not found" });
+                return NotFound(new { message = "User not found" });
             }
 
             return Ok(new { message = $"Role updated successfully to {newRole}" });

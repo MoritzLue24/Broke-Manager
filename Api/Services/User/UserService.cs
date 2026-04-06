@@ -72,7 +72,7 @@ namespace Api.Services.User
             return true;
         }
 
-        public async Task<bool> UpdateRoleAsync(int id, string newRole)
+        public async Task<bool> UpdateRoleAsync(int id, Role newRole)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null) 
@@ -80,7 +80,7 @@ namespace Api.Services.User
                 return false;
             }
 
-            if (newRole != "Admin" && newRole != "User") 
+            if (newRole != Role.Admin && newRole != Role.User) 
             {
                 return false;
             }
