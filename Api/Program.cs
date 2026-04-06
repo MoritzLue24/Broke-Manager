@@ -4,6 +4,8 @@ using Api.Data;
 using Api.Services.Categories;
 using Api.Services.Keywords;
 using Api.Middlewares;
+using Api.Exceptions;
+using Api.Services.Auth;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,13 +14,13 @@ string? dbProvider = builder.Configuration["DatabaseProvider"];
 if (dbProvider == "SqlServer")
 {
     string connectionString = builder.Configuration.GetConnectionString("SqlServer")
-        ?? throw new KeyNotFoundException("'SqlServer' Connection string not found");
+        ?? throw new MissingConfigurationException("'SqlServer' Connection string not found");
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 }
 else if (dbProvider == "Sqlite")
 {
     string connectionString = builder.Configuration.GetConnectionString("Sqlite")
-        ?? throw new KeyNotFoundException("'Sqlite' Connection string not found");
+        ?? throw new MissingConfigurationException("'Sqlite' Connection string not found");
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 }
 else
@@ -34,6 +36,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IKeywordService, KeywordService>();
 
