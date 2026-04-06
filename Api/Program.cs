@@ -11,16 +11,15 @@ string? dbProvider = builder.Configuration["DatabaseProvider"];
 
 if (dbProvider == "SqlServer")
 {
-    builder.Services.AddDbContext<AppDbContext>(options => {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
-    });
+    string connectionString = builder.Configuration.GetConnectionString("SqlServer")
+        ?? throw new KeyNotFoundException("'SqlServer' Connection string not found");
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 }
 else if (dbProvider == "Sqlite")
 {
-    builder.Services.AddDbContext<AppDbContext>(options =>
-    {
-        options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite"));
-    });
+    string connectionString = builder.Configuration.GetConnectionString("Sqlite")
+        ?? throw new KeyNotFoundException("'Sqlite' Connection string not found");
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 }
 else
 {
