@@ -5,7 +5,6 @@ using Api.Services.Categories;
 using Api.Services.Keywords;
 using Api.Middlewares;
 using Api.Exceptions;
-using Api.Services.Auth;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +35,6 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IKeywordService, KeywordService>();
 
