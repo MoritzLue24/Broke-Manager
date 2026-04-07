@@ -30,7 +30,7 @@ namespace Api.Services.Auth
             User newUser = new User
             {
                 Email = registerDto.Email,
-                Password = registerDto.Password // TODO: Hashish
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password)
             };
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
@@ -44,7 +44,7 @@ namespace Api.Services.Auth
         public async Task<UserClaimsDto?> ValidateUserAsync(LoginRequestDto loginDto)
         {
             var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == loginDto.Email);
-            if (user == null || user.Password != loginDto.Password)  // TODO: Hashish
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
             {
                 return null;
             }

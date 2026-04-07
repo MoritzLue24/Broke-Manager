@@ -4,7 +4,7 @@ namespace Api.Models
     {
         public int Id { get; set; }
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public List<Transaction> Transactions { get; set; } = [];
         public List<Category> Categories { get; set; } = [];
     }
