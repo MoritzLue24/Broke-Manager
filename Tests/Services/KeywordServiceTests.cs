@@ -15,7 +15,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             Category category = new Category { Id = 1, Name = "Essen", UserId = user.Id };
 
             await db.Users.AddAsync(user);
@@ -45,7 +45,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync();
 
@@ -69,8 +69,8 @@ namespace Tests.Services
         public async Task CreateAsync_ShouldThrowNotFoundException_WhenCategoryNotOwned()
         {
             // Setup
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
-            User owner = new User { Id = 2, Email = "hans@gmx.de", Password = "Doggo!456" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
+            User owner = new User { Id = 2, Email = "hans@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("Doggo!456") };
             Category category = new Category { Id = 1, Name = "Essen", UserId = owner.Id };
 
             // Setup db & service
@@ -101,7 +101,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             Category food = new Category { Id = 1, Name = "Essen", UserId = user.Id };
             Category subscriptions = new Category { Id = 2, Name = "Abos", UserId = user.Id };
             Keyword existsKeyword = new Keyword { Id = 1, Value = "Aldi", CategoryId = 2 };
@@ -134,7 +134,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             Category category = new Category { Id = 1, Name = "Essen", UserId = user.Id };
             Keyword keyword = new Keyword { Id = 1, Value = "Edeka", CategoryId = 1 };
 
@@ -165,7 +165,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
 
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync();
@@ -191,7 +191,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             Category category = new Category { Id = 1, Name = "Essen", UserId = user.Id };
 
             await db.Users.AddAsync(user);
@@ -219,7 +219,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             Category category = new Category { Id = 1, Name = "Essen", UserId = 2 };
             Keyword keyword = new Keyword { Id = 1, Value = "Edeka", CategoryId = 1 };
 
@@ -247,7 +247,7 @@ namespace Tests.Services
         {
             // Db Setup
             var db = DbContextHelper.CreateContext();
-            User user = new User { Id = 1, Email = "peter@gmx.de", Password = "MeinPassort123!" };
+            User user = new User { Id = 1, Email = "peter@gmx.de", PasswordHash = BCrypt.Net.BCrypt.HashPassword("MeinPassort123!") };
             Category food = new Category { Id = 1, Name = "Essen", UserId = user.Id };
             Category subscriptions = new Category { Id = 2, Name = "Abos", UserId = user.Id };
             Keyword existsKeyword = new Keyword { Id = 1, Value = "Aldi", CategoryId = 2 };
