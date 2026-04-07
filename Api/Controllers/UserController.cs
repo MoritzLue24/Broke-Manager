@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Api.DTOs.Users;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Api.Exceptions;
 
 
 namespace Api.Controllers
@@ -21,23 +24,35 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpGet("me")]
         public async Task<ActionResult<UserResponseDto>> GetUser()
         {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? throw new SecurityClaimNotFoundException(ClaimTypes.NameIdentifier)
+            );
             await Task.CompletedTask;
             return NoContent();
         }
 
+        [Authorize]
         [HttpPut("me")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] UserUpdateDto updateDto)
         {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? throw new SecurityClaimNotFoundException(ClaimTypes.NameIdentifier)
+            );
             await Task.CompletedTask;
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("me")]
         public async Task<ActionResult> DeleteUser()
         {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? throw new SecurityClaimNotFoundException(ClaimTypes.NameIdentifier)
+            );
             await Task.CompletedTask;
             return NoContent();
         }
@@ -46,6 +61,9 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser([FromRoute] int id)
         {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? throw new SecurityClaimNotFoundException(ClaimTypes.NameIdentifier)
+            );
             await Task.CompletedTask;
             return NoContent();
         }
