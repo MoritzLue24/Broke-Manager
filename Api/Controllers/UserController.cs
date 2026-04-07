@@ -16,7 +16,7 @@ namespace Api.Controllers
         {
         }
 
-        // TODO: Als admin
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
         {
@@ -57,7 +57,7 @@ namespace Api.Controllers
             return NoContent();
         }
 
-        // TODO: Als Admin
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser([FromRoute] int id)
         {

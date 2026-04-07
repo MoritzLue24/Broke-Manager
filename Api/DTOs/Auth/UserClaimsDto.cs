@@ -6,5 +6,6 @@ namespace Api.DTOs.Auth
     public class UserClaimsDto
     {
         public int UserId { get; set; }
+        public string Role { get; set; } = "User";
     }
 }

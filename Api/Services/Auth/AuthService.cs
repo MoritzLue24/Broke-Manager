@@ -30,14 +30,16 @@ namespace Api.Services.Auth
             User newUser = new User
             {
                 Email = registerDto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+                Role = "User"
             };
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
 
             return new UserClaimsDto
             {
-                UserId = newUser.Id
+                UserId = newUser.Id,
+                Role = newUser.Role
             };
         }
 
@@ -51,7 +53,8 @@ namespace Api.Services.Auth
 
             return new UserClaimsDto
             {
-                UserId = user.Id
+                UserId = user.Id,
+                Role = user.Role
             };
         }
 
@@ -63,7 +66,8 @@ namespace Api.Services.Auth
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userClaims.UserId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, userClaims.UserId.ToString()),
+                new Claim(ClaimTypes.Role, userClaims.Role)
             };
 
             string string_expiresIn = _config["Jwt:ExpiresInMinutes"]
