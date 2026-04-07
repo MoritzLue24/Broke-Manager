@@ -17,11 +17,14 @@
 3. `Api/appsettings.Development.json` Erstellen mit folgender Vorlage. Für ARM basierte prozessoren ist der SQL-Server **nicht verfügbar**, benutzte dann SQLite
     ```
     {
-    "ConnectionStrings": {
-        "SqlServer": "Server=database;Database=BrokeManagerDb;User Id=sa;Password=<DEIN_MSSQL_PASSWORT_HIER_EINSETZTEN>;TrustServerCertificate=True;",
-        "Sqlite": "Data source=./app.db"
-    },
-    "DatabaseProvider": <"Sqlite"ODER"SqlServer">
+        "ConnectionStrings": {
+            "SqlServer": "Server=database;Database=BrokeManagerDb;User Id=sa;Password=<DEIN_MSSQL_PASSWORT_HIER_EINSETZTEN>;TrustServerCertificate=True;",
+            "Sqlite": "Data source=./app.db"
+        },
+        "DatabaseProvider": <"Sqlite"ODER"SqlServer">,
+        "Jwt": {
+            "Key": "<MINDESTENS_256_BIT_KEY>"
+        }
     }
     ```
 
