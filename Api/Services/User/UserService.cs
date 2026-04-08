@@ -42,13 +42,13 @@ namespace Api.Services.User
         }
 
         // TODO unique email checkbei update
-        public async Task<bool> UpdateUserAsync(int id, UserUpdateDto updateDto)
+        public async Task UpdateUserAsync(int id, UserUpdateDto updateDto)
         {
             var user = await _dbContext.Users.FindAsync(id);
             
             if (user == null)
             {
-                return false;
+                throw new Exception("User not found");
             }
 
             if (!string.IsNullOrEmpty(updateDto.Email))
@@ -57,7 +57,7 @@ namespace Api.Services.User
             }
             
             await _dbContext.SaveChangesAsync();
-            return true;
+            
         }
 
         public async Task<bool> DeleteUserAsync(int id)
