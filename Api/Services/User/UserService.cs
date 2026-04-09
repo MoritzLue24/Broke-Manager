@@ -74,7 +74,7 @@ namespace Api.Services.User
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateRoleAsync(int id, Role newRole)
+        public async Task UpdateRoleAsync(int id, ChangeUserRoleDto dto)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null) 
@@ -82,13 +82,7 @@ namespace Api.Services.User
                 throw new NotFoundException("User not found");
             }
             
-
-            if (newRole != Role.Admin && newRole != Role.User) 
-            {
-                throw new InvalidRoleException("Invalid role") ;
-            }
-
-            user.Role = newRole; 
+            user.Role = dto.NewRole;
             await _dbContext.SaveChangesAsync();
         }
 

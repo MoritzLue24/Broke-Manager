@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Api.Models;
 using Microsoft.IdentityModel.Tokens;
+using Api.Exceptions;
 
 namespace Api.Services.Token
 {
@@ -20,7 +21,7 @@ namespace Api.Services.Token
             
             if (string.IsNullOrEmpty(secretKey))
             {
-                throw new Exception("JWT_SECRET is not foung in   .env");
+                throw new NotFoundException("JWT_SECRET is not found in .env");
             }
             
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
