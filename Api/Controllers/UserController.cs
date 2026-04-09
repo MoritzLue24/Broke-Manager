@@ -50,14 +50,8 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserResponseDto>> GetUserById([FromRoute] int id)
         {
-            var user = await _userService.GetUserAsync(id);
-            
-            if (user == null) 
-            {
-            return NotFound(new { message = "User not found" });
-            }
-            
-            return user;
+             
+            return await _userService.GetUserAsync(id); //ist gelb aber du meintest ich soll nicht Exceptions im Controller cathcen sondern im Service.
         }
         
         
@@ -66,12 +60,9 @@ namespace Api.Controllers
         public async Task<ActionResult> UpdateUserById([FromRoute] int id, [FromBody] UserUpdateDto updateDto)
         {
             
-            var success = await _userService.UpdateUserAsync(id, updateDto);
+            await _userService.UpdateUserAsync(id, updateDto);
             
-            if (!success) 
-            {
-                return NotFound(new { message = "User not found" });
-            }
+            
 
             return NoContent();
         }
@@ -80,32 +71,20 @@ namespace Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteUserById([FromRoute] int id)
         {
-            var succes = await _userService.DeleteUserAsync(id);
-            if (!succes)
-            {
-                return NotFound(new { Message = "User not found" });
-            }
+            await _userService.DeleteUserAsync(id);
+            
             return NoContent();
             
         }
 
         [HttpPatch("{id}/role")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> ChangeUserRole([FromRoute] int id, [FromBody] Role newRole)
+        public async Task<ActionResult> ChangeUserRole([FromRoute] int id, [FromBody] ChangeUserRoleDto dto)
         {
-            
-            if (newRole != Role.Admin && newRole != Role.User)
-            {
-                return BadRequest(new { message = "Allowable Roles: Admin or User" });
-            }
 
-            var success = await _userService.UpdateRoleAsync(id, newRole);
-            if (!success) 
-            {
-                return NotFound(new { message = "User not found" });
-            }
-
-            return Ok(new { message = $"Role updated successfully to {newRole}" });
+            await _userService.UpdateRoleAsync(id, dto);
+        
+            return Ok(new { message = $"Role updated successfully to {dto.NewRole}" });
         }
 
 
@@ -119,22 +98,15 @@ namespace Api.Controllers
         {
             int id = GetCurrentUserId();     
             var user = await _userService.GetUserAsync(id);
-            if (user == null)
-            {
-                return NotFound(new { Message = "User not found" });
-            }
-            return user;
+            return user; //ist gelb aber du meintest ich soll nicht Exceptions im Controller cathcen sondern im Service.
         }
 
         [HttpPut("me")]
         public async Task<ActionResult> UpdateMe([FromBody] UserUpdateDto updateDto)
         {
             int CurrentUserId = GetCurrentUserId();
-            var success = await _userService.UpdateUserAsync(CurrentUserId, updateDto);
-            if (!success)
-            {
-                return NotFound(new { Message = "User not found" });
-            }
+            await _userService.UpdateUserAsync(CurrentUserId, updateDto);
+            
             return NoContent();
         }
 
@@ -142,11 +114,8 @@ namespace Api.Controllers
         public async Task<ActionResult> DeleteMe()
         {
             int CurrentUserId = GetCurrentUserId();
-            var success = await _userService.DeleteUserAsync(CurrentUserId);
-            if (!success)
-            {
-                return NotFound(new { Message = "User not found" });
-            }
+            await _userService.DeleteUserAsync(CurrentUserId);
+            
             return NoContent();
         }
 
@@ -154,18 +123,10 @@ namespace Api.Controllers
         public async Task<ActionResult> ChangeMyPassword([FromBody] ChangePasswordDto dto)
         {
             
-            if (dto.NewPassword != dto.ConfirmNewPassword) 
-                return BadRequest(new { message = "New passwords do not match" });
-
+            
             int userId = GetCurrentUserId();
-
             
-            var success = await _userService.ChangePasswordAsync(userId, dto.CurrentPassword, dto.NewPassword);
-            
-            if (!success) 
-            {
-            return BadRequest(new { message = "Invalid current password" });
-            }
+            await _userService.ChangePasswordAsync(userId, dto);
 
             return Ok(new { message = "Password updated successfully" });
         }
