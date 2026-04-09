@@ -1,6 +1,7 @@
 using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Api.DTOs.Transactions;
+using Api.Exceptions;
 
 namespace Api.Services.Transaction
 {
@@ -75,13 +76,22 @@ namespace Api.Services.Transaction
             };
         }
 
-        public async Task<bool> UpdateTransactionAsync(int userId, int id, TransactionUpdateDto dto)
+        public async Task UpdateTransactionAsync(int userId, int id, TransactionUpdateDto dto)
         {
+            var userExists = await _dbContext.Users.AnyAsync(u => u.Id == userId);
+            
+            if (!userExists)
+            {
+
+                throw new NotFoundException($"User with ID {userId} not found");
+            }
+            
             var transaction = await _dbContext.Transactions.FirstOrDefaultAsync(t => t.UserId == userId && t.Id == id);
             if (transaction == null)
             {
-                return false;
+                throw new NotFoundException("Transaction not found");
             }
+            
 
             if (!string.IsNullOrEmpty(dto.Title))
             {
@@ -111,24 +121,41 @@ namespace Api.Services.Transaction
 
             await _dbContext.SaveChangesAsync();
 
-            return true;
+            
         }
 
-        public async Task<bool> DeleteTransactionAsync(int userId, int id)
+        public async Task DeleteTransactionAsync(int userId, int id)
         {
+            var userExists = await _dbContext.Users.AnyAsync(u => u.Id == userId);
+            
+            if (!userExists)
+            {
+
+                throw new NotFoundException($"User with ID {userId} not found");
+            }
+
             var transaction = await _dbContext.Transactions.FirstOrDefaultAsync(t => t.UserId == userId && t.Id == id);
+            
             if (transaction == null)
             {
-                return false;
+                throw new NotFoundException("Transaction not found");
             }
 
             _dbContext.Transactions.Remove(transaction);
             await _dbContext.SaveChangesAsync();
-            return true;
+            
         }
 
         public async Task<int> DeleteAllTransactionsForUserAsync(int userId)
         {
+            var userExists = await _dbContext.Users.AnyAsync(u => u.Id == userId);
+            
+            if (!userExists)
+            {
+
+                throw new NotFoundException($"User with ID {userId} not found");
+            }
+            
             var transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
             int count = transactions.Count;
 
