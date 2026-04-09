@@ -10,8 +10,8 @@ namespace Api.Services.User
         Task<UserResponseDto?> GetUserAsync(int id);
         Task UpdateUserAsync(int id, UserUpdateDto dto);
         Task DeleteUserAsync(int id);
-        Task UpdateRoleAsync(int id, Role newRole);
-        Task ChangePasswordAsync(int id, string oldPassword, string newPassword);
+        Task UpdateRoleAsync(int id, ChangeUserRoleDto dto);
+        Task ChangePasswordAsync(int id, ChangePasswordDto dto);
 
     }
 }

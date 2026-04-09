@@ -86,7 +86,7 @@ namespace Api.Services.User
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        public async Task ChangePasswordAsync(int userId, ChangePasswordDto dto)
         {
             var user = await _dbContext.Users.FindAsync(userId);
             if (user == null) 
@@ -95,13 +95,13 @@ namespace Api.Services.User
             }
 
             // Check if the old password is correct
-            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash))
             {
-                throw new IncorrectPasswordException("Incorrect old password");
+                throw new IncorrectPasswordException("Incorrect current password");
             }
 
             // Hash the new password and update the user's password hash
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
             await _dbContext.SaveChangesAsync();
         }
     }
