@@ -2,6 +2,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Api.DTOs.Users;
 using Api.Models;
+using Api.Exceptions;
 
 namespace Api.Services.User
 {
@@ -31,7 +32,7 @@ namespace Api.Services.User
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
-                return null;
+                throw new NotFoundException("User not found");
             }
 
             return new UserResponseDto
@@ -46,10 +47,11 @@ namespace Api.Services.User
         {
             var user = await _dbContext.Users.FindAsync(id);
             
-            if (user == null)
+             if (user == null)
             {
-                throw new Exception("User not found");
+                throw new NotFoundException("User not found");
             }
+
 
             if (!string.IsNullOrEmpty(updateDto.Email))
             {
@@ -60,54 +62,53 @@ namespace Api.Services.User
             
         }
 
-        public async Task<bool> DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
-                return false;
+                throw new NotFoundException("User not found");
             }
+            
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
-            return true;
         }
 
-        public async Task<bool> UpdateRoleAsync(int id, Role newRole)
+        public async Task UpdateRoleAsync(int id, Role newRole)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null) 
             {
-                return false;
+                throw new NotFoundException("User not found");
             }
+            
 
             if (newRole != Role.Admin && newRole != Role.User) 
             {
-                return false;
+                throw new InvalidRoleException("Invalid role") ;
             }
 
             user.Role = newRole; 
             await _dbContext.SaveChangesAsync();
-            return true;
         }
 
-        public async Task<bool> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        public async Task ChangePasswordAsync(int userId, string oldPassword, string newPassword)
         {
             var user = await _dbContext.Users.FindAsync(userId);
             if (user == null) 
             {
-                return false;
+                throw new NotFoundException("User not found");
             }
 
             // Check if the old password is correct
             if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
             {
-                return false; // Old password is incorrect
+                throw new IncorrectPasswordException("Incorrect old password");
             }
 
             // Hash the new password and update the user's password hash
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             await _dbContext.SaveChangesAsync();
-            return true;
         }
     }
 }
