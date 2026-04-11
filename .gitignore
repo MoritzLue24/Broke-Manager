@@ -14,3 +14,6 @@ appsettings.Development.json
 *.db
 *.db-shm
 *.db-wal
+
+# Node
+node_modules/
