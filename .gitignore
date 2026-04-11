@@ -16,3 +16,5 @@ obj/
 
 # Obsidian
 .obsidian
+# Node
+node_modules/

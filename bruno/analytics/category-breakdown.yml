@@ -5,7 +5,11 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/analytics/category-breakdown"
+  url: "{{baseUrl}}/analytics/category-breakdown?range=alltime"
+  params:
+    - name: range
+      value: alltime
+      type: query
   auth: inherit
 
 settings:
