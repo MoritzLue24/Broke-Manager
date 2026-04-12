@@ -1,5 +1,5 @@
 import api from "./api";
-import ApiResponseMappingError from "../errors/ApiResponseMappingError";
+import ResponseMappingError from "../errors/ResponseMappingError";
 import { AuthResponseSchema } from "../types/authResponse";
 
 const TOKEN_KEY = "token";
@@ -10,7 +10,7 @@ export async function register(email: string, password: string, passwordConfirm:
     const validationRes = await AuthResponseSchema.safeParseAsync(res.data);
 
     if (!validationRes.success) {
-        throw new ApiResponseMappingError(
+        throw new ResponseMappingError(
             "Registration failed: Invalid response format",
             validationRes.error,
             res.data
@@ -24,7 +24,7 @@ export async function login(email: string, password: string): Promise<void> {
     const validationRes = await AuthResponseSchema.safeParseAsync(res.data);
 
     if (!validationRes.success) {
-        throw new ApiResponseMappingError(
+        throw new ResponseMappingError(
             "Login failed: Invalid response format",
             validationRes.error,
             res.data

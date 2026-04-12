@@ -1,5 +1,7 @@
 import axios from "axios";
-import ApiBadRequestError from "../errors/ApiBadRequestError";
+import BadRequestError from "../errors/BadRequestError";
+import NotFoundError from "../errors/NotFoundError";
+import ApiError from "../errors/ApiError";
 
 
 const api = axios.create({
@@ -9,20 +11,32 @@ const api = axios.create({
 // TODO: Add auth token to headers if available
 
 api.interceptors.request.use(config => {
-    console.log(`[API Request]: ${config.method?.toUpperCase()} - ${config.url}`);
+    if (config.data) {
+        console.log(`[${config.method?.toUpperCase()}] ${config.url} ${JSON.stringify(config.data)}`);
+    }
+    else {
+        console.log(`[${config.method?.toUpperCase()}] ${config.url}`);
+    }
     return config;
 });
 
 api.interceptors.response.use(
-    response => {
-        console.log(`[API-Response, ${response.status}]: ${response.config.method?.toUpperCase()} - ${response.config.url}`);
-        return response;
-    },
+    response => { return response },
     error => {
-        if (error.response?.status === 400 && error.response?.data?.errors) {
-            return Promise.reject(new ApiBadRequestError(error.response.data.errors));
+        switch (error.response?.status) {
+            case 400:
+                return Promise.reject(new BadRequestError(
+                    error.response?.data?.errors || {}
+                ));
+            case 404:
+                return Promise.reject(new NotFoundError(
+                    error.response?.data?.message || "Resource not found"
+                ));
         }
-        return Promise.reject(error);
+        return Promise.reject(new ApiError(
+            error.response?.status || 500,
+            error.response?.data?.message || "An unknown error occurred"
+        ));
     }
 );
 
