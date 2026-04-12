@@ -1,17 +1,34 @@
 import api from "./api";
-import { type Category, mapCategory } from "../types/category";
-
-// TODO: Catch errors
+import { CategorySchema, type Category } from "../types/category";
+import ApiResponseMappingError from "../errors/ApiResponseMappingError";
 
 
 export async function getCategories(): Promise<Category[]> {
     const res = await api.get("/categories");
-    return res.data.map(mapCategory);
+    const validationRes = await CategorySchema.array().safeParseAsync(res.data);
+
+    if (!validationRes.success) {
+        throw new ApiResponseMappingError(
+            "GET categories failed: Invalid response format",
+            validationRes.error,
+            res.data
+        );
+    }
+    return validationRes.data;
 }
 
 export async function getCategory(id: number): Promise<Category> {
     const res = await api.get(`/categories/${id}`);
-    return mapCategory(res.data);
+    const validationRes = await CategorySchema.safeParseAsync(res.data);
+
+    if (!validationRes.success) {
+        throw new ApiResponseMappingError(
+            "GET category failed: Invalid response format",
+            validationRes.error,
+            res.data
+        );
+    }
+    return validationRes.data;
 }
 
 export async function deleteCategory(id: number): Promise<void> {

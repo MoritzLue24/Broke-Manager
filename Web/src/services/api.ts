@@ -1,4 +1,5 @@
 import axios from "axios";
+import ApiBadRequestError from "../errors/ApiBadRequestError";
 
 
 const api = axios.create({
@@ -18,8 +19,8 @@ api.interceptors.response.use(
         return response;
     },
     error => {
-        if (error.response) {
-            console.error(`[API-Response, ${error.response.status}] ERROR: ${error.response.data.message}`);
+        if (error.response?.status === 400 && error.response?.data?.errors) {
+            return Promise.reject(new ApiBadRequestError(error.response.data.errors));
         }
         return Promise.reject(error);
     }

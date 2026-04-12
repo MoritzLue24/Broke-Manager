@@ -1,18 +1,35 @@
 import { Link } from "react-router-dom";
 import { login } from "../services/auth";
+import ApiBadRequestError from "../errors/ApiBadRequestError";
+import ApiResponseMappingError from "../errors/ApiResponseMappingError";
 
 
 export default function Login() {
-    function handleSubmit(event: React.SubmitEvent) {
+    async function handleSubmit(event: React.SubmitEvent) {
         event.preventDefault();
 
         const formData = new FormData(event.target);
         const email = formData.get("email");
         const password = formData.get("password");
 
-        console.log(email, password);
-
-        login(email as string, password as string);
+        try {
+            await login(email as string, password as string);
+        } catch (err) {
+            if (err instanceof ApiBadRequestError) {
+                alert(
+                    err.message + "\n" +
+                    Object.entries(err.fieldErrors).map(
+                        ([field, messages]) => `${field}: ${messages.join(", ")}`
+                    ).join("\n")
+                );
+            }
+            else if (err instanceof ApiResponseMappingError) {
+                alert(
+                    err.message + "\n" + 
+                    "Data: " + JSON.stringify(err.data)
+                );
+            }
+        }
     }
 
     return (

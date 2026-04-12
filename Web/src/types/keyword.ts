@@ -1,13 +1,9 @@
+import z from "zod";
 
 
-export type Keyword = {
-    id: number;
-    value: string;
-}
-
-export function mapKeyword(data: any): Keyword {
-    return {
-        id: data.id,
-        value: data.value
-    };
-}
+export const KeywordSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    categoryId: z.number(),
+});
+export type Keyword = z.infer<typeof KeywordSchema>;

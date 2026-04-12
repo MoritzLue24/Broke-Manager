@@ -1,14 +1,36 @@
 import api from "./api";
+import ApiResponseMappingError from "../errors/ApiResponseMappingError";
+import { AuthResponseSchema } from "../types/authResponse";
 
 const TOKEN_KEY = "token";
 
-// TODO: Throwen
 
+export async function register(email: string, password: string, passwordConfirm: string): Promise<void> {
+    const res = await api.post("/auth/register", { email, password, passwordConfirm });
+    const validationRes = await AuthResponseSchema.safeParseAsync(res.data);
+
+    if (!validationRes.success) {
+        throw new ApiResponseMappingError(
+            "Registration failed: Invalid response format",
+            validationRes.error,
+            res.data
+        );
+    }
+    localStorage.setItem(TOKEN_KEY, validationRes.data.token);
+}
 
 export async function login(email: string, password: string): Promise<void> {
-    console.log(email, password);
     const res = await api.post("/auth/login", { email, password });
-    localStorage.setItem(TOKEN_KEY, res.data.token);
+    const validationRes = await AuthResponseSchema.safeParseAsync(res.data);
+
+    if (!validationRes.success) {
+        throw new ApiResponseMappingError(
+            "Login failed: Invalid response format",
+            validationRes.error,
+            res.data
+        );
+    }
+    localStorage.setItem(TOKEN_KEY, validationRes.data.token);
 }
 
 export function logout(): void {
