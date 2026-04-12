@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { login } from "../services/auth";
-import ApiBadRequestError from "../errors/ApiBadRequestError";
-import ApiResponseMappingError from "../errors/ApiResponseMappingError";
+import BadRequestError from "../errors/BadRequestError";
+import ResponseMappingError from "../errors/ResponseMappingError";
 
 
 export default function Login() {
@@ -15,20 +15,7 @@ export default function Login() {
         try {
             await login(email as string, password as string);
         } catch (err) {
-            if (err instanceof ApiBadRequestError) {
-                alert(
-                    err.message + "\n" +
-                    Object.entries(err.fieldErrors).map(
-                        ([field, messages]) => `${field}: ${messages.join(", ")}`
-                    ).join("\n")
-                );
-            }
-            else if (err instanceof ApiResponseMappingError) {
-                alert(
-                    err.message + "\n" + 
-                    "Data: " + JSON.stringify(err.data)
-                );
-            }
+            alert((err as Error).message);
         }
     }
 
