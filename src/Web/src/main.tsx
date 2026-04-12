@@ -6,8 +6,8 @@ import "./index.css";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
-import NotFound from "./pages/NotFound.tsx";
 import Categories from "./pages/Categories.tsx";
+import NotFound from "./pages/NotFound.tsx";
 
 
 const router = createBrowserRouter([
