@@ -7,7 +7,7 @@ import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Forecast from "./pages/Forecast.tsx";
-import Categories from "./components/Categories.tsx";
+import Categories from "./pages/Categories.tsx";
 import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
