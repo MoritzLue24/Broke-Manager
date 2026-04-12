@@ -1,20 +1,15 @@
-import { type Keyword, mapKeyword } from "./keyword";
+import z from "zod";
+import { KeywordSchema } from "./keyword";
 
 
-export type Category = {
-    id: number;
-    name: string;
-    keywords: Keyword[];
-    interval: string;
-    isDefault: boolean;
-}
+export const IntervalSchema = z.enum(["Once", "Weekly", "Monthly", "Quarterly", "Yearly"]);
+export type Interval = z.infer<typeof IntervalSchema>;
 
-export function mapCategory(data: any): Category {
-    return {
-        id: data.id,
-        name: data.name,
-        keywords: data.keywords.map((k: any) => mapKeyword(k)),
-        interval: data.interval,
-        isDefault: data.isDefault
-    };
-}
+export const CategorySchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    keywords: z.array(KeywordSchema),
+    interval: IntervalSchema,
+    isDefault: z.boolean(),
+});
+export type Category = z.infer<typeof CategorySchema>;
