@@ -2,6 +2,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Api.DTOs.Transactions;
 using Api.Exceptions;
+using System.Xml;
 
 namespace Api.Services.Transaction
 {
@@ -51,6 +52,14 @@ namespace Api.Services.Transaction
 
         public async Task<TransactionResponseDto> CreateTransactionAsync(int userId, TransactionCreateDto dto)
         {
+
+            var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == dto.CategoryId && c.UserId == userId);
+            if (category == null)
+            {
+                throw new NotFoundException($"Category with ID {dto.CategoryId} not found for user with ID {userId}");
+            }
+            
+            
             var transaction = new Models.Transaction
             {
                 UserId = userId,
