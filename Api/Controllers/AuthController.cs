@@ -4,6 +4,7 @@ using Api.Services.Token;
 using Api.Data;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Api.Services.Auth;
 
 
 namespace Api.Controllers
@@ -12,58 +13,38 @@ namespace Api.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
-        private readonly ITokenService _tokenService;
+        private readonly IAuthService _authService;
         
-        public AuthController(AppDbContext dbContext, ITokenService tokenService)
+        
+        public AuthController(IAuthService authService)
         {
-            _dbContext = dbContext;
-            _tokenService = tokenService;
-
+            _authService = authService;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser([FromBody] RegisterRequestDto registerDto)
         {
-            if (await _dbContext.Users.AnyAsync(u => u.Email == registerDto.Email))
+            var result = await _authService.RegisterAsync(registerDto);
+            
+            if (!result.Success)
             {
-                return BadRequest("Email is already in use");
+                return BadRequest(result.Message);
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
-
-            var newUser = new Api.Models.User 
-            {
-                Email = registerDto.Email,
-                PasswordHash = passwordHash,
-                Role = "User" 
-            };
-
-            _dbContext.Users.Add(newUser);
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(new { message = "Registration successful!" });
+            return Ok(new { message = result.Message });
         }
 
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser([FromBody] LoginRequestDto loginDto)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
-            if (user == null )
+            var result = await _authService.LoginAsync(loginDto);
+            
+            if (!result.Success)
             {
-                return Unauthorized("No user found with that email");
+                return Unauthorized(result.Message);
             }
 
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash);
-            if (!isPasswordValid)
-            {
-                return Unauthorized("Invalid password");
-            }
-
-            var token = _tokenService.CreateToken(user);
-            
-            
-            return Ok(new { token , message = "Login successful!" });
+            return Ok(new { token = result.Token, message = result.Message });
         }
     }
 }
