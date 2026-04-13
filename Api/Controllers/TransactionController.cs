@@ -66,12 +66,7 @@ namespace Api.Controllers
         public async Task<ActionResult> Update([FromRoute] int id, [FromBody] TransactionUpdateDto dto)
         {
             int userId = GetCurrentUserId();
-            var success = await _transactionService.UpdateTransactionAsync(userId, id, dto);
-
-            if (!success)
-            {
-                return NotFound(new { message = "Failed to update transaction." });
-            }
+            await _transactionService.UpdateTransactionAsync(userId, id, dto);
 
             return NoContent(); 
         }
@@ -80,12 +75,8 @@ namespace Api.Controllers
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
             int userId = GetCurrentUserId();
-            var success = await _transactionService.DeleteTransactionAsync(userId, id);
+            await _transactionService.DeleteTransactionAsync(userId, id);
 
-            if (!success)
-            {
-                return NotFound(new { message = "Transaction not found." });
-            }
 
             return NoContent();
         }

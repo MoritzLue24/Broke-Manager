@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<Api.Services.User.IUserService, Api.Services.User.UserService>();
 builder.Services.AddScoped<Api.Services.Transaction.ITransactionService, Api.Services.Transaction.TransactionService>();
 builder.Services.AddScoped<Api.Services.Token.ITokenService, Api.Services.Token.TokenService>();
+builder.Services.AddScoped<Api.Services.Auth.IAuthService, Api.Services.Auth.AuthService>();
 
 var app = builder.Build();
 
