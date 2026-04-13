@@ -77,7 +77,7 @@ namespace Api.Controllers
             
         }
 
-        [HttpPatch("{id}/role")]
+        [HttpPut("{id}/role")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> ChangeUserRole([FromRoute] int id, [FromBody] ChangeUserRoleDto dto)
         {
