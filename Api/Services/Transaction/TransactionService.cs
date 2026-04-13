@@ -81,7 +81,7 @@ namespace Api.Services.Transaction
                 CounterParty = transaction.CounterParty,
                 Title = transaction.Title,
                 CategoryId = transaction.CategoryId,
-                CategoryName = transaction.Category != null ? transaction.Category.Name : "Other" // hier checke ich nicht so ganz was dann gemacht werden soll
+                CategoryName = category.Name
             };
         }
 
