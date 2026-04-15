@@ -18,65 +18,17 @@ Der Benutzter kommuniziert mit einer REST-API und kann:
 
 Die RESTful-API wird mit ASP.NET Core implementiert und nutzt den Microsoft SQL-Server als Datenbank.
 
-## 2. Domänenmodell
-
-```mermaid
-classDiagram
-    class User {
-        +id: Int
-        +email: String
-        +password: String
-    }
-
-    class Transaction {
-        +id: Int
-        +date: Date
-        +amount: Decimal
-        +title: String
-        +counterParty: String
-    }
-
-    class Category {
-        +id: Int 
-        +name: String
-        +intervall: Intervall
-        +isDefault: bool
-    }
-
-    class Interval {
-        <<enumeration>>
-        ONCE
-        WEEKLY
-        MONTHLY
-        QUARTERLY
-        YEARLY
-    }
-
-    class Keyword {
-        +id: Int
-        +value: String
-    }
-
-    class CSVImport {
-        datei: Datei
-    }
-
-    User "One" --> "Many" Transaction : defines
-    User "One" --> "Many" Category : defines
-
-    Category "One" --> "One" Interval : has
-    Category "One" --> "Many" Transaction : categorises
-    Category "One" --> "Many" Keyword : has
-
-    Transaction "One" --> "One" Category : has
-    User "One" --> "One" CSVImport : runs
-    CSVImport "One" --> "Many" Transaction : imports
-```
 
 ## 3. Geschäftsregeln
 
 * **Ownership**: Ein User darf nur seine eigenen Daten einsehen & modifizieren
-* **Kategorien & Transaktionen**: Eine Transaktion muss genau(!) eine Kategorie haben (standardmäßig "Anderes")
+* **Kategorien**:
+    * Jeder user hat genau eine **default-kategorie**, die nicht bearbeitet oder gelöscht werden kann. Es können keine keywords hinzugefügt werden.
+    * Wird eine Kategorie **gelöscht**, wird der user gefragt ob er auch alle dazugehörigen Transaktionen löschen lassen möchte. Wenn nicht, werden sie der default-kategorie zugeordnet.
+    * Beim **erstellen** einer neuen Kategorie werden alle zutreffenden automatischen änderungen der transaction-kategorie zuordnung zurückgegeben, aber noch nicht angewand. Der user wird gefragt. Treffen mehrere Kategorien auf eine Transaction, werden diese als liste zurückgegeben und der user MUSS eine auswählen.
+* **Kategorien & Transaktionen**:
+    * Eine Transaktion muss **genau**(!) eine Kategorie haben (standardmäßig default-category)
+    * Wenn beim manuellen erstellen keine Category angegeben wird, wird **automatisch eine zugeordnet** (bei keinen treffer die default-category). Falls mehrere Kategorien passen, werden diese dem benutzter zur Auswahl vorgeschlagen.
 * **Keywords**: Ein Keyword kann in einer Kategorie nur 1x vorkommen.
 * **Kategorie Regeln**: Das Automatische kategoriesieren erfolg über das setzten von Title- bzw CounterParty- Schlüsselwörter. Bei mehreren Treffern gibt es folgende Lösung:
     * Ein Fenster erscheint, der User entscheidet welche Kategorie angenommen wird.
