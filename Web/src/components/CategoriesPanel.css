@@ -1,0 +1,72 @@
+
+
+.category-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.category-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-name {
+    margin: 0;
+}
+
+.category-interval {
+    background: #eee;
+    border-radius: 20px;
+    padding: 3px 5px;
+    font-size: 0.7em;
+}
+
+.category-keywords {
+    list-style: none;
+
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.category-keywords li {
+    background: #eee;
+    border-radius: 20px;
+    padding: 3px 7px;
+    font-size: 0.7em;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.category-keywords li button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #888;
+}
+
+.category-delete {
+    cursor: pointer;
+    font-size: 1.2em;
+    color: #888;
+
+    margin-top: auto;
+    margin-left: auto;
+}
