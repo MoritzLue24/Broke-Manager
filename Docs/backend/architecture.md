@@ -87,7 +87,7 @@ CREATE TABLE Keywords (
     Value       nvarchar(500) NOT NULL,
 
     CONSTRAINT PK_Keywords PRIMARY KEY (Id),
-        CONSTRAINT UQ_Keywords_CategoryId_Value UNIQUE (CategoryId, Value),
+    CONSTRAINT UQ_Keywords_CategoryId_Value UNIQUE (CategoryId, Value),
 
     CONSTRAINT FK_Keywords_Categories
         FOREIGN KEY (CategoryId)
