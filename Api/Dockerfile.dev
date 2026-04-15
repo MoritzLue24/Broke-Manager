@@ -1,9 +1,11 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
+WORKDIR /api
 
-WORKDIR /Api
-
+# Dependencies
 COPY Api.csproj ./
 RUN dotnet restore
 
-COPY . ./
-CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:8080"]
+# Other files
+COPY . .
+
+CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:5000"]

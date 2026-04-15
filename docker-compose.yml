@@ -1,5 +1,17 @@
 
 services:
+    web:
+        container_name: web
+        build:
+            context: ./Web
+            dockerfile: Dockerfile
+            target: dev
+        ports:
+            - "5173:5173"
+        volumes:
+            - ./Web:/app
+            - /app/node_modules     # Ignore node_modules
+
     api:
         build:
             context: ./Api
@@ -8,6 +20,9 @@ services:
             - "8080:8080"
         volumes:
             - ./Api:/Api
+        environment:
+            - ConnectionStrings__Default=Server=localhost;Database=BrokeManagerDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+            - JWT_KEY=RqlaOEhJIQ9zp4roP9toyghzBapubY1y
         depends_on:
             - database
 
