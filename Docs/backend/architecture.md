@@ -46,6 +46,7 @@ CREATE TABLE Transactions (
     Amount          decimal(12,2) NOT NULL,
     Title           nvarchar(500) NOT NULL,
     CounterParty    nvarchar(255) NOT NULL,
+    CategorySource  nvarchar(20) NOT NULL,
 
     CONSTRAINT PK_Transactions PRIMARY KEY (Id),
     CONSTRAINT FK_Transactions_Users
@@ -55,7 +56,9 @@ CREATE TABLE Transactions (
     CONSTRAINT FK_Transactions_Categories
         FOREIGN KEY (CategoryId)
         REFERENCES Categories(Id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT CK_Transactions_CategorySource
+        CHECK (CategorySource IN ('Manual', 'Auto'))
 )
 ```
 

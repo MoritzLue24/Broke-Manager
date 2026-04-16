@@ -13,6 +13,13 @@ classDiagram
         +amount: Decimal
         +title: String
         +counterParty: String
+        +categorySource: CategorySource
+    }
+
+    class CategorySource {
+        <<enumeration>>
+        MANUAL,
+        AUTO
     }
 
     class Category {

@@ -215,3 +215,399 @@ GET /api/analytics/forecast/{days}
 ## 7. Offene Entscheidungen
 * Mehrere CSV formate?
 * Title mit KI Kurzfassen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 4. Transaktionen
+
+### 4.1 Alle Transaktionen abrufen
+**GET** `/api/transactions`
+
+Gibt alle Transaktionen des eingeloggten Benutzers zurück.
+
+**Query-Parameter:**
+- `categoryId` (optional): Filter nach Kategorie
+- `startDate` (optional): Startdatum (YYYY-MM-DD)
+- `endDate` (optional): Enddatum (YYYY-MM-DD)
+
+**Response:**
+```json
+[
+    {
+        "id": 1,
+        "date": "2023-01-01",
+        "amount": -50.00,
+        "counterParty": "Supermarkt",
+        "title": "Einkauf",
+        "categoryId": 1,
+        "categoryName": "Essen"
+    }
+]
+```
+
+### 4.2 Einzelne Transaktion abrufen
+**GET** `/api/transactions/{id}`
+
+Gibt eine spezifische Transaktion zurück.
+
+**Response:**
+```json
+{
+    "id": 1,
+    "date": "2023-01-01",
+    "amount": -50.00,
+    "counterParty": "Supermarkt",
+    "title": "Einkauf",
+    "categoryId": 1,
+    "categoryName": "Essen"
+}
+```
+
+**Fehler:**
+- 404: Transaktion nicht gefunden
+
+### 4.3 Transaktion erstellen
+**POST** `/api/transactions`
+
+Erstellt eine neue Transaktion.
+
+**Request Body:**
+```json
+{
+    "date": "2023-01-01",
+    "amount": -50.00,
+    "counterParty": "Supermarkt",
+    "title": "Einkauf",
+    "categoryId": 1
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "date": "2023-01-01",
+    "amount": -50.00,
+    "counterParty": "Supermarkt",
+    "title": "Einkauf",
+    "categoryId": 1,
+    "categoryName": "Essen"
+}
+```
+
+**Fehler:**
+- 400: Ungültige Eingabe
+- 404: Kategorie nicht gefunden
+
+### 4.4 Transaktion aktualisieren
+**PUT** `/api/transactions/{id}`
+
+Aktualisiert eine Transaktion.
+
+**Request Body:**
+```json
+{
+    "date": "2023-01-02",
+    "amount": -60.00,
+    "counterParty": "Supermarkt",
+    "title": "Großeinkauf",
+    "categoryId": 1
+}
+```
+
+**Response:**
+- Status 204: Erfolgreich aktualisiert
+
+**Fehler:**
+- 400: Ungültige Eingabe
+- 404: Transaktion oder Kategorie nicht gefunden
+
+### 4.5 Alle Transaktionen löschen
+**DELETE** `/api/transactions`
+
+Löscht alle Transaktionen des eingeloggten Benutzers.
+
+**Response:**
+- Status 204: Erfolgreich gelöscht
+
+### 4.6 Einzelne Transaktion löschen
+**DELETE** `/api/transactions/{id}`
+
+Löscht eine spezifische Transaktion.
+
+**Response:**
+- Status 204: Erfolgreich gelöscht
+
+**Fehler:**
+- 404: Transaktion nicht gefunden
+
+### 4.7 CSV-Import
+**POST** `/api/transactions/import`
+
+Importiert Transaktionen aus einer CSV-Datei.
+
+**Request Body:** Multipart-Form mit Datei `file`
+
+**Response:**
+```json
+{
+    "importedRows": 10,
+    "errors": []
+}
+```
+
+## 5. Kategorien
+
+### 5.1 Alle Kategorien abrufen
+**GET** `/api/categories`
+
+Gibt alle Kategorien des eingeloggten Benutzers zurück.
+
+**Response:**
+```json
+[
+    {
+        "id": 1,
+        "name": "Essen",
+        "keywords": [
+            {
+                "id": 1,
+                "value": "Supermarkt",
+                "categoryId": 1
+            }
+        ],
+        "interval": "Once",
+        "isDefault": false
+    }
+]
+```
+
+### 5.2 Einzelne Kategorie abrufen
+**GET** `/api/categories/{id}`
+
+Gibt eine spezifische Kategorie zurück.
+
+**Response:**
+```json
+{
+    "id": 1,
+    "name": "Essen",
+    "keywords": [
+        {
+            "id": 1,
+            "value": "Supermarkt",
+            "categoryId": 1
+        }
+    ],
+    "interval": "Once",
+    "isDefault": false
+}
+```
+
+**Fehler:**
+- 404: Kategorie nicht gefunden
+
+### 5.3 Kategorie erstellen
+**POST** `/api/categories`
+
+Erstellt eine neue Kategorie.
+
+**Request Body:**
+```json
+{
+    "name": "Transport",
+    "keywords": [
+        {
+            "value": "Bahn"
+        }
+    ],
+    "interval": "Monthly"
+}
+```
+
+**Response:**
+```json
+{
+    "id": 2,
+    "name": "Transport",
+    "keywords": [
+        {
+            "id": 2,
+            "value": "Bahn",
+            "categoryId": 2
+        }
+    ],
+    "interval": "Monthly",
+    "isDefault": false
+}
+```
+
+**Fehler:**
+- 400: Ungültige Eingabe
+
+### 5.4 Kategorie aktualisieren
+**PUT** `/api/categories/{id}`
+
+Aktualisiert eine Kategorie.
+
+**Request Body:**
+```json
+{
+    "name": "Transport & Mobilität",
+    "interval": "Weekly"
+}
+```
+
+**Response:**
+- Status 204: Erfolgreich aktualisiert
+
+**Fehler:**
+- 400: Ungültige Eingabe
+- 404: Kategorie nicht gefunden
+
+### 5.5 Alle Kategorien löschen
+**DELETE** `/api/categories`
+
+Löscht alle Kategorien des eingeloggten Benutzers (außer Default-Kategorie).
+
+**Response:**
+- Status 204: Erfolgreich gelöscht
+
+### 5.6 Einzelne Kategorie löschen
+**DELETE** `/api/categories/{id}`
+
+Löscht eine spezifische Kategorie.
+
+**Response:**
+- Status 204: Erfolgreich gelöscht
+
+**Fehler:**
+- 404: Kategorie nicht gefunden
+- 409: Default-Kategorie kann nicht gelöscht werden
+
+## 6. Keywords
+
+### 6.1 Keyword erstellen
+**POST** `/api/categories/{categoryId}/keywords`
+
+Erstellt ein neues Keyword für eine Kategorie.
+
+**Request Body:**
+```json
+{
+    "value": "Tankstelle"
+}
+```
+
+**Response:**
+```json
+{
+    "id": 3,
+    "value": "Tankstelle",
+    "categoryId": 2
+}
+```
+
+**Fehler:**
+- 400: Ungültige Eingabe
+- 404: Kategorie nicht gefunden
+- 409: Keyword bereits vorhanden
+
+### 6.2 Keyword aktualisieren
+**PUT** `/api/categories/{categoryId}/keywords/{keywordId}`
+
+Aktualisiert ein Keyword.
+
+**Request Body:**
+```json
+{
+    "value": "Autotankstelle"
+}
+```
+
+**Response:**
+- Status 204: Erfolgreich aktualisiert
+
+**Fehler:**
+- 400: Ungültige Eingabe
+- 404: Keyword oder Kategorie nicht gefunden
+- 409: Keyword bereits vorhanden
+
+### 6.3 Alle Keywords löschen
+**DELETE** `/api/categories/{categoryId}/keywords`
+
+Löscht alle Keywords einer Kategorie.
+
+**Response:**
+- Status 204: Erfolgreich gelöscht
+
+**Fehler:**
+- 404: Kategorie nicht gefunden
+
+### 6.4 Einzelnes Keyword löschen
+**DELETE** `/api/categories/{categoryId}/keywords/{keywordId}`
+
+Löscht ein spezifisches Keyword.
+
+**Response:**
+- Status 204: Erfolgreich gelöscht
+
+**Fehler:**
+- 404: Keyword oder Kategorie nicht gefunden
+
+## 7. Analysen
+
+### 7.1 Zusammenfassung
+**GET** `/api/analytics/summary/{days}`
+
+Gibt eine finanzielle Zusammenfassung für die letzten X Tage.
+
+**Response:**
+```json
+{
+    "income": 1500,
+    "expenses": 1200
+}
+```
+
+### 7.2 Prognose
+**GET** `/api/analytics/forecast/{days}`
+
+Gibt eine finanzielle Prognose für die nächsten X Tage.
+
+**Response:**
+```json
+{
+    "balance": 300
+}
+```
+

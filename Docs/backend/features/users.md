@@ -51,7 +51,7 @@ Aktualisiert die Daten des aktuell eingeloggten Benutzers.
 
 ### 1.3 Passwort ändern
 
-**PUT** `/api/users/me/password`
+**PATCH** `/api/users/me/password`
 Ändert das Passwort des aktuell eingeloggten Benutzers.
 
 **Request Body:**
@@ -155,7 +155,7 @@ Aktualisiert die Daten eines spezifischen Benutzers.
 
 ### 2.4 Benutzerrolle aktualisieren
 
-**PUT** `/api/users/{id}/role`
+**PATCH** `/api/users/{id}/role`
 Aktualisiert die Rolle eines spezifischen Benutzers.
 
 **Request Body:**
