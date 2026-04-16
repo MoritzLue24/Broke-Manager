@@ -54,6 +54,7 @@ classDiagram
     Category "One" --> "Many" Keyword : has
 
     Transaction "One" --> "One" Category : has
+    Transaction "One" --> "One" CategorySource : has
     User "One" --> "One" CSVImport : runs
     CSVImport "One" --> "Many" Transaction : imports
 ```
