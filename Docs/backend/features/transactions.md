@@ -65,15 +65,6 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 **Request Body:**
 
 [CreateDTO](#52-createdto)
-```json
-{
-    "categoryId": 1,    // (optional), null für auto-detect
-    "date": "2024-01-01",
-    "amount": -20.5,
-    "counterParty": "John Doe",
-    "title": "Essen gehen"
-}
-```
 
 **Responses:**
 - Status: 201, message: "Transaction created successfully, 2 conflicting Categories", data: [AutoDetectConflictDto](#53-autodetectconflictdto)
@@ -89,15 +80,6 @@ Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categ
 **Request Body:**
 
 [UpdateDTO](#54-updatedto)
-```json
-{
-    "categoryId": 1, // optional
-    "date": "2024-01-01", // optional
-    "amount": -20.5, // optional
-    "counterParty": "John Doe", // optional
-    "title": "Essen gehen" // optional
-}
-```
 
 **Responses:**
 - Status: 200, message: "Transaction updated successfully", data: [ResponseDTO](#51-responsedto)
@@ -157,17 +139,6 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 **Request-Body:**
 
 [CategorizeRequestDTO](#55-categorizerequestdto)
-```json
-{
-    "categoryIds": [1, 2, 3],   // Optional, categories to apply
-    "filters": {
-        "from": "2024-01-01",           // Optional
-        "to": "2024-01-31",             // Optional
-        "transactionIds": [1, 2, 3],    // Optional, default=alle transactions
-        "overwriteManual": false        // Optional, default=false
-    }
-}
-```
 
 **Responses:**
 - Status: 200, message: "Categories of 24 transactions Changed", data: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
