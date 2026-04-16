@@ -45,7 +45,7 @@ CREATE TABLE Transactions (
     Date            date NOT NULL,
     Amount          decimal(12,2) NOT NULL,
     Title           nvarchar(500) NOT NULL,
-    CounterParty    nvarchar(255) NOT NULL,
+    CounterParty    nvarchar(255),
     CategorySource  nvarchar(20) NOT NULL,
 
     CONSTRAINT PK_Transactions PRIMARY KEY (Id),
