@@ -13,11 +13,17 @@ Der Name einer Kategorie ist für einen User einzigartig.
     - [1.4 Kategorie aktualisieren](#14-eine-kategorie-aktualisieren)
     - [1.5 Spezifische Kategorie löschen](#15-spezifische-kategorie-löschen)
     - [1.6 Alle Kategorien des Benutzers löschen](#16-alle-kategorien-des-benutzers-löschen)
+- [2. Keywords](#2-keywords)
+    - [2.1 Neues Keyword erstellen](#21-neues-keyword-erstellen)
+    - [2.2 Keyword updaten](#22-keyword-updaten)
+    - [2.3 Keyword löschen](#23-keyword-löschen)
 - [3. DTOs](#3-dtos)
     - [3.1 ResponseDTO](#31-responsedto)
     - [3.2 CreateDTO](#32-createdto)
     - [3.3 UpdateDTO](#33-updatedto)
-- [3. Keywords](#3-keywords)
+    - [3.4 KeywordResponseDTO](#34-keywordresponsedto)
+    - [3.5 KeywordCreateDTO](#35-keywordcreatedto)
+    - [3.6 KeywordUpdateDTO](#36-keywordupdatedto)
 
 
 
