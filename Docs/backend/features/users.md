@@ -174,9 +174,14 @@ Löscht einen spezifischen Benutzer.
 
 ```json
 {
-    "email": "dieterhans@yahoo.com" // optional
+    "email": "dieterhans@yahoo.com"
 }
 ```
+**Validierung**
+- `email`
+    - optional, default=null
+    - Email-Format
+    - Max. 255 Zeichen
 
 ### 3.3 ChangePasswordDTO
 
@@ -189,6 +194,20 @@ Löscht einen spezifischen Benutzer.
     "confirmNewPassword": "newPassword123"
 }
 ```
+**Validierung**
+- `currentPassword`
+    - required
+    - Min. 8 Zeichen
+    - Max. 255 Zeichen
+- `newPassword`
+    - required
+    - Min. 8 Zeichen
+    - Max. 255 Zeichen
+- `confirmNewPassword`
+    - required
+    - Equals `newPassword`
+    - Min. 8 Zeichen
+    - Max. 255 Zeichen
 
 ### 3.4 ChangeRoleDTO
 
@@ -199,3 +218,7 @@ Löscht einen spezifischen Benutzer.
     "role": "Admin"
 }
 ```
+**Validierung**
+- `role`
+    - optional, default=null
+    - in ("User", "Admin")

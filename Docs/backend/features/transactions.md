@@ -194,13 +194,29 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 **POST**[/api/transactions](#23-transaktion-erstellen)
 ```json
 {
-    "categoryId": 1,    // (optional), null für auto-detect
+    "categoryId": 1,
     "date": "2024-01-01",
     "amount": -20.5,
     "title": "Essen gehen",
     "counterParty": "John Doe",
 }
 ```
+**Validierung**
+- `categoryId`
+    - optional, default=null
+    - non-negative
+- `date`
+    - optional, default=currentDate
+    - DateOnly format, YYYY-MM-DD
+- `amount`
+    - required
+    - 12 Stellen insgesamt, 2 Nachkomma (wird noch nicht validiert, TODO)
+- `title`
+    - required
+    - max. 500 Zeichen
+- `counterParty`
+    - optional
+    - max. 250 Zeichen
 
 ### 5.3 AutoDetectConflictDTO
 **POST**[/api/transactions](#23-transaktion-erstellen)
@@ -217,13 +233,29 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 **PUT**[/api/transactions/{id}](#24-transaktion-aktualisieren)
 ```json
 {
-    "categoryId": 1,    // optional
-    "date": "2024-01-01",   // optional
-    "amount": -20.5,    // optional
-    "title": "Essen gehen", // optional
-    "counterParty": "John Doe", // optional
+    "categoryId": 1,
+    "date": "2024-01-01",
+    "amount": -20.5,
+    "title": "Essen gehen",
+    "counterParty": "John Doe",
 }
 ```
+**Validierung**
+- `categoryId`
+    - optional
+    - non-negative
+- `date`
+    - optional
+    - DateOnly format, YYYY-MM-DD
+- `amount`
+    - optional
+    - 12 Stellen insgesamt, 2 Nachkomma (wird noch nicht validiert, TODO)
+- `title`
+    - optional
+    - max. 500 Zeichen
+- `counterParty`
+    - optional
+    - max. 250 Zeichen
 
 ### 5.5 CategorizeRequestDTO
 **POST**[/api/transactions/auto-categorize](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
@@ -238,3 +270,16 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
     }
 }
 ```
+**Validierung**
+- `categoryIds`
+    - optional, default=alle
+- `from`
+    - optional, default=von-anfang
+    - DateOnly format, YYYY-MM-DD
+- `to`
+    - optional, default=currentDate
+    - DateOnly format, YYYY-MM-DD
+- `transactionIds`
+    - optional, default=alle
+- `overwriteManual`
+    - optional, default=false

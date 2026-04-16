@@ -54,6 +54,20 @@ Loggt einen Benutzer ein und gibt ein JWT-Token zurück.
 }
 }
 ```
+**Validierung**
+- `email`
+    - required
+    - Email-Format
+    - Max. 255 Zeichen
+- `password`
+    - required
+    - Min. 8 Zeichen
+    - Max. 255 Zeichen
+- `confirmPassword`
+    - required
+    - Equals `password`
+    - Min. 8 Zeichen
+    - Max. 255 Zeichen
 
 ### 2.2 LoginRequestDTO
 
@@ -64,6 +78,15 @@ Loggt einen Benutzer ein und gibt ein JWT-Token zurück.
     "password": "password123"
 }
 ```
+**Validierung**
+- `email`
+    - required
+    - Email-Format
+    - Max. 255 Zeichen
+- `password`
+    - required
+    - Min. 8 Zeichen
+    - Max. 255 Zeichen
 
 ### 2.3 AuthResponseDTO
 
