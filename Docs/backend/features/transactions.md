@@ -42,7 +42,7 @@ Es wird zurückgegeben eine Liste von Transaction-, conflictingCategories-Paare.
 Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
 
 **Responses:**
-- Status: 200, message: "Transactions retrieved successfully"
+- Status: 200, message: "Transactions retrieved successfully", body: List[[ResponseDTO](#51-responsedto)]
 ```json
 ..
 "data": [
@@ -68,7 +68,7 @@ Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
 Gibt die Daten einer spezifischen Transaktion zurück.
 
 **Responses:**
-- Status: 200, message: "Transaction retrieved successfully"
+- Status: 200, message: "Transaction retrieved successfully", body: [ResponseDTO](#51-responsedto)
 ```json
 ..
 "data": {
@@ -95,6 +95,8 @@ Erstellt eine neue Transaktion. Wird keine CategoryId übergeben, wird automatis
 Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, werden diese Treffer über "conflictingCategories" zurückgegeben. Es wird trotzden eine Category automatisch gesetzt.
 
 **Request Body:**
+
+[CreateDTO](#52-createdto)
 ```json
 {
     "categoryId": 1,    // (optional), null für auto-detect
@@ -106,7 +108,7 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 ```
 
 **Responses:**
-- Status: 201, message: "Transaction created successfully, 2 conflicting Categories"
+- Status: 201, message: "Transaction created successfully, 2 conflicting Categories", body: [AutoDetectConflictDto](#53-autodetectconflictdto)
 ```json
 ..
 "data": {
@@ -137,6 +139,8 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categoryId wird categorySource auf Manual gesetzt.
 
 **Request Body:**
+
+[UpdateDTO](#54-updatedto)
 ```json
 {
     "categoryId": 1, // optional
@@ -148,7 +152,7 @@ Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categ
 ```
 
 **Responses:**
-- Status: 200, message: "Transaction updated successfully"
+- Status: 200, message: "Transaction updated successfully", body: [ResponseDTO](#51-responsedto)
 ```json
 ..
 "data": {
@@ -218,6 +222,8 @@ Siehe **GET**[/api/transactions](#21-alle-transaktionen-abrufen)
 Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, automatisch. Es wird dementsprechend jeweils categorySource=Auto gesetzt.
 
 **Request-Body:**
+
+[CategorizeRequestDTO](#55-categorizerequestdto)
 ```json
 {
     "categoryIds": [1, 2, 3],   // Optional, categories to apply
@@ -231,7 +237,7 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 ```
 
 **Responses:**
-- Status: 200, message: "Categories of 24 transactions Changed"
+- Status: 200, message: "Categories of 24 transactions Changed", body: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
 ```json
 ..
 "data": {
@@ -249,3 +255,81 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 ```
 - Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
 - Status: 404, error: "NotFoundError", wenn der Benutzer, oder die default-category nicht gefunden wurde
+
+
+## 5. DTOs
+
+### 5.1 ResponseDTO
+**GET**[/api/transactions](#21-alle-transaktionen-abrufen)
+
+**GET**[/api/transactions/{id}](#22-spezifische-transaktion-abrufen)
+
+**PUT**[/api/transactions/{id}](#24-transaktion-aktualisieren)
+```json
+{
+    "id": 2,
+    "date": "2024-01-01",
+    "amount": -20.5,
+    "title": "Essen gehen",
+    "counterParty": "John Doe",
+    "category": {   // TODO: CategoryDTO
+        "id": 1,
+        "name": "Anderes"
+    }
+}
+```
+
+### 5.2 CreateDTO
+**POST**[/api/transactions](#23-transaktion-erstellen)
+```json
+{
+    "categoryId": 1,    // (optional), null für auto-detect
+    "date": "2024-01-01",
+    "amount": -20.5,
+    "title": "Essen gehen",
+    "counterParty": "John Doe",
+}
+```
+
+### 5.3 AutoDetectConflictDTO
+**POST**[/api/transactions](#23-transaktion-erstellen)
+
+**POST**[/api/transactions/auto-categorize](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
+```json
+{
+    "transaction": ResponseDTO,
+    "conflictingCategories": [
+        {   // TODO: CategoryDTO
+            "id": 1,
+            "name": "Anderes"
+        },
+        { .. }
+    ]
+}
+```
+
+### 5.4 UpdateDTO
+**PUT**[/api/transactions/{id}](#24-transaktion-aktualisieren)
+```json
+{
+    "categoryId": 1,    // optional
+    "date": "2024-01-01",   // optional
+    "amount": -20.5,    // optional
+    "title": "Essen gehen", // optional
+    "counterParty": "John Doe", // optional
+}
+```
+
+### 5.5 CategorizeRequestDTO
+**POST**[/api/transactions/auto-categorize](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
+```json
+{
+    "categoryIds": [1, 2, 3],   // optional, categories to apply
+    "filters": {
+        "from": "2024-01-01",   // optional
+        "to": "2024-01-31", // optional
+        "transactionIds": [1, 2, 3],    // optional, default=alle transactions
+        "overwriteManual": false    // optional, default=false
+    }
+}
+```
