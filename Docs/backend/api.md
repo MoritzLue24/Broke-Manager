@@ -19,7 +19,7 @@ Erfolgreiche Response, wenn der Status nicht 204 ist, haben typischerweise folge
 ```json
 {
     TODO: Anwenden
-    "data": {},
+    "data": DTO,
     "message": "User created successfully"
 }
 ```

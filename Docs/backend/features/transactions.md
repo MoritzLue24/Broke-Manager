@@ -42,24 +42,7 @@ Es wird zurückgegeben eine Liste von Transaction-, conflictingCategories-Paare.
 Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
 
 **Responses:**
-- Status: 200, message: "Transactions retrieved successfully", body: List[[ResponseDTO](#51-responsedto)]
-```json
-..
-"data": [
-    {
-        "id": 2,
-        "date": "2024-01-01",
-        "amount": -20.5,
-        "counterParty": "John Doe",
-        "title": "Essen gehen",
-        "category": {
-            "id": 1,
-            "name": "Anderes"
-        }
-    }
-]
-..
-```
+- Status: 200, message: "Transactions retrieved successfully", data: List[[ResponseDTO](#51-responsedto)]
 - Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
 
 ### 2.2 Spezifische Transaktion abrufen
@@ -68,22 +51,7 @@ Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
 Gibt die Daten einer spezifischen Transaktion zurück.
 
 **Responses:**
-- Status: 200, message: "Transaction retrieved successfully", body: [ResponseDTO](#51-responsedto)
-```json
-..
-"data": {
-    "id": 2,
-    "date": "2024-01-01",
-    "amount": -20.5,
-    "counterParty": "John Doe",
-    "title": "Essen gehen",
-    "category": {
-        "id": 1,
-        "name": "Anderes"
-    }
-}
-..
-```
+- Status: 200, message: "Transaction retrieved successfully", data: [ResponseDTO](#51-responsedto)
 - Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
 - Status: 404, error: "NotFoundError", wenn die Transaktion nicht gefunden wird
 
@@ -108,27 +76,7 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 ```
 
 **Responses:**
-- Status: 201, message: "Transaction created successfully, 2 conflicting Categories", body: [AutoDetectConflictDto](#53-autodetectconflictdto)
-```json
-..
-"data": {
-    "transaction": {
-        "id": 5,
-        "date": "2024-01-01",
-        "amount": -20.5,
-        "counterParty": "John Doe",
-        "title": "Essen gehen",
-        "category": {
-            "id": 1,
-            "name": "Lebensmittel"
-        },
-    },
-    "conflictingCategories": [
-        { .. }
-    ]
-}
-..
-```
+- Status: 201, message: "Transaction created successfully, 2 conflicting Categories", data: [AutoDetectConflictDto](#53-autodetectconflictdto)
 - Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. fehlende Felder, ungültiges Datum)
 - Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
 - Status: 404, error: "NotFoundError", wenn der user, die angegebene Kategorie, oder die default-category nicht gefunden wird
@@ -152,22 +100,7 @@ Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categ
 ```
 
 **Responses:**
-- Status: 200, message: "Transaction updated successfully", body: [ResponseDTO](#51-responsedto)
-```json
-..
-"data": {
-    "id": 2,
-    "date": "2024-01-01",
-    "amount": -20.5,
-    "counterParty": "John Doe",
-    "title": "Essen gehen",
-    "category": {
-        "id": 1,
-        "name": "Essen"
-    }
-}
-..
-```
+- Status: 200, message: "Transaction updated successfully", data: [ResponseDTO](#51-responsedto)
 - Status: 400, error: "ValidationError", bei ungültigen Eingaben
 - Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
 - Status: 404, error: "NotFoundError", wenn der user, die Transaktion oder die angegebene Kategorie nicht gefunden wird
@@ -237,22 +170,7 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 ```
 
 **Responses:**
-- Status: 200, message: "Categories of 24 transactions Changed", body: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
-```json
-..
-"data": {
-    "changedTransactions": 24,
-    "conflicts": [
-        {
-            "transaction": { .. },
-            "conflictingCategories": [
-                { .. }
-            ]
-        }
-    ]
-}
-..
-```
+- Status: 200, message: "Categories of 24 transactions Changed", data: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
 - Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
 - Status: 404, error: "NotFoundError", wenn der Benutzer, oder die default-category nicht gefunden wurde
 
