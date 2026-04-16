@@ -2,8 +2,34 @@
 `/api/transactions` ist verantwortlich für das Verwalten von Transaktionen, also das Erstellen, Abrufen, Aktualisieren, Löschen, sowie automatische Kategorisierung.
 
 
+- [1. Category auto-detect](#1-category-auto-detect)
+    - [1.1 Wertung der Kategorien](#11-wertung-der-kategorien)
+    - [1.2 Beim Erstellen einer Transaktion](#12-beim-erstellen-einer-transaktion)
+    - [1.3 Nachträgliches Aktualisieren](#13-nachträgliches-aktualisieren-der-kategorie)
+- [2. Endpunkte](#2-endpunkte)
+    - [2.1 Alle Transaktionen abrufen](#21-alle-transaktionen-abrufen)
+    - [2.2 Spezifische Transaktion abrufen](#22-spezifische-transaktion-abrufen)
+    - [2.3 Transaktion erstellen](#23-transaktion-erstellen)
+    - [2.4 Transaktion aktualisieren](#24-transaktion-aktualisieren)
+    - [2.5 Transaktion löschen](#25-transaktion-löschen)
+    - [2.6 Alle Transaktionen löschen](#26-alle-transaktionen-löschen)
+- [3. Transaktionen filtern](#3-transaktionen-filtern)
+    - [3.1 Nach Datum](#31-transaktionen-nach-datum-filtern)
+    - [3.1 Nach Kategorie](#32-transaktionen-nach-kategorien-filtern)
+- [4. Auto-detect Kategorie](#4-auto-detect-kategorie)
+    - [4.1 Kategorie zuordnen für Transaktionen (mit filter)](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
+- [5. DTOs](#5-dtos)
+    - [5.1 ResponseDTO](#51-responsedto)
+    - [5.2 CreateDTO](#52-createdto)
+    - [5.3 AutoDetectConflictDTO](#53-autodetectconflictdto)
+    - [5.4 UpdateDTO](#54-updatedto)
+    - [5.5 CategorizeRequestDTO](#55-categorizerequestdto)
+
+
 ## 1. Category auto-detect
 Der Benutzter hat die Möglichkeit einer Transaktion automatisch eine Kategorie zuzuweisen. Dafür wird nach **Keywords** der Kategorien in den Transaktionstiteln gesucht. 
+
+Standardmäßig werden manuell gesetzte Kategorien NICHT überschrieben, Auto-categorization ist deterministisch und basiert ausschließlich auf Keywords.
 
 ### 1.1 Wertung der Kategorien
 Pro Transaktion wird eine Treffer-Liste erstellt, in absteigender Relevanz sortiert. Die **Relevanz** setzt sich zusammen aus:
