@@ -1,7 +1,16 @@
 # Auth
 `/api/auth` ist verantwortlich für die Authentifizierung, also das Registrieren, Einloggen, etc. Es ist NICHT verantwortlich für das Verwalten von Benutzern. Dafür ist `/api/users`, [Users](users.md), zuständig.
 
-## 1. Endpunkte
+- [Endpoints](#1-endpoints)
+    - [Registrierung](#11-registrierung)
+    - [Login](#12-login)
+- [DTOs](#2-DTOs)
+    - [RegisterRequestDTO](#21-registerrequestdto)
+    - [LoginRequestDTO](#22-loginrequestdto)
+    - [AuthResponseDTO](#23-authresponsedto)
+
+
+## 1. Endpoints
 
 ### 1.1 Registrierung
 
@@ -9,32 +18,46 @@
 Registriert einen neuen Benutzer.
 
 **Request Body:**
-```json
-{
-    "email": "user@example.com",
-    "password": "password123",
-    "confirmPassword": "password123"
-}
-```
+
+[RegisterRequestDTO](#21-registerrequestdto)
 
 **Responses:**
-- Status: 201, message: "User successfully registered"
-```json
-..
-"data": {
-    "token": "<12312312312blablabal>"
-}
-..
-```
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. Passwort zu kurz, Email-Format falsch)
-- Status: 409, error: "ConflictError", bei bereits registrierter Email
-
+- http 201, data: [AuthResponseDTO](#23-authresponsedto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben
+- http 409, status: ALREADY_EXISTS_ERROR, bei bereits registrierter Email
 
 ### 1.2 Login
 **POST** `/api/auth/login`
 Loggt einen Benutzer ein und gibt ein JWT-Token zurück.
 
 **Request Body:**
+
+[LoginRequestDTO](#22-loginrequestdto)
+
+**Responses:**
+- http 200, data: [AuthResponseDTO](#23-authresponsedto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben
+- http 401, status: UNAUTHORIZED_ERROR, bei falschen Credentials
+
+
+## 2. DTOs
+
+### 2.1 RegisterRequestDTO
+
+**POST**[/api/auth/register](#11-registrierung)
+```json
+{
+{
+    "email": "user@example.com",
+    "password": "password123",
+    "confirmPassword": "password123"
+}
+}
+```
+
+### 2.2 LoginRequestDTO
+
+**POST**[/api/auth/login](#12-login)
 ```json
 {
     "email": "peterhans@gmx.de",
@@ -42,14 +65,13 @@ Loggt einen Benutzer ein und gibt ein JWT-Token zurück.
 }
 ```
 
-**Responses:**
-- Status: 200, message: "Login successful"
+### 2.3 AuthResponseDTO
+
+**POST**[/api/auth/register](#11-registrierung)
+
+**POST**[/api/auth/login](#12-login)
 ```json
-..
-"data": {
-    "token": "jwt-token-here"
+{
+    "token": "123po1j23ß01j23ß91hj2301jh2"
 }
-..
 ```
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben
-- Status: 401, error: "UnauthorizedError", bei falschen Credentials

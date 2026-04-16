@@ -14,46 +14,26 @@ Authorization: Bearer <token>
 ```
 
 ## 3. Response-Format
-Alle Responses sind im JSON-Format. Erfolgreiche Responses haben den Status 200 (oder entsprechend), Fehler haben spezifische Statuscodes.
-Erfolgreiche Response, wenn der Status nicht 204 ist, haben typischerweise folgendes Format:
+Alle Responses sind im JSON-Format. Ist die Response erfolgreich, ist "error" null. Das Field "details" ist nicht verlässlich gegeben, nur z.B. bei VALIDATION_ERRORs
 ```json
 {
-    TODO: Anwenden
-    "data": DTO,
-    "message": "User created successfully"
-}
-```
-
-## 4. Error Response
-Typischerweise wird bei Fehlern folgendes JSON-Format zurückgegeben:
-```json
-{
-    TODO: Anwenden
-    "error": "NotFound",
-    "message": "Resource not found"
-}
-```
-
-Ausnahmefall `ValidationError`:
-```json
-{
-    TODO: Anwenden
-    "error": "ValidationError",
-    "message": "2 Validation error(s) orrcured",
-    "details": {
-        "Email": ["Invalid Email format"]
-        "<SomeField>": ["<SomeError>"]
+    "data": DTO,    // or null
+    "error": {  // or null
+        "code": "NOT_FOUND_ERROR",
+        "message": "Resource not found",
+        "details": {
+            "someDetail": "Some message"
+        }
     }
 }
 ```
-
-Allgemeingültige Fehlercodes:
-- 400: Bad Request (z.B. ungültige Eingabe, ValidationError)
-- 401: Unauthorized (z.B. fehlendes oder ungültiges Token)
-- 403: Forbidden (z.B. Zugriff auf Ressource nicht erlaubt)
-- 404: Not Found (z.B. Ressource existiert nicht)
-- 409: Conflict (z.B. Email bereits registriert)
-- 500: Internal Server Error (unerwarteter Fehler)
+Errorcodes:
+- VALIDATION_ERROR, http-status 400
+- UNAUTHORIZED_ERROR, http-status 401
+- FORBIDDEN_ERROR, http-status 403
+- NOT_FOUND_ERROR, http-status 404
+- ALREADY_EXISTS_ERROR, http-status 409
+- SERVER_ERROR, http-status 500
 
 ## 4. Request- & Response-Bodies
 Für detailierte Informationen zu den Request- und Response-Bodies siehe die jeweiligen Abschnitte:

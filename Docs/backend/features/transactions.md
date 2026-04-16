@@ -68,8 +68,8 @@ Es wird zurückgegeben eine Liste von Transaction-, conflictingCategories-Paare.
 Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
 
 **Responses:**
-- Status: 200, message: "Transactions retrieved successfully", data: List[[ResponseDTO](#51-responsedto)]
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
+- http 200, data: List[[ResponseDTO](#51-responsedto)]
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 
 ### 2.2 Spezifische Transaktion abrufen
 
@@ -77,9 +77,8 @@ Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
 Gibt die Daten einer spezifischen Transaktion zurück.
 
 **Responses:**
-- Status: 200, message: "Transaction retrieved successfully", data: [ResponseDTO](#51-responsedto)
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn die Transaktion nicht gefunden wird
+- http 200, data: [ResponseDTO](#51-responsedto)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 
 ### 2.3 Transaktion erstellen
 
@@ -93,10 +92,10 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 [CreateDTO](#52-createdto)
 
 **Responses:**
-- Status: 201, message: "Transaction created successfully, 2 conflicting Categories", data: [AutoDetectConflictDto](#53-autodetectconflictdto)
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. fehlende Felder, ungültiges Datum)
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der user, die angegebene Kategorie, oder die default-category nicht gefunden wird
+- http 201, data: [AutoDetectConflictDto](#53-autodetectconflictdto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. fehlende Felder, ungültiges Datum)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn die angegebene Kategorie, oder die default-category nicht gefunden wird
 
 ### 2.4 Transaktion aktualisieren
 
@@ -108,10 +107,10 @@ Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categ
 [UpdateDTO](#54-updatedto)
 
 **Responses:**
-- Status: 200, message: "Transaction updated successfully", data: [ResponseDTO](#51-responsedto)
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der user, die Transaktion oder die angegebene Kategorie nicht gefunden wird
+- http 200, data: [ResponseDTO](#51-responsedto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, die Transaktion oder die angegebene Kategorie nicht gefunden wird
 
 ### 2.5 Transaktion löschen
 
@@ -119,9 +118,9 @@ Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categ
 Löscht eine spezifische Transaktion.
 
 **Responses:**
-- Status: 204, wenn die Transaktion erfolgreich gelöscht wurde.
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der User oder die Transaktion nicht gefunden wird
+- http 204, wenn die Transaktion erfolgreich gelöscht wurde.
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn die Transaktion nicht gefunden wird
 
 ### 2.6 Alle Transaktionen löschen
 
@@ -129,9 +128,8 @@ Löscht eine spezifische Transaktion.
 Löscht alle Transaktionen des aktuell eingeloggten Benutzers.
 
 **Responses:**
-- Status: 204, wenn alle Transaktionen erfolgreich gelöscht wurden.
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 204, wenn alle Transaktionen erfolgreich gelöscht wurden.
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 
 
 ## 3. Transaktionen filtern
@@ -167,9 +165,9 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 [CategorizeRequestDTO](#55-categorizerequestdto)
 
 **Responses:**
-- Status: 200, message: "Categories of 24 transactions Changed", data: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der Benutzer, oder die default-category nicht gefunden wurde
+- http 200, data: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn die default-category nicht gefunden wurde
 
 
 ## 5. DTOs

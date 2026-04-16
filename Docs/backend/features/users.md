@@ -1,7 +1,25 @@
 # Users
 `/api/users` ist verantwortlich für die Verwaltung von Benutzern, z.B. das Abrufen von Benutzerinformationen, das Aktualisieren von Benutzerdaten, etc. Es ist NICHT verantwortlich für die Authentifizierung (Registrieren, Einloggen, etc.), da dies in `/api/auth`, [Auth](auth.md), behandelt wird.
 
-## 1. Endpunkte
+- [1. Endpoints](#1-endpoints)
+    - [1.1 Benutzerinformationen abrufen](#11-benutzerinformationen-abrufen)
+    - [1.2 Benutzerinformationen aktualisieren](#12-benutzerinformationen-aktualisieren)
+    - [1.3 Passwort ändern](#13-passwort-ändern)
+    - [1.4 Benutzer löschen](#14-benutzer-löschen)
+- [2. Admin Endpoints](#2-admin-endpoints)
+    - [2.1 Alle Benutzer abrufen](#21-alle-benutzer-abrufen)
+    - [2.2 Spezifischen Benutzer abrufen](#22-spezifischen-benutzer-abrufen)
+    - [2.3 Benutzer aktualisieren](#23-benutzer-aktualisieren)
+    - [2.4 Rolle aktualisieren](#24-benutzerrolle-aktualisieren)
+    - [2.5 Benutzer löschen](#25-benutzer-löschen)
+- [3. DTOs](#3-dtos)
+    - [3.1 ResponseDTO](#31-responsedto)
+    - [3.2 UpdateDTO](#32-updatedto)
+    - [3.3 ChangePasswordDTO](#33-changepassworddto)
+    - [3.4 ChangeRoleDTO](#34-changeroledto)
+
+
+## 1. Endpoints
 
 ### 1.1 Benutzerinformationen abrufen
 
@@ -9,18 +27,9 @@
 Gibt die Daten des aktuell eingeloggten Benutzers zurück.
 
 **Responses:**
-- Status: 200, message: "User data retrieved successfully"
-```json
-..
-"data": {
-    "id": 2,
-    "email": "dieterhans@yahoo.com",
-    "role": "User"
-}
-..
-```
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 200, data: [ResponseDTO](#31-responsedto)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
 
 ### 1.2 Benutzerinformationen aktualisieren
 
@@ -28,46 +37,30 @@ Gibt die Daten des aktuell eingeloggten Benutzers zurück.
 Aktualisiert die Daten des aktuell eingeloggten Benutzers.
 
 **Request Body:**
-```json
-{
-    "email": "dieterhans@yahoo.com" // optional
-}
-```
+
+[UpdateDTO](#32-updatedto)
 
 **Responses:**
-- Status: 200, message: "User data updated successfully"
-```json
-..
-"data": {
-    "id": 5,
-    "email": "dieterhans@yahoo.com",
-    "role": "User"
-}
-..
-```
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. Email-Format falsch)
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 200, data: [ResponseDTO](#31-responsedto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. Email-Format falsch)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+- http 409, status: ALREADY_EXISTS_ERROR, bei bereits registrierter Email
 
 ### 1.3 Passwort ändern
 
-**PATCH** `/api/users/me/password`
+**PATCH** `/api/users/me/change-password`
 Ändert das Passwort des aktuell eingeloggten Benutzers.
 
 **Request Body:**
-```json
-{
-    "currentPassword": "currentPassword123",
-    "newPassword": "newPassword123",
-    "confirmNewPassword": "newPassword123"
-}
-```
+
+[ChangePasswordDTO](#33-changepassworddto)
 
 **Responses:**
-- Status: 204, wenn das Password erfolgreich geändert wurde.
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. neues Passwort zu kurz, neue Passwörter stimmen nicht überein)
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird oder das aktuelle Passwort falsch ist
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 204, wenn das Password erfolgreich geändert wurde.
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. Passwörter stimmen nicht überein).
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
 
 ### 1.4 Benutzer löschen
 
@@ -75,12 +68,12 @@ Aktualisiert die Daten des aktuell eingeloggten Benutzers.
 Löscht den aktuell eingeloggten Benutzer.
 
 **Responses:**
-- Status: 204, wenn der Benutzer erfolgreich gelöscht wurde.
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 204, wenn der Benutzer erfolgreich gelöscht wurde.
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
 
 
-## 2. Admin-Endpunkte
+## 2. Admin-Endpoints
 Diese Endpunkte sind nur für Benutzer mit der Rolle "Admin" zugänglich.
 
 ### 2.1 Alle Benutzer abrufen
@@ -89,20 +82,9 @@ Diese Endpunkte sind nur für Benutzer mit der Rolle "Admin" zugänglich.
 Gibt eine Liste aller Benutzer zurück.
 
 **Responses:**
-- Status: 200, message: "Users retrieved successfully"
-```json
-..
-"data": [
-    {
-        "id": 2,
-        "email": "dieterhans@yahoo.com",
-        "role": "User"
-    }
-]
-..
-```
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 403, error: "ForbiddenError", wenn der Benutzer keine Admin-Rechte hat
+- http 200, data: List[[ResponseDTO](#31-responsedto)]
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 403, status: FORBIDDEN_ERROR, wenn der Benutzer keine Admin-Rechte hat
 
 ### 2.2 Spezifischen Benutzer abrufen
 
@@ -110,19 +92,10 @@ Gibt eine Liste aller Benutzer zurück.
 Gibt die Daten eines spezifischen Benutzers zurück.
 
 **Responses:**
-- Status: 200, message: "User retrieved successfully"
-```json
-..
-"data": {
-    "id": 2,
-    "email": "dieterhans@yahoo.com",
-    "role": "User"
-}
-..
-```
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 403, error: "ForbiddenError", wenn der Benutzer keine Admin-Rechte hat
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 200, data: [ResponseDTO](#31-responsedto)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 403, status: FORBIDDEN_ERROR, wenn der Benutzer keine Admin-Rechte hat
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
 
 ### 2.3 Benutzer aktualisieren
 
@@ -130,56 +103,32 @@ Gibt die Daten eines spezifischen Benutzers zurück.
 Aktualisiert die Daten eines spezifischen Benutzers.
 
 **Request Body:**
-```json
-{
-    "email": "newemail@example.com" // optional
-}
-```
+
+[UpdateDTO](#32-updatedto)
 
 **Responses:**
-- Status: 200, message: "User updated successfully"
-```json
-..
-"data": {
-    "id": 2,
-    "email": "dieter@yahoo.de",
-    "role": "User"
-}
-..
-```
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. Email-Format falsch)
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 403, error: "ForbiddenError", wenn der Benutzer keine Admin-Rechte hat
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
-- Status: 409, error: "ConflictError", bei bereits registrierter Email
+- http 200, data: [ResponseDTO](#31-responsedto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. Email-Format falsch)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 403, status: FORBIDDEN_ERROR, wenn der Benutzer keine Admin-Rechte hat
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+- http 409, status: ALREADY_EXISTS_ERROR, bei bereits registrierter Email
 
 ### 2.4 Benutzerrolle aktualisieren
 
-**PATCH** `/api/users/{id}/role`
+**PATCH** `/api/users/{id}/change-role`
 Aktualisiert die Rolle eines spezifischen Benutzers.
 
 **Request Body:**
-```json
-{
-    "role": "Admin" // oder "User"
-}
-```
+
+[ChangeRoleDTO](#34-changeroledto)
 
 **Responses:**
-- Status: 200, message: "User role updated successfully"
-```json
-..
-"data": {
-    "id": 2,
-    "email": "dieterhans@yahoo.com",
-    "role": "Admin"
-}
-..
-```
-- Status: 400, error: "ValidationError", bei ungültigen Eingaben (z.B. ungültige Rolle)
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token bereitgestellt wird
-- Status: 403, error: "ForbiddenError", wenn der Benutzer keine Admin-Rechte hat
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http: 200, data: [ResponseDTO](#31-responsedto)
+- http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. Email-Format falsch)
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 403, status: FORBIDDEN_ERROR, wenn der Benutzer keine Admin-Rechte hat
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
 
 ### 2.5 Benutzer löschen
 
@@ -187,8 +136,66 @@ Aktualisiert die Rolle eines spezifischen Benutzers.
 Löscht einen spezifischen Benutzer.
 
 **Responses:**
-- Status: 204, wenn der Benutzer erfolgreich gelöscht wurde.
-- Status: 401, error: "UnauthorizedError", wenn kein gültiges JWT-Token
-bereitgestellt wird
-- Status: 403, error: "ForbiddenError", wenn der Benutzer keine Admin-Rechte hat
-- Status: 404, error: "NotFoundError", wenn der Benutzer nicht gefunden wird
+- http 204, wenn der Benutzer erfolgreich gelöscht wurde.
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
+- http 403, status: FORBIDDEN_ERROR, wenn der Benutzer keine Admin-Rechte hat
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+
+
+## 3. DTOs
+
+### 3.1 ResponseDTO
+
+**GET** [/api/users/me](#11-benutzerinformationen-abrufen)
+
+**PUT** [/api/users/me](#12-benutzerinformationen-aktualisieren)
+
+**GET** [/api/users](#21-alle-benutzer-abrufen)
+
+**GET** [/api/users/{id}](#22-spezifischen-benutzer-abrufen)
+
+**PUT** [/api/users/{id}](#23-benutzer-aktualisieren)
+
+**PATCH** [/api/users/{id}/change-role](#24-benutzerrolle-aktualisieren)
+
+```json
+{
+    "id": 2,
+    "email": "dieterhans@yahoo.com",
+    "role": "User"
+}
+```
+
+### 3.2 UpdateDTO
+
+**PUT** [/api/users/me](#12-benutzerinformationen-aktualisieren)
+
+**PUT** [/api/users/{id}](#23-benutzer-aktualisieren)
+
+```json
+{
+    "email": "dieterhans@yahoo.com" // optional
+}
+```
+
+### 3.3 ChangePasswordDTO
+
+**PATCH** [/api/users/me/change-password](#13-passwort-ändern)
+
+```json
+{
+    "currentPassword": "currentPassword123",
+    "newPassword": "newPassword123",
+    "confirmNewPassword": "newPassword123"
+}
+```
+
+### 3.4 ChangeRoleDTO
+
+**PATCH** [/api/users/{id}/change-role](#24-benutzerrolle-aktualisieren)
+
+```json
+{
+    "role": "Admin"
+}
+```
