@@ -186,10 +186,7 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
     "title": "Essen gehen",
     "counterParty": "John Doe",
     "categorySource": "Manual",
-    "category": {   // TODO: CategoryDTO
-        "id": 1,
-        "name": "Anderes"
-    }
+    "category": CategoryResponseDTO
 }
 ```
 
@@ -212,13 +209,7 @@ Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, au
 ```json
 {
     "transaction": ResponseDTO,
-    "conflictingCategories": [
-        {   // TODO: CategoryDTO
-            "id": 1,
-            "name": "Anderes"
-        },
-        { .. }
-    ]
+    "conflictingCategories": [ CategoryResponseDTO ]
 }
 ```
 
