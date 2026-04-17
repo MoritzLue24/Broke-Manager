@@ -72,11 +72,13 @@ CREATE TABLE Categories (
     Name        nvarchar(255) NOT NULL,
     Interval    nvarchar(20) NOT NULL,
     IsDefault   bit NOT NULL,
+    CreatedAt   datetime2(3) NOT NULL,
 
     CONSTRAINT PK_Categories PRIMARY KEY (Id),
     CONSTRAINT UQ_Categories_UserId_Name UNIQUE (UserId, Name),
     CONSTRAINT CK_Categories_Interval 
         CHECK (Interval IN ('Once', 'Weekly', 'Monthly', 'Quarterly', 'Yearly')),
+    CONSTRAINT DF_Categories_CreatedAt DEFAULT SYSUTCDATETIME() FOR CreatedAt,
     CONSTRAINT FK_Categories_Users 
         FOREIGN KEY (UserId)
         REFERENCES Users(Id)
@@ -90,9 +92,11 @@ CREATE TABLE Keywords (
     Id          int IDENTITY(1,1),
     CategoryId  int NOT NULL,
     Value       nvarchar(500) NOT NULL,
+    CreatedAt   datetime2(3) NOT NULL,
 
     CONSTRAINT PK_Keywords PRIMARY KEY (Id),
     CONSTRAINT UQ_Keywords_CategoryId_Value UNIQUE (CategoryId, Value),
+    CONSTRAINT DF_Keywords_CreatedAt DEFAULT SYSUTCDATETIME() FOR CreatedAt
     CONSTRAINT FK_Keywords_Categories
         FOREIGN KEY (CategoryId)
         REFERENCES Categories(Id)

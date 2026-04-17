@@ -33,6 +33,7 @@ Der Name einer Kategorie ist für einen User einzigartig.
 
 **GET** `/api/categories`
 Gibt eine Liste aller Kategorien des aktuell eingeloggten Benutzers zurück.
+Reihenfolge: nach createdAt Datum, aufsteigend. Die default-category ist an erster Stelle.
 
 **Responses:**
 - http 200, data: List[[ResponseDTO](#31-responsedto)]
@@ -158,9 +159,8 @@ Löscht ein keyword
     "name": "Essen",
     "interval": "Once",
     "isDefault": false,
-    "keywords": [
-        "Aldi"
-    ]
+    "createdAt": "YYYY-MM-DD HH:MM:SS.mmm",
+    "keywords": [ KeywordResponseDTO ],
 }
 ```
 
@@ -195,6 +195,7 @@ Löscht ein keyword
     "id": 1,
     "categoryId": 1,
     "value": "Rewe",
+    "createdAt": "YYYY-MM-DD HH:MM:SS.mmm"
 }
 ```
 
