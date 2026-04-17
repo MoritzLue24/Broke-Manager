@@ -66,7 +66,7 @@ Es wird zurückgegeben eine Liste von Transaction-, conflictingCategories-Paare.
 
 **GET** `/api/transactions`
 Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
-TODO: Nach Datum sortieren
+Diese Liste ist absteigend nach Datum sortiert.
 
 **Responses:**
 - http 200, data: List[[ResponseDTO](#51-responsedto)]
@@ -138,7 +138,8 @@ Löscht alle Transaktionen des aktuell eingeloggten Benutzers.
 ### 3.1 Transaktionen nach Datum filtern
 
 **GET** `/api/transactions?startDate=2024-01-01&endDate=2024-01-31`
-Gibt alle Transaktionen zurück, die zwischen `startDate` und `endDate` liegen, inklusive der beiden Daten.
+Gibt alle Transaktionen zurück, die zwischen `startDate` und `endDate` liegen, inklusive der beiden Daten. 
+Die Liste ist nach Datum sortiert, absteigend.
 
 **Responses:**
 
@@ -148,6 +149,7 @@ Siehe **GET**[/api/transactions](#21-alle-transaktionen-abrufen)
 
 **GET** `/api/transactions?categoryIds=1&categoryIds=2`
 Gibt alle Transaktionen zurück, die zu den Kategorien gehören.
+Die Liste ist nach Datum sortiert, absteigend.
 
 **Responses:**
 
