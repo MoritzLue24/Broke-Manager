@@ -162,7 +162,8 @@ Löscht einen spezifischen Benutzer.
 {
     "id": 2,
     "email": "dieterhans@yahoo.com",
-    "role": "User"
+    "role": "User",
+    "createdAt": "YYYY-MM-DD HH:MM:SS.mmm"
 }
 ```
 
