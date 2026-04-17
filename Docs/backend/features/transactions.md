@@ -162,6 +162,7 @@ Siehe **GET**[/api/transactions](#21-alle-transaktionen-abrufen)
 
 **POST** `/api/transactions/auto-categorize`
 Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, automatisch. Es wird dementsprechend jeweils categorySource=Auto gesetzt.
+Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wertung haben, wird dies in einer Liste zurückgegeben.
 
 **Request-Body:**
 
