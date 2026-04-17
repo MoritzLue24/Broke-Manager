@@ -12,7 +12,7 @@ classDiagram
 
     class Role {
         <<enumeration>>
-        User,
+        User
         Admin
     }
 
@@ -26,7 +26,7 @@ classDiagram
 
     class CategorySource {
         <<enumeration>>
-        Manual,
+        Manual
         Auto
     }
 
