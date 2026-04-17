@@ -193,7 +193,6 @@ Löscht ein keyword
 ```json
 {
     "id": 1,
-    "categoryId": 1,
     "value": "Rewe",
     "createdAt": "YYYY-MM-DD HH:MM:SS.mmm"
 }
