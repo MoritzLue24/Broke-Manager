@@ -79,7 +79,7 @@ Diese Endpunkte sind nur für Benutzer mit der Rolle "Admin" zugänglich.
 ### 2.1 Alle Benutzer abrufen
 
 **GET** `/api/users`
-Gibt eine Liste aller Benutzer zurück.
+Gibt eine Liste aller Benutzer zurück, nach createdAt absteigend sortiert.
 
 **Responses:**
 - http 200, data: List[[ResponseDTO](#31-responsedto)]
