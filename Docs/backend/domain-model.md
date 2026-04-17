@@ -63,7 +63,7 @@ classDiagram
     Transaction "One" --> "One" Category : has
 
     Category "One" --> "One" Interval : has
-    Category "One" --> "Many" Transactions : has
+    Category "One" --> "Many" Transaction : has
     Category "One" --> "Many" Keyword : has
     Category "One" --> "Many" Transaction : categorises
 
