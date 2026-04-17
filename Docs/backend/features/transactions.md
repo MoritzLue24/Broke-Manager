@@ -66,6 +66,7 @@ Es wird zurückgegeben eine Liste von Transaction-, conflictingCategories-Paare.
 
 **GET** `/api/transactions`
 Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
+TODO: Nach Datum sortieren
 
 **Responses:**
 - http 200, data: List[[ResponseDTO](#51-responsedto)]
