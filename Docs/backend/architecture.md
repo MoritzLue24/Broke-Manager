@@ -29,10 +29,12 @@ CREATE TABLE Users (
 	Email	        nvarchar(255) NOT NULL,
 	PasswordHash	nvarchar(255) NOT NULL,
     Role            nvarchar(20) NOT NULL,
+	CreatedAt		datetime2(3) NOT NULL,
 
 	CONSTRAINT PK_Users PRIMARY KEY (Id),
     CONSTRAINT UQ_Users_Email UNIQUE (Email),
-    CONSTRAINT CK_Users_Role CHECK (Role IN ('Admin', 'User'))
+    CONSTRAINT CK_Users_Role CHECK (Role IN ('Admin', 'User')),
+	CONSTRAINT DF_Users_CreatedAt DEFAULT SYSUTCDATETIME() FOR CreatedAt
 );
 ```
 
