@@ -15,7 +15,7 @@
 ### 1.1 Registrierung
 
 **POST** `/api/auth/register`
-Registriert einen neuen Benutzer.
+Registriert einen neuen Benutzer, setzt CreatedAt.
 
 **Request Body:**
 
