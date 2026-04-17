@@ -7,7 +7,7 @@ classDiagram
         +email: String
         +passwordHash: String
         +role: Role
-        +createdAt: Datetime2(3)
+        +createdAt: Datetime2
     }
 
     class Role {
@@ -18,7 +18,7 @@ classDiagram
 
     class Transaction {
         +date: Date
-        +amount: Decimal(12,2)
+        +amount: Decimal
         +title: String
         +counterParty: String
         +categorySource: CategorySource
@@ -34,7 +34,7 @@ classDiagram
         +name: String
         +interval: Interval
         +isDefault: bool
-        +createdAt: Datetime2(3)
+        +createdAt: Datetime2
     }
 
     class Interval {
@@ -48,7 +48,7 @@ classDiagram
 
     class Keyword {
         +value: String
-        +createdAt: Datetime2(3)
+        +createdAt: Datetime2
     }
 
     class CSVImport {
