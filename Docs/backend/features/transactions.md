@@ -7,23 +7,20 @@
     - [1.2 Beim Erstellen einer Transaktion](#12-beim-erstellen-einer-transaktion)
     - [1.3 Nachträgliches Aktualisieren](#13-nachträgliches-aktualisieren-der-kategorie)
 - [2. Endpunkte](#2-endpunkte)
-    - [2.1 Alle Transaktionen abrufen](#21-alle-transaktionen-abrufen)
+    - [2.1 Alle Transaktionen abrufen & filtern](#21-alle-transaktionen-abrufen-und-filtern)
     - [2.2 Spezifische Transaktion abrufen](#22-spezifische-transaktion-abrufen)
     - [2.3 Transaktion erstellen](#23-transaktion-erstellen)
     - [2.4 Transaktion aktualisieren](#24-transaktion-aktualisieren)
     - [2.5 Transaktion löschen](#25-transaktion-löschen)
     - [2.6 Alle Transaktionen löschen](#26-alle-transaktionen-löschen)
-- [3. Transaktionen filtern](#3-transaktionen-filtern)
-    - [3.1 Nach Datum](#31-transaktionen-nach-datum-filtern)
-    - [3.1 Nach Kategorie](#32-transaktionen-nach-kategorien-filtern)
-- [4. Auto-detect Kategorie](#4-auto-detect-kategorie)
-    - [4.1 Kategorie zuordnen für Transaktionen (mit filter)](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
-- [5. DTOs](#5-dtos)
-    - [5.1 ResponseDTO](#51-responsedto)
-    - [5.2 CreateDTO](#52-createdto)
-    - [5.3 AutoDetectConflictDTO](#53-autodetectconflictdto)
-    - [5.4 UpdateDTO](#54-updatedto)
-    - [5.5 CategorizeRequestDTO](#55-categorizerequestdto)
+- [3. Auto-detect Kategorie](#3-auto-detect-kategorie)
+    - [3.1 Kategorie zuordnen für Transaktionen (mit filter)](#31-kategorie-zuordnen-für-transaktionen-mit-filter)
+- [4. DTOs](#4-dtos)
+    - [4.1 ResponseDTO](#41-responsedto)
+    - [4.2 CreateDTO](#42-createdto)
+    - [4.3 AutoDetectConflictDTO](#43-autodetectconflictdto)
+    - [4.4 UpdateDTO](#44-updatedto)
+    - [4.5 CategorizeRequestDTO](#45-categorizerequestdto)
 
 
 ## 1. Category auto-detect
@@ -47,7 +44,7 @@ Beim Erstellen einer Transaktion durch **POST**[/api/transactions](#23-transakti
 - Sind die ersten n Einträge der Liste gleichwertig, werden diese über `"conflictingCategories"` zurückgegeben.
 
 ### 1.3 Nachträgliches aktualisieren der Kategorie
-Der Benutzer kann auch nachträglich die Kategorien bestimmter Transaktionen (filter!) automatisch aktualisieren lassen (`"categorySource"=Auto`), siehe [/api/transactions/auto-categorize](#41-kategorie-zuordnen-für-transaktionen,-mit-filter).
+Der Benutzer kann auch nachträglich die Kategorien bestimmter Transaktionen (filter!) automatisch aktualisieren lassen (`"categorySource"=Auto`), siehe [/api/transactions/auto-categorize](#31-kategorie-zuordnen-für-transaktionen,-mit-filter).
 
 Hierfür kann der Benutzter folgende Filter setzten (alle optional), damit nur bestimmte Transaktionen betroffen werden:
 - from, Datum
@@ -62,14 +59,19 @@ Es wird zurückgegeben eine Liste von Transaction-, conflictingCategories-Paare.
 
 ## 2. Endpunkte
 
-### 2.1 Alle Transaktionen abrufen
+### 2.1 Alle Transaktionen abrufen und filtern
 
 **GET** `/api/transactions`
 Gibt eine Liste aller Transaktionen des aktuell eingeloggten Benutzers zurück.
-Diese Liste ist absteigend nach Datum sortiert.
+Bei Angabe von den Query-Params `from` & `to`, werden Transaktionen zurückgegeben, die zwischen `startDate` und `endDate` liegen, inklusive der beiden Daten. 
+Zusätzlich kann durch den Query-Param `categoryIds` nach Kategorien gefiltert werden.
+
+**Query-Params:**
+
+[FilterDTO](#46-filterdto)
 
 **Responses:**
-- http 200, data: List[[ResponseDTO](#51-responsedto)]
+- http 200, data: List[[ResponseDTO](#41-responsedto)]
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 
 ### 2.2 Spezifische Transaktion abrufen
@@ -78,7 +80,7 @@ Diese Liste ist absteigend nach Datum sortiert.
 Gibt die Daten einer spezifischen Transaktion zurück.
 
 **Responses:**
-- http 200, data: [ResponseDTO](#51-responsedto)
+- http 200, data: [ResponseDTO](#41-responsedto)
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 
 ### 2.3 Transaktion erstellen
@@ -90,10 +92,10 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 
 **Request Body:**
 
-[CreateDTO](#52-createdto)
+[CreateDTO](#42-createdto)
 
 **Responses:**
-- http 201, data: [AutoDetectConflictDto](#53-autodetectconflictdto)
+- http 201, data: [AutoDetectConflictDto](#43-autodetectconflictdto)
 - http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. fehlende Felder, ungültiges Datum)
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 - http 404, status: NOT_FOUND_ERROR, wenn die angegebene Kategorie, oder die default-category nicht gefunden wird
@@ -105,10 +107,10 @@ Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categ
 
 **Request Body:**
 
-[UpdateDTO](#54-updatedto)
+[UpdateDTO](#44-updatedto)
 
 **Responses:**
-- http 200, data: [ResponseDTO](#51-responsedto)
+- http 200, data: [ResponseDTO](#41-responsedto)
 - http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 - http 404, status: NOT_FOUND_ERROR, die Transaktion oder die angegebene Kategorie nicht gefunden wird
@@ -133,32 +135,9 @@ Löscht alle Transaktionen des aktuell eingeloggten Benutzers.
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 
 
-## 3. Transaktionen filtern
+## 3. Auto-detect Kategorie
 
-### 3.1 Transaktionen nach Datum filtern
-
-**GET** `/api/transactions?startDate=2024-01-01&endDate=2024-01-31`
-Gibt alle Transaktionen zurück, die zwischen `startDate` und `endDate` liegen, inklusive der beiden Daten. 
-Die Liste ist nach Datum sortiert, absteigend.
-
-**Responses:**
-
-Siehe **GET**[/api/transactions](#21-alle-transaktionen-abrufen)
-
-### 3.2 Transaktionen nach Kategorien filtern
-
-**GET** `/api/transactions?categoryIds=1&categoryIds=2`
-Gibt alle Transaktionen zurück, die zu den Kategorien gehören.
-Die Liste ist nach Datum sortiert, absteigend.
-
-**Responses:**
-
-Siehe **GET**[/api/transactions](#21-alle-transaktionen-abrufen)
-
-
-## 4. Auto-detect Kategorie
-
-### 4.1 Kategorie zuordnen für Transaktionen, mit Filter
+### 3.1 Kategorie zuordnen für Transaktionen, mit Filter
 
 **POST** `/api/transactions/auto-categorize`
 Kategorisiert ALLE Transaktionen, welche die gegebenen Bedingungen erfüllen, automatisch. Es wird dementsprechend jeweils categorySource=Auto gesetzt.
@@ -166,18 +145,18 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
 
 **Request-Body:**
 
-[CategorizeRequestDTO](#55-categorizerequestdto)
+[CategorizeRequestDTO](#45-categorizerequestdto)
 
 **Responses:**
-- http 200, data: List[[AutoDetectConflictDTO](#53-autodetectconflictdto)]
+- http 200, data: List[[AutoDetectConflictDTO](#43-autodetectconflictdto)]
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
 - http 404, status: NOT_FOUND_ERROR, wenn die default-category nicht gefunden wurde
 
 
-## 5. DTOs
+## 4. DTOs
 
-### 5.1 ResponseDTO
-**GET**[/api/transactions](#21-alle-transaktionen-abrufen)
+### 4.1 ResponseDTO
+**GET**[/api/transactions](#21-alle-transaktionen-abrufen-und-filtern)
 
 **GET**[/api/transactions/{id}](#22-spezifische-transaktion-abrufen)
 
@@ -194,7 +173,7 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
 }
 ```
 
-### 5.2 CreateDTO
+### 4.2 CreateDTO
 **POST**[/api/transactions](#23-transaktion-erstellen)
 ```json
 {
@@ -222,10 +201,10 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
     - optional
     - max. 250 Zeichen
 
-### 5.3 AutoDetectConflictDTO
+### 4.3 AutoDetectConflictDTO
 **POST**[/api/transactions](#23-transaktion-erstellen)
 
-**POST**[/api/transactions/auto-categorize](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
+**POST**[/api/transactions/auto-categorize](#31-kategorie-zuordnen-für-transaktionen-mit-filter)
 ```json
 {
     "transaction": ResponseDTO,
@@ -233,7 +212,7 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
 }
 ```
 
-### 5.4 UpdateDTO
+### 4.4 UpdateDTO
 **PUT**[/api/transactions/{id}](#24-transaktion-aktualisieren)
 ```json
 {
@@ -261,29 +240,48 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
     - optional
     - max. 250 Zeichen
 
-### 5.5 CategorizeRequestDTO
-**POST**[/api/transactions/auto-categorize](#41-kategorie-zuordnen-für-transaktionen-mit-filter)
+### 4.5 CategorizeRequestDTO
+**POST**[/api/transactions/auto-categorize](#31-kategorie-zuordnen-für-transaktionen-mit-filter)
 ```json
+
 {
-    "categoryIds": [1, 2, 3],   // optional, categories to apply
-    "filters": {
-        "from": "2024-01-01",   // optional
-        "to": "2024-01-31", // optional
-        "transactionIds": [1, 2, 3],    // optional, default=alle transactions
-        "overwriteManual": false    // optional, default=false
-    }
+    "applyCategoryIds": [1, 2, 3],  // Categories to apply
+    "overwriteManual": false,   // false -> ignore transactions with CategorySource=Manual
+    "filter": FilterDTO
 }
 ```
 **Validierung**
-- `categoryIds`
-    - optional, default=alle
-- `from`
-    - optional, default=von-anfang
-    - DateOnly format, YYYY-MM-DD
-- `to`
-    - optional, default=currentDate
-    - DateOnly format, YYYY-MM-DD
-- `transactionIds`
+- `applyCategoryIds`
     - optional, default=alle
 - `overwriteManual`
     - optional, default=false
+- `filter`
+    - [siehe FilterDTO](#46-filterdto)
+
+### 4.6 FilterDTO
+**GET**[/api/transactions](#21-alle-transaktionen-abrufen-und-filtern)
+
+**POST**[/api/transactions/auto-categorize](#31-kategorie-zuordnen-für-transaktionen-mit-filter)
+
+```json
+{
+    "from": "YYYY-MM-DD",
+    "to": "YYYY-MM-DD",
+    "transactionIds": [5, 6, 7],
+    "categoryIds": [2, 6, 1],
+    "excludeCategoryIds": [1],  // Categories to ignore
+}
+```
+**Validierung**
+- `from`
+    - optional, default=alle
+    - DateOnly format, YYYY-MM-DD
+- `to`
+    - optional, default=alle
+    - DateOnly format, YYYY-MM-DD
+- `transactionIds`
+    - optional, default=alle
+- `categoryIds`
+    - optional, default=alle
+- `excludeCategoryIds`
+    - optional, default=[]
