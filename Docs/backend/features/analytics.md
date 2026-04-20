@@ -1,8 +1,6 @@
 # Analytics
 `/api/analytics/` beschäftigt sich mit der Analyse der Transaktionsdaten.
 
-## ToC
-
 - [1. Overview](#1-overview)
 - [2. Endpoints](#2-endpoints)
     - [2.1 Fehlende Transaktionen](#21-fehlende-transaktionen)
