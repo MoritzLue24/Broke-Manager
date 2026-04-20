@@ -113,6 +113,15 @@ Gibt außerdem den Anteil der Kategorie an den gesamten normalisierten Einnahmen
 ## 3. DTOs
 
 ### 3.1 AnalysisPeriodDTO
+**GET** [/api/analytics/missing-transactions](#21-fehlende-transaktionen)
+
+**GET** [/api/analytics/summary](#22-summary)
+
+**GET** [/api/analytics/timeline](#23-timeline)
+
+**GET** [/api/analytics/forecast](#24-forecast)
+
+**GET** [/api/analytics/averages](#25-durchschnittliche-ausgaben-und-einnahmen-von-kategorien)
 ```json
 {
     "range": "CUSTOM",
@@ -132,6 +141,7 @@ Gibt außerdem den Anteil der Kategorie an den gesamten normalisierten Einnahmen
     - DateOnly format
 
 ### 3.2 MissingTransactionResponseDTO
+**GET** [/api/analytics/missing-transactions](#21-fehlende-transaktionen)
 ```json
 {
     "category": CategoryResponseDTO,
@@ -140,6 +150,7 @@ Gibt außerdem den Anteil der Kategorie an den gesamten normalisierten Einnahmen
 ```
 
 ### 3.3 SummaryResponseDTO
+**GET** [/api/analytics/summary](#22-summary)
 ```json
 {
     "income": 2149.21,
@@ -158,6 +169,9 @@ Gibt außerdem den Anteil der Kategorie an den gesamten normalisierten Einnahmen
 ```
 
 ### 3.4 TimelineResponseDTO
+**GET** [/api/analytics/timeline](#23-timeline)
+
+**GET** [/api/analytics/forecast](#24-forecast)
 ```json
 {
     "grouping": "MONTHLY",
@@ -192,6 +206,7 @@ Gibt außerdem den Anteil der Kategorie an den gesamten normalisierten Einnahmen
 ```
 
 ### 3.5 CategoryAveragesResponseDTO
+**GET** [/api/analytics/averages](#25-durchschnittliche-ausgaben-und-einnahmen-von-kategorien)
 ```json
 {
     "category": CategoryResponseDTO,
