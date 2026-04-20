@@ -4,13 +4,20 @@ Diese Dokumentation beschreibt die REST-API für die Broke-Manager Anwendung. Di
 
 ## 1. Base-URL
 ```
-http://localhost:5033/api
+https://localhost:5033/api
 ```
 
 ## 2. Authentifizierung
-Die API verwendet JWT-basierte Authentifizierung. Nach dem Login erhält der Benutzer ein Token, das in den `Authorization`-Header eingefügt werden muss:
-```
-Authorization: Bearer <token>
+Die API verwendet JWT-basierte Authentifizierung. Nach dem Login erhält der Client ein Token, in Form eines Kekses `"jwt"`.
+Der Keks hat die Optionen:
+```cs
+new CookieOptions
+{
+    HttpOnly = true,
+    Secure = true,
+    SameSite = SameSiteMode.Strict,
+    Expires = DateTime.UtcNow.AddHours(1)
+}
 ```
 
 ## 3. Response-Format
