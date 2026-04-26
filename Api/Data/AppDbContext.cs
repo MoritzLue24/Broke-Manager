@@ -25,6 +25,7 @@ namespace Api.Data
                 e.HasIndex(u => u.Email).IsUnique();
                 e.Property(u => u.Email).HasMaxLength(255);
                 e.Property(u => u.PasswordHash).HasMaxLength(255);
+                e.Property(u => u.Role).HasConversion<string>().HasMaxLength(128);
 
                 // User-Transaction, one-to-many relation
                 e.HasMany(u => u.Transactions)

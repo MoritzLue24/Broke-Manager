@@ -2,7 +2,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Api.DTOs.Transactions;
 using Api.Exceptions;
-using System.Xml;
+
 
 namespace Api.Services.Transaction
 {
@@ -26,7 +26,7 @@ namespace Api.Services.Transaction
                     CounterParty = t.CounterParty,
                     Title = t.Title,
                     CategoryId = t.CategoryId,
-                    CategoryName = t.Category != null ? t.Category.Name : "Other" // hier checke ich nicht so ganz was dann gemacht werden soll
+                    CategoryName = t.Category.Name
                 })
                 .ToListAsync();
         }   
@@ -43,21 +43,32 @@ namespace Api.Services.Transaction
                     CounterParty = t.CounterParty,
                     Title = t.Title,
                     CategoryId = t.CategoryId,
-                    CategoryName = t.Category != null ? t.Category.Name : "Other" // hier checke ich nicht so ganz was dann gemacht werden soll
+                    CategoryName = t.Category.Name
                 })
                 .FirstOrDefaultAsync();
+            if(transaction == null)
+            {
+                throw new NotFoundException($"Transaction with ID {transactionId} not found for user with ID {userId}");
+            }
 
             return transaction;
         }
 
         public async Task<TransactionResponseDto> CreateTransactionAsync(int userId, TransactionCreateDto dto)
         {
+            if(dto.CategoryId == null)
+            {
+                dto.CategoryId = await _dbContext.Categories.Where(c => c.UserId == userId && c.IsDefault == true).Select(c => c.Id).FirstOrDefaultAsync();
+            }
+
 
             var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == dto.CategoryId && c.UserId == userId);
             if (category == null)
             {
                 throw new NotFoundException($"Category with ID {dto.CategoryId} not found for user with ID {userId}");
             }
+
+            
             
             
             var transaction = new Models.Transaction
@@ -67,7 +78,7 @@ namespace Api.Services.Transaction
                 Amount = dto.Amount,
                 CounterParty = dto.CounterParty,
                 Title = dto.Title,
-                CategoryId = dto.CategoryId
+                CategoryId = dto.CategoryId.Value
             };
 
             _dbContext.Transactions.Add(transaction);

@@ -4,7 +4,8 @@ namespace Api.Services.Auth
 {
     public interface IAuthService
     {
-        Task<AuthResult> RegisterAsync(RegisterRequestDto registerDto);
-        Task<AuthResult> LoginAsync(LoginRequestDto loginDto);
+        Task<string> RegisterAsync(RegisterRequestDto registerDto);
+        Task<string> LoginAsync(LoginRequestDto loginDto);
+        UserClaimsDto GetCurrentUser();
     }
 }

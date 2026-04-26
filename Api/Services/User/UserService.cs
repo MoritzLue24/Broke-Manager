@@ -27,7 +27,7 @@ namespace Api.Services.User
             return users;
         }
 
-        public async Task<UserResponseDto?> GetUserAsync(int id)
+        public async Task<UserResponseDto> GetUserAsync(int id)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)

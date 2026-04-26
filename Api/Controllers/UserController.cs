@@ -119,7 +119,7 @@ namespace Api.Controllers
             return NoContent();
         }
 
-        [HttpPut("me/password")]
+        [HttpPut("me/change")]
         public async Task<ActionResult> ChangeMyPassword([FromBody] ChangePasswordDto dto)
         {
             
