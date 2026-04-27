@@ -16,12 +16,14 @@ namespace Api.Controllers
         [HttpGet("summary/{days}")]
         public async Task<ActionResult<SummaryResponseDto>> GetSummary([FromRoute] int days)
         {
+            await Task.CompletedTask;
             return NoContent();
         }
 
         [HttpGet("forecast/{days}")]
         public async Task<ActionResult<ForecastResponseDto>> GetForecast([FromRoute] int days)
         {
+            await Task.CompletedTask;
             return NoContent();
         }
     }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using Api.Data;
 using DotNetEnv;
 using Api.Services.User;
@@ -7,13 +8,30 @@ using Api.Services.User;
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+string? dbProvider = builder.Configuration["DatabaseProvider"];
 
-builder.Services.AddDbContext<AppDbContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+if (dbProvider == "SqlServer")
+{
+    string connectionString = builder.Configuration.GetConnectionString("SqlServer")
+        ?? throw new MissingConfigurationException("'SqlServer' Connection string not found");
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+}
+else if (dbProvider == "Sqlite")
+{
+    string connectionString = builder.Configuration.GetConnectionString("Sqlite")
+        ?? throw new MissingConfigurationException("'Sqlite' Connection string not found");
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
+}
+else
+{
+    throw new NotImplementedException("Invalid Database provider in appsettings");
+}
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options => 
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+    );
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -23,6 +41,8 @@ builder.Services.AddScoped<Api.Services.Auth.IAuthService, Api.Services.Auth.Aut
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,52 +1,57 @@
 using Microsoft.AspNetCore.Mvc;
-using Api.Data;
 using Api.DTOs.Keywords;
+using Api.Services.Keywords;
 
 
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("api/keywords")]
+    [Route("api/categories/{categoryId}/keywords")]
     public class KeywordController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IKeywordService _keywordService;
         
-        public KeywordController(AppDbContext dbContext)
+        public KeywordController(IKeywordService keywordService)
         {
-            _dbContext = dbContext;
+            _keywordService = keywordService;
         }
 
         [HttpPost]
-        public async Task<ActionResult<KeywordResponseDto>> CreateKeyword([FromBody] KeywordCreateDto createDto)
+        public async Task<ActionResult<KeywordResponseDto>> CreateKeyword(
+            [FromRoute] int categoryId,
+            [FromBody] KeywordCreateDto createDto)
         {
+            int userId = 1;
+            return await _keywordService.CreateAsync(userId, categoryId, createDto);
+        }
+
+        [HttpPut("{keywordId}")]
+        public async Task<ActionResult> UpdateKeyword(
+            [FromRoute] int categoryId,
+            [FromRoute] int keywordId,
+            [FromBody] KeywordUpdateDto updateDto)
+        {
+            int userId = 1;
+            await _keywordService.UpdateAsync(userId, categoryId, keywordId, updateDto);
             return NoContent();
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateKeyword(int id, [FromBody] KeywordUpdateDto updateDto)
+        [HttpDelete]
+        public async Task<ActionResult> DeleteAll(
+            [FromRoute] int categoryId)
         {
-            // TODO: Check Keyword-Owner
-            var keyword = await _dbContext.Keywords.FindAsync(id);
-            if (keyword == null)
-            {
-                return NotFound();
-            }
-            keyword.Value = updateDto.Value;
-            await _dbContext.SaveChangesAsync();
+            int userId = 1;
+            await _keywordService.DeleteAllAsync(userId, categoryId);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteKeyword(int id)
+        [HttpDelete("{keywordId}")]
+        public async Task<ActionResult> DeleteKeyword(
+            [FromRoute] int categoryId,
+            [FromRoute] int keywordId)
         {
-            // TODO: Check Owner
-            var keyword = await _dbContext.Keywords.FindAsync(id);
-            if (keyword == null)
-            {
-                return NotFound();
-            }
-            _dbContext.Keywords.Remove(keyword);
-            await _dbContext.SaveChangesAsync();
+            int userId = 1;
+            await _keywordService.DeleteByIdAsync(userId, categoryId, keywordId);
             return NoContent();
         }
     }

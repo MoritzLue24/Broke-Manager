@@ -95,6 +95,7 @@ namespace Api.Controllers
         [HttpPost("import")]
         public async Task<ActionResult> ImportCSV(IFormFile file)
         {
+            await Task.CompletedTask;
             return NoContent();
         }
     }
