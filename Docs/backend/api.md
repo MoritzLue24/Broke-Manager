@@ -21,7 +21,7 @@ new CookieOptions
 ```
 
 ## 3. Response-Format
-Alle Responses sind im JSON-Format. Ist die Response erfolgreich, ist "error" null. Das Field "details" ist nicht verlässlich gegeben, nur z.B. bei VALIDATION_ERRORs
+Alle Responses sind im JSON-Format. Ist die Response erfolgreich, ist "error" null. Das Field "details" ist nicht verlässlich gegeben, nur z.B. bei VALIDATION_ERRORs. Im developement environment ist der error bei internen server errors detailliert, in production nur sowas wie "Internal server error occured".
 ```json
 {
     "data": DTO,    // or null

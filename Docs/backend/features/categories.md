@@ -66,7 +66,7 @@ Erstellt eine neue Kategorie
 
 ### 1.4 Eine Kategorie aktualisieren
 
-**PUT** `/api/categories/{id}`
+**PATCH** `/api/categories/{id}`
 Aktualisiert eine kategorie
 
 **Request-Body**
@@ -118,7 +118,7 @@ Fügt ein neues Keyword einer Kategorie hinzu.
 
 ### 2.2 Keyword updaten
 
-**PUT** `/api/categories/{categoryId}/keywords/{keywordId}`
+**PATCH** `/api/categories/{categoryId}/keywords/{keywordId}`
 Aktualisiert ein Keyword.
 
 **Request-Body:**
@@ -151,7 +151,7 @@ Löscht ein keyword
 
 **POST** [/api/categories](#13-neue-kategorie-erstellen)
 
-**PUT** [/api/categories/{id}](#14-eine-kategorie-aktualisieren)
+**PATCH** [/api/categories/{id}](#14-eine-kategorie-aktualisieren)
 
 ```json
 {
@@ -176,7 +176,7 @@ Löscht ein keyword
 ```
 
 ### 3.3 UpdateDTO
-**PUT** [/api/categories/{id}](#14-eine-kategorie-aktualisieren)
+**PATCH** [/api/categories/{id}](#14-eine-kategorie-aktualisieren)
 
 ```json
 {
@@ -188,7 +188,7 @@ Löscht ein keyword
 ### 3.4 KeywordResponseDTO
 **POST** [/api/categories/{categoryId}/keywords](#21-neues-keyword-erstellen)
 
-**PUT** [/api/categories/{categoryId}/keywords/{keywordId}](#22-keyword-updaten)
+**PATCH** [/api/categories/{categoryId}/keywords/{keywordId}](#22-keyword-updaten)
 
 ```json
 {
@@ -208,7 +208,7 @@ Löscht ein keyword
 ```
 
 ### 3.6 KeywordUpdateDTO
-**PUT** [/api/categories/{categoryId}/keywords/{keywordId}](#22-keyword-updaten)
+**PATCH** [/api/categories/{categoryId}/keywords/{keywordId}](#22-keyword-updaten)
 
 ```json
 {

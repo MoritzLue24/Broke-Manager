@@ -33,7 +33,7 @@ CREATE TABLE Users (
 
 	CONSTRAINT PK_Users PRIMARY KEY (Id),
     CONSTRAINT UQ_Users_Email UNIQUE (Email),
-    CONSTRAINT CK_Users_Role CHECK (Role IN ('Admin', 'User')),
+    CONSTRAINT CK_Users_Role CHECK (Role IN ('ADMIN', 'USER')),
 	CONSTRAINT DF_Users_CreatedAt DEFAULT SYSUTCDATETIME() FOR CreatedAt
 );
 ```

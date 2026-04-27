@@ -102,7 +102,7 @@ Wird keine Category übergeben, und es gibt n gleichwertige Category-Treffer, we
 
 ### 2.4 Transaktion aktualisieren
 
-**PUT** `/api/transactions/{id}`
+**PATCH** `/api/transactions/{id}`
 Aktualisiert die Daten einer spezifischen Transaktion. Bei übergabe einer categoryId wird categorySource auf Manual gesetzt.
 
 **Request Body:**
@@ -160,7 +160,7 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
 
 **GET**[/api/transactions/{id}](#22-spezifische-transaktion-abrufen)
 
-**PUT**[/api/transactions/{id}](#24-transaktion-aktualisieren)
+**PATCH**[/api/transactions/{id}](#24-transaktion-aktualisieren)
 ```json
 {
     "id": 2,
@@ -213,7 +213,7 @@ Bei conflicts, also falls zwei Kategorien auf einer Transaktion die gleiche Wert
 ```
 
 ### 4.4 UpdateDTO
-**PUT**[/api/transactions/{id}](#24-transaktion-aktualisieren)
+**PATCH**[/api/transactions/{id}](#24-transaktion-aktualisieren)
 ```json
 {
     "categoryId": 1,

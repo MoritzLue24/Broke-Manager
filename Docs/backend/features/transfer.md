@@ -19,7 +19,17 @@ Durch `/api/transactions/import` und `/api/transactions/export` können Benutzer
 
 ### 2.1 CSV Importieren
 
+**POST** `/api/transactions/import`
+importiert Transaktionen aus einer CSV-Datei.
+
+**Response:**
+
 ### 2.2 CSV Exportieren
+
+**POST** `/api/transactions/export`
+exportiert Transaktionen in eine CSV-Datei.
+
+**Response:**
 
 
 ## 3. DTOs

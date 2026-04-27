@@ -29,11 +29,11 @@ Gibt die Daten des aktuell eingeloggten Benutzers zurück.
 **Responses:**
 - http 200, data: [ResponseDTO](#31-responsedto)
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
-- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wurde
 
 ### 1.2 Benutzerinformationen aktualisieren
 
-**PUT** `/api/users/me`
+**PATCH** `/api/users/me`
 Aktualisiert die Daten des aktuell eingeloggten Benutzers.
 
 **Request Body:**
@@ -44,7 +44,7 @@ Aktualisiert die Daten des aktuell eingeloggten Benutzers.
 - http 200, data: [ResponseDTO](#31-responsedto)
 - http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. Email-Format falsch)
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
-- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wurde
 - http 409, status: ALREADY_EXISTS_ERROR, bei bereits registrierter Email
 
 ### 1.3 Passwort ändern
@@ -59,8 +59,8 @@ Aktualisiert die Daten des aktuell eingeloggten Benutzers.
 **Responses:**
 - http 204, wenn das Password erfolgreich geändert wurde.
 - http 400, status: VALIDATION_ERROR, bei ungültigen Eingaben (z.B. Passwörter stimmen nicht überein).
-- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
-- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+- http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird, oder das Passwort falsch ist.
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wurde
 
 ### 1.4 Benutzer löschen
 
@@ -70,7 +70,7 @@ Löscht den aktuell eingeloggten Benutzer.
 **Responses:**
 - http 204, wenn der Benutzer erfolgreich gelöscht wurde.
 - http 401, status: UNAUTHORIZED_ERROR, wenn kein gültiges JWT-Token bereitgestellt wird
-- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wird
+- http 404, status: NOT_FOUND_ERROR, wenn der Benutzer nicht gefunden wurde
 
 
 ## 2. Admin-Endpoints
@@ -99,7 +99,7 @@ Gibt die Daten eines spezifischen Benutzers zurück.
 
 ### 2.3 Benutzer aktualisieren
 
-**PUT** `/api/users/{id}`
+**PATCH** `/api/users/{id}`
 Aktualisiert die Daten eines spezifischen Benutzers.
 
 **Request Body:**
@@ -148,13 +148,13 @@ Löscht einen spezifischen Benutzer.
 
 **GET** [/api/users/me](#11-benutzerinformationen-abrufen)
 
-**PUT** [/api/users/me](#12-benutzerinformationen-aktualisieren)
+**PATCH** [/api/users/me](#12-benutzerinformationen-aktualisieren)
 
 **GET** [/api/users](#21-alle-benutzer-abrufen)
 
 **GET** [/api/users/{id}](#22-spezifischen-benutzer-abrufen)
 
-**PUT** [/api/users/{id}](#23-benutzer-aktualisieren)
+**PATCH** [/api/users/{id}](#23-benutzer-aktualisieren)
 
 **PATCH** [/api/users/{id}/change-role](#24-benutzerrolle-aktualisieren)
 
@@ -169,9 +169,9 @@ Löscht einen spezifischen Benutzer.
 
 ### 3.2 UpdateDTO
 
-**PUT** [/api/users/me](#12-benutzerinformationen-aktualisieren)
+**PATCH** [/api/users/me](#12-benutzerinformationen-aktualisieren)
 
-**PUT** [/api/users/{id}](#23-benutzer-aktualisieren)
+**PATCH** [/api/users/{id}](#23-benutzer-aktualisieren)
 
 ```json
 {
