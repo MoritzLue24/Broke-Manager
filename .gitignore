@@ -8,7 +8,6 @@ obj/
 # Environment / secrets
 .env
 .env.*
-appsettings.Development.json
 
 # Sqlite
 *.db

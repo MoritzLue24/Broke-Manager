@@ -54,5 +54,12 @@ else
 {
     app.UseHttpsRedirection();
 }
+
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "Healthy",
+    timestamp = DateTime.UtcNow
+}));
+
 app.MapControllers();
 app.Run();

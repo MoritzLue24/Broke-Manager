@@ -1,43 +1,89 @@
-
 services:
-    api:
-        build:
-            context: ./Api
-            dockerfile: Dockerfile.dev
+    nginx:
+        container_name: nginx
+        image: nginx:1.29.8-alpine
         ports:
-            - "8080:8080"
+            - "80:80"
         volumes:
-            - ./Api:/Api
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
         depends_on:
-            - database
+            api:
+                condition: service_healthy
 
-    database:
+    api:
+        container_name: api
+        build: ./Api
+        image: api:latest
+        restart: unless-stopped
+        depends_on:
+            mssql:
+                condition: service_healthy
+        environment:
+            - ConnectionStrings__DefaultConnection=${DEFAULT_DB_CONNECTION}
+
+    migrate:
+        container_name: migrate
+        image: api:latest
+        restart: no
+        depends_on:
+            mssql:
+                condition: service_healthy
+        profiles:
+            - migrate
+        command: ["dotnet", "Api.dll", "--migrate"]
+        environment:
+            - ConnectionStrings__DefaultConnection=${DEFAULT_DB_CONNECTION}
+
+    mssql:
+        container_name: mssql
         image: mcr.microsoft.com/mssql/server:2022-latest
-        container_name: sql_server
-        platform: linux/amd64   # Force x86_64 emulation for ARM hosts
         ports:
             - "1433:1433"
+        volumes:
+            - mssql-data:/var/opt/mssql
         environment:
             - ACCEPT_EULA=Y
-            - MSSQL_SA_PASSWORD=${MICROSOFT_SQL_PASSWORD}
-        volumes:
-            - mssql_data:/var/opt/mssql # Damit deine Daten nicht weg sind, wenn der Container stoppt
+            - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+        healthcheck:
+            test: [
+                "CMD", "/opt/mssql-tools18/bin/sqlcmd", 
+                "-S", "localhost", 
+                "-U", "sa", 
+                "-P", "${MSSQL_SA_PASSWORD}", 
+                "-C", 
+                "-Q", "SELECT 1"
+            ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 60s
 
-    migrator:
-        image: mcr.microsoft.com/dotnet/sdk:8.0 # Wir brauchen das SDK für die Tools
-        container_name: ef_migrator
+    mssql-dev:
+        container_name: mssql-dev
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+            - "1432:1433"
         volumes:
-            - ./Api:/src 
-        working_dir: /src
+            - mssql-dev-data:/var/opt/mssql
+        profiles:
+            - dev
         environment:
-            - ConnectionStrings__DefaultConnection=Server=database;Database=BrokeManagerDb;User Id=sa;Password=${MICROSOFT_SQL_PASSWORD};TrustServerCertificate=True;
-        command: >
-            bash -c "dotnet tool install --global dotnet-ef &&
-            export PATH=\"$$PATH:/root/.dotnet/tools\" &&
-            dotnet restore &&
-            dotnet ef database update"
-        depends_on:
-            - database
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=MyPassword123!
+        healthcheck:
+            test: [
+                "CMD", "/opt/mssql-tools18/bin/sqlcmd", 
+                "-S", "localhost", 
+                "-U", "sa", 
+                "-P", "MyPassword123!", 
+                "-C", 
+                "-Q", "SELECT 1"
+            ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 60s
 
 volumes:
-    mssql_data:
+    mssql-data:
+    mssql-dev-data:
