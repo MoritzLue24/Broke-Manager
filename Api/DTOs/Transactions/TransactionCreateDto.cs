@@ -22,6 +22,10 @@ namespace Api.DTOs.Transactions
         public required string Title { get; set; }
         
         [Range(0, int.MaxValue, ErrorMessage = "CategoryId must be a non-negative integer")]
-        public int? CategoryId { get; set; }
+        /*
+        Das [Range]-Attribut ist clever genug: Wenn der Wert null ist (also nicht mitgeschickt wurde), 
+        ignoriert es die Prüfung. Wenn jedoch ein Wert geschickt wird, muss dieser weiterhin zwischen 0 und dem Maximum liegen.
+        */
+        public  int? CategoryId { get; set; }
     }
 }

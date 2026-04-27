@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-
+// TODO nicht erlauben wenn altes und neues passwort gelich sind
 namespace Api.DTOs.Users
 {
     public class ChangePasswordDto
@@ -18,6 +18,7 @@ namespace Api.DTOs.Users
         public required string NewPassword { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
+        [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
         [MinLength(8, ErrorMessage = "Confirmed new Password must be at least 8 characters long")]
         [StringLength(255, ErrorMessage = "New Password must not exceed 255 characters")]
         public required string ConfirmNewPassword { get; set; }

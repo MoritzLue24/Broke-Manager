@@ -1,4 +1,3 @@
-
 namespace Api.Exceptions
 {
     public class MissingConfigurationException : Exception

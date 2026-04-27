@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Api.Data;
-using Api.Services.Categories;
-using Api.Services.Keywords;
-using Api.Middlewares;
-using Api.Exceptions;
+using DotNetEnv;
+using Api.Services.User;
 
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 string? dbProvider = builder.Configuration["DatabaseProvider"];
@@ -35,9 +35,10 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IKeywordService, KeywordService>();
-
+builder.Services.AddScoped<Api.Services.User.IUserService, Api.Services.User.UserService>();
+builder.Services.AddScoped<Api.Services.Transaction.ITransactionService, Api.Services.Transaction.TransactionService>();
+builder.Services.AddScoped<Api.Services.Auth.IAuthService, Api.Services.Auth.AuthService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

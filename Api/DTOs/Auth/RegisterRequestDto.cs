@@ -16,6 +16,7 @@ namespace Api.DTOs.Auth
         public required string Password { get; set; }
 
         [Required(ErrorMessage = "Confirm Password is required")]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         [StringLength(255, ErrorMessage = "Password must not exceed 255 characters")]
         public required string ConfirmPassword { get; set; }
