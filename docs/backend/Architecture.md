@@ -120,8 +120,9 @@ enum ErrorCode {
 }
 
 class Result<T> {
-    public T? Value { get; }
-    public ErrorCode? Error { get; }
+    public bool Success { get; }
+    public T Value { get; }
+    public ErrorCode Error { get; }
     // ...
 }
 ```
