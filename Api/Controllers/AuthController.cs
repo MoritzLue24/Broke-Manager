@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Api.DTOs.Auth;
-using Api.Services.Token;
 using Api.Data;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;

@@ -55,6 +55,7 @@ else
     app.UseHttpsRedirection();
 }
 
+// Health check endpoint for Docker 
 app.MapGet("/health", () => Results.Ok(new
 {
     status = "Healthy",
