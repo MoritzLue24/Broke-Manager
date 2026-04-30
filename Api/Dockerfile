@@ -1,5 +1,5 @@
 # BUILD STAGE
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /Api
 
 # Dependencies
@@ -12,7 +12,6 @@ COPY . ./
 # Build + Publish
 RUN dotnet publish -c Release -o ./publish /p:UseAppHost=false
 
-# RUNTIME STAGE, not alpine because of missing dependencies
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /Api
 

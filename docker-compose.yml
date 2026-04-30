@@ -1,7 +1,7 @@
 services:
     nginx:
-        container_name: nginx
         image: nginx:1.29.8-alpine
+        restart: unless-stopped
         ports:
             - "80:80"
         volumes:
@@ -9,38 +9,59 @@ services:
         depends_on:
             api:
                 condition: service_healthy
+        networks:
+            - BrokeManager_network
 
     api:
-        container_name: api
-        build: ./Api
+        build:
+            target: build
         image: api:latest
         restart: unless-stopped
         depends_on:
             mssql:
                 condition: service_healthy
+        volumes:
+            - ./Api:/Api
+        command: dotnet watch run --non-interactive --urls http://0.0.0.0:5033
+        env_file: .env
         environment:
-            - ConnectionStrings__DefaultConnection=${DEFAULT_DB_CONNECTION}
+            - ConnectionStrings__DefaultConnection=Server="${DB_CONNECTION_STRING}"
+            - ASPNETCORE_ENVIRONMENT=Development
+            - DOTNET_USE_POLLING_FILE_WATCHER=1
+            - ASPNETCORE_HTTP_PORTS=5033
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:5033/health"] 
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 20s
+        networks:
+            - BrokeManager_network
+        
 
     migrate:
-        container_name: migrate
         image: api:latest
         restart: no
         depends_on:
             mssql:
                 condition: service_healthy
+        env_file: .env
         profiles:
             - migrate
         command: ["dotnet", "Api.dll", "--migrate"]
         environment:
-            - ConnectionStrings__DefaultConnection=${DEFAULT_DB_CONNECTION}
+            - ConnectionStrings__DefaultConnection=Server="${DB_CONNECTION_STRING}"
+        networks:
+            - BrokeManager_network
 
     mssql:
-        container_name: mssql
         image: mcr.microsoft.com/mssql/server:2022-latest
+        restart: unless-stopped
         ports:
             - "1433:1433"
         volumes:
             - mssql-data:/var/opt/mssql
+        env_file: .env
         environment:
             - ACCEPT_EULA=Y
             - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
@@ -57,32 +78,12 @@ services:
             timeout: 10s
             retries: 5
             start_period: 60s
+        networks:
+            - BrokeManager_network
 
-    mssql-dev:
-        container_name: mssql-dev
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        ports:
-            - "1432:1433"
-        volumes:
-            - mssql-dev-data:/var/opt/mssql
-        profiles:
-            - dev
-        environment:
-            - ACCEPT_EULA=Y
-            - MSSQL_SA_PASSWORD=MyPassword123!
-        healthcheck:
-            test: [
-                "CMD", "/opt/mssql-tools18/bin/sqlcmd", 
-                "-S", "localhost", 
-                "-U", "sa", 
-                "-P", "MyPassword123!", 
-                "-C", 
-                "-Q", "SELECT 1"
-            ]
-            interval: 30s
-            timeout: 10s
-            retries: 5
-            start_period: 60s
+networks:
+    BrokeManager_network:
+        driver: bridge
 
 volumes:
     mssql-data:
