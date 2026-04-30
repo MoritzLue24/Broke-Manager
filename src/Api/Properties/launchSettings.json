@@ -1,0 +1,13 @@
+﻿{
+    "profiles": {
+        "http": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "applicationUrl": "http://localhost:5180",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ConnectionStrings__DefaultConnection": "Server=localhost,1432;Database=Broke-Manager;User Id=sa;Password=MyPassword123!;TrustServerCertificate=True;"
+            }
+        }
+    }
+}
