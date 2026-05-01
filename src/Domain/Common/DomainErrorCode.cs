@@ -12,6 +12,8 @@ public enum DomainErrorCode
     //Category
     CategoryNameEmpty = 20,
     CategoryNotFound = 21,
+    InvalidKeyWordFormat = 22,
+
     
     //Transaction
     

@@ -11,10 +11,19 @@ public class Category
     public Guid UserId { get; private set;}
     public string Name { get; private set;}
     public bool IsDefault { get; private set;}
-    // public keywords array
     public DateTime CreatedAt {get; private set;}
 
-    private Category () { } //Für EfCore?? Ich habe keine Ahnung wie das funktioniert
+    private readonly List<Keyword> _keywords = new();
+
+    public IReadOnlyCollection<Keyword> Keywords
+    {
+        get 
+        {
+            return _keywords.AsReadOnly();
+        }
+    }
+
+    //private Category () { } Für EfCore?? Ich habe keine Ahnung wie das funktioniert
     private Category (Guid userId,string name, bool isDefault)
     {
         Id = Guid.NewGuid();
@@ -39,14 +48,15 @@ public class Category
         return DomainResult<Unit>.Ok();
     }
 
-    public DomainResult<Unit> ChangeIsDefault(bool isDefault)
+    public DomainResult<Unit> AddKeyword(string value)
     {
-        IsDefault = isDefault;
+        DomainResult<Keyword> keywordResult = Keyword.Create(value);
+        if(keywordResult.Success == false)
+        {
+            return DomainResult<Unit>.Fail(keywordResult.Error);
+        }
+        
         return DomainResult<Unit>.Ok();
     }
-
-
-
-
 
 }
