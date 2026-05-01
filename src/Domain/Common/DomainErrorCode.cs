@@ -15,6 +15,7 @@ public enum DomainErrorCode
     InvalidKeyWordFormat = 22,
     NotUniqueKeywordWithinOneCategory = 23,
     NoKeywordForDefaultCategory = 24,
+    KeywordNotFounInCategory = 25,
 
     
     //Transaction
