@@ -11,6 +11,7 @@ public class Category
     public Guid UserId { get; private set;}
     public string Name { get; private set;}
     public bool IsDefault { get; private set;}
+    // public keywords array
     public DateTime CreatedAt {get; private set;}
 
     private Category () { } //Für EfCore?? Ich habe keine Ahnung wie das funktioniert

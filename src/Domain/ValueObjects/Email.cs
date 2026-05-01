@@ -8,7 +8,10 @@ public sealed record Email
     public string Value { get; }
 
     private Email(string value)
-        => Value = value;
+    {
+        Value = value;
+    }
+        
 
     public static DomainResult<Email> Create(string value)
     {

@@ -7,7 +7,10 @@ public sealed record Hash
     public string Value { get; }
 
     private Hash(string value)
-        => Value = value;
+    {
+        Value = value;
+    }
+        
 
     public static DomainResult<Hash> Create(string hash)
     {
