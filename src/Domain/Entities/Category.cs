@@ -48,27 +48,19 @@ public class Category
         return DomainResult<Unit>.Ok();
     }
 
-    public DomainResult<Unit> AddKeyword(string value)
+    public DomainResult<Unit> AddKeyword(Keyword keyword)
     {
         if(IsDefault)
         {
             return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
         }
         
-        DomainResult<Keyword> keywordResult = Keyword.Create(value);
-        
-        if(keywordResult.Success == false)
-        {
-            return DomainResult<Unit>.Fail(keywordResult.Error);
-        }
-        
-        
-        if(_keywords.Any(k => k == keywordResult.Value))
+        if(_keywords.Any(k => k == keyword))
         {
             return DomainResult<Unit>.Fail(DomainErrorCode.NotUniqueKeywordWithinOneCategory);
         }
 
-        _keywords.Add(keywordResult.Value);
+        _keywords.Add(keyword);
         return DomainResult<Unit>.Ok();
     }
 
