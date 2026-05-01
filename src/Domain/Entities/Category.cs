@@ -50,13 +50,42 @@ public class Category
 
     public DomainResult<Unit> AddKeyword(string value)
     {
+        if(IsDefault)
+        {
+            return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
+        }
+        
         DomainResult<Keyword> keywordResult = Keyword.Create(value);
+        
         if(keywordResult.Success == false)
         {
             return DomainResult<Unit>.Fail(keywordResult.Error);
         }
         
+        
+        if(_keywords.Any(k => k == keywordResult.Value))
+        {
+            return DomainResult<Unit>.Fail(DomainErrorCode.NotUniqueKeywordWithinOneCategory);
+        }
+
+        _keywords.Add(keywordResult.Value);
         return DomainResult<Unit>.Ok();
     }
 
+    public DomainResult<Unit> DeleteKeyword(Keyword keyword)
+    {
+        if(IsDefault)
+        {
+            return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
+        }
+
+        if (_keywords.Remove(keyword) == false)
+        {
+            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordNotFounInCategory);
+        }
+
+        return DomainResult<Unit>.Ok();
+    }
+
+    
 }

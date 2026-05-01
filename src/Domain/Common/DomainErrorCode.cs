@@ -13,6 +13,8 @@ public enum DomainErrorCode
     CategoryNameEmpty = 20,
     CategoryNotFound = 21,
     InvalidKeyWordFormat = 22,
+    NotUniqueKeywordWithinOneCategory = 23,
+    NoKeywordForDefaultCategory = 24,
 
     
     //Transaction
