@@ -29,11 +29,18 @@ public class DomainResult<T>
     }
 
     public static DomainResult<T> Ok(T value)
-        => new(value);
-
+    {
+        return new DomainResult<T>(value);
+    }
+    
     public static DomainResult<Unit> Ok()
-        => new(Unit.Value);
+    {
+        return new DomainResult<Unit>(Unit.Value);
+    }
 
     public static DomainResult<T> Fail(DomainErrorCode error)
-        => new(error);
+    {
+        return new DomainResult<T>(error);
+    }
+        
 }
