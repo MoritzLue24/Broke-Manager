@@ -152,8 +152,9 @@ public class Transaction
                 return DomainResult<Unit>.Ok();
         }
 
-
-
-
+        public DomainResult<Unit> DeleteTransaction()
+        {
+                return DomainResult<Unit>.Ok();
+        }
 
 }
