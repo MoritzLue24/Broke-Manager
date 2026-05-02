@@ -20,7 +20,7 @@ public enum DomainErrorCode
 
     
     //Transaction
-    
+    InvalidRecurringDate = 30,
 
 
 }
