@@ -79,7 +79,7 @@ public class Transaction
 
                 if(recurringDetail !=null)
                 {
-                        if(date > recurringDetail.End)
+                        if(date > recurringDetail.End || date < recurringDetail.Start)
                         {
                                 return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidTransactionDate);
                         }
@@ -95,7 +95,9 @@ public class Transaction
                 {
                        return DomainResult<Unit>.Fail(DomainErrorCode.InvalidId); 
                 }
-
+                
+                CategoryId = categoryId;
+                
                 return DomainResult<Unit>.Ok();
         }
 
@@ -105,6 +107,8 @@ public class Transaction
                 {
                         return DomainResult<Unit>.Fail(DomainErrorCode.InvalidCategorySource);
                 }
+
+                CategorySource = categorySource;
                 
                 return DomainResult<Unit>.Ok();
         }
@@ -116,6 +120,8 @@ public class Transaction
                         return DomainResult<Unit>.Fail(DomainErrorCode.WrongAmount );
                 }
 
+                Amount = amount;
+
                 return DomainResult<Unit>.Ok();
         }
 
@@ -123,11 +129,13 @@ public class Transaction
         {
                 if(RecurringDetail !=null)
                 {
-                        if(date > RecurringDetail.End)
+                        if(date > RecurringDetail.End || date < RecurringDetail.Start)
                         {
                                 return DomainResult<Unit>.Fail(DomainErrorCode.InvalidTransactionDate);
                         }
                 }
+
+                Date = date;
 
                 return DomainResult<Unit>.Ok();
         }
@@ -139,6 +147,8 @@ public class Transaction
                         return DomainResult<Unit>.Fail(DomainErrorCode.TransactionTitleEmpty);
                 }
 
+                Title = title;
+
                 return DomainResult<Unit>.Ok();
         }
 
@@ -148,7 +158,9 @@ public class Transaction
                 {
                         return DomainResult<Unit>.Fail(DomainErrorCode.TransactionCounterPartyEmpty);
                 }
-
+                
+                CounterParty = counterParty;
+                
                 return DomainResult<Unit>.Ok();
         }
 
