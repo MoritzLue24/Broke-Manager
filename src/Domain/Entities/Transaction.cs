@@ -88,6 +88,50 @@ public class Transaction
                 return DomainResult<Transaction>.Ok(new Transaction(userId, categoryId, categorySource, amount, date, title, recurringDetail, counterParty));
         }
 
+
+        public DomainResult<Unit> ChangeCategory(Guid categoryId)
+        {
+                if(categoryId == Guid.Empty)
+                {
+                       return DomainResult<Unit>.Fail(DomainErrorCode.InvalidId); 
+                }
+
+                return DomainResult<Unit>.Ok();
+        }
+
+        public DomainResult<Unit> ChangeCategorySource(CategorySource categorySource)
+        {
+                if (!Enum.IsDefined(typeof(CategorySource), categorySource))
+                {
+                        return DomainResult<Unit>.Fail(DomainErrorCode.InvalidCategorySource);
+                }
+                
+                return DomainResult<Unit>.Ok();
+        }
+
+        public DomainResult<Unit> ChangeAmount(decimal amount)
+        {
+                if(amount == 0)
+                {
+                        return DomainResult<Unit>.Fail(DomainErrorCode.WrongAmount );
+                }
+
+                return DomainResult<Unit>.Ok();
+        }
+
+        public DomainResult<Unit> ChangeDate(DateOnly date)
+        {
+                if(RecurringDetail !=null)
+                {
+                        if(date > RecurringDetail.End)
+                        {
+                                return DomainResult<Unit>.Fail(DomainErrorCode.InvalidTransactionDate);
+                        }
+                }
+
+                return DomainResult<Unit>.Ok();
+        }
+
         public DomainResult<Unit> ChangeTitle(string title)
         {
                 if (string.IsNullOrWhiteSpace(title))
@@ -98,13 +142,13 @@ public class Transaction
                 return DomainResult<Unit>.Ok();
         }
 
-        public DomainResult<Unit> ChangeAmount(decimal amount)
+         public DomainResult<Unit> ChangeCounterParty(string counterParty)
         {
-                if(amount == 0)
+                if (string.IsNullOrWhiteSpace(counterParty))
                 {
-                        return DomainResult<Unit>.Fail(DomainErrorCode.WrongAmount );
+                        return DomainResult<Unit>.Fail(DomainErrorCode.TransactionCounterPartyEmpty);
                 }
-                
+
                 return DomainResult<Unit>.Ok();
         }
 

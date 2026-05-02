@@ -26,6 +26,11 @@ public sealed record RecurringDetail
             finalEnd = DateOnly.MaxValue;
         }
 
+        if (!Enum.IsDefined(typeof(CategorySource), interval))
+                {
+                        return DomainResult<RecurringDetail>.Fail(DomainErrorCode.InvalidInterval);
+                }
+
         return DomainResult<RecurringDetail>.Ok(new RecurringDetail(finalEnd, interval));
     }
 

@@ -26,6 +26,6 @@ public enum DomainErrorCode
     TransactionTitleEmpty = 32,
     TransactionCounterPartyEmpty = 33,
     InvalidCategorySource = 34,
-
+    InvalidInterval = 35,
 
 }
