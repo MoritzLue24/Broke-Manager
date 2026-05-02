@@ -79,5 +79,15 @@ public class Category
         return DomainResult<Unit>.Ok();
     }
 
+    public DomainResult<Unit> DeleteCategory(Category category)
+    {
+        if (IsDefault)
+        {
+            return DomainResult<Unit>.Fail(DomainErrorCode.DefaultCategoryCannotDelete );
+        }
+
+        return DomainResult<Unit>.Ok();
+    }
+
     
 }
