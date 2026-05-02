@@ -24,7 +24,10 @@ public class User
     }
 
     public static DomainResult<User> Create(Email email, Hash passwordHash)
-        => DomainResult<User>.Ok(new(email, passwordHash, Role.User));
+    {
+        return DomainResult<User>.Ok(new(email, passwordHash, Role.User));
+    }
+        
 
     public DomainResult<Unit> ChangeEmail(Email email)
     {
