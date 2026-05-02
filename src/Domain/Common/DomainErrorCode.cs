@@ -16,6 +16,7 @@ public enum DomainErrorCode
     NotUniqueKeywordWithinOneCategory = 23,
     NoKeywordForDefaultCategory = 24,
     KeywordNotFounInCategory = 25,
+    DefaultCategoryCannotDelete = 26,
 
     
     //Transaction
