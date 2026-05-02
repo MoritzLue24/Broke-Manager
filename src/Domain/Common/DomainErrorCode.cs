@@ -3,6 +3,7 @@ namespace Domain.Common;
 public enum DomainErrorCode
 {
     //Common
+    InvalidId = 0,
     
     //User
     InvalidEmailFormat = 10,
@@ -20,7 +21,11 @@ public enum DomainErrorCode
 
     
     //Transaction
-    InvalidRecurringDate = 30,
+    InvalidTransactionDate = 30,
+    WrongAmount = 31,
+    TransactionTitleEmpty = 32,
+    TransactionCounterPartyEmpty = 33,
+    InvalidCategorySource = 34,
 
 
 }

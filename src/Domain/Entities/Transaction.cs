@@ -27,8 +27,7 @@ public class Transaction
                 decimal amount, 
                 DateOnly date, 
                 string title, 
-                RecurringDetail? 
-                recurringDetail, 
+                RecurringDetail? recurringDetail, 
                 string counterParty)
         {
                 Id = Guid.NewGuid();
@@ -50,11 +49,63 @@ public class Transaction
                 decimal amount, 
                 DateOnly date, 
                 string title, 
-                RecurringDetail? 
-                recurringDetail, 
+                RecurringDetail? recurringDetail, 
                 string counterParty)
         {
+                if(userId == Guid.Empty || categoryId == Guid.Empty)
+                {
+                        return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidId);
+                }
                 
+                if(amount == 0)
+                {
+                        return DomainResult<Transaction>.Fail(DomainErrorCode.WrongAmount );
+                }
+
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                        return DomainResult<Transaction>.Fail(DomainErrorCode.TransactionTitleEmpty);
+                }
+                 
+                if (string.IsNullOrWhiteSpace(counterParty))
+                {
+                        return DomainResult<Transaction>.Fail(DomainErrorCode.TransactionCounterPartyEmpty);
+                }
+
+                if (!Enum.IsDefined(typeof(CategorySource), categorySource))
+                {
+                        return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidCategorySource);
+                }
+
+                if(recurringDetail !=null)
+                {
+                        if(date > recurringDetail.End)
+                        {
+                                return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidTransactionDate);
+                        }
+                }
+
+                return DomainResult<Transaction>.Ok(new Transaction(userId, categoryId, categorySource, amount, date, title, recurringDetail, counterParty));
+        }
+
+        public DomainResult<Unit> ChangeTitle(string title)
+        {
+                if (string.IsNullOrWhiteSpace(title))
+                {
+                        return DomainResult<Unit>.Fail(DomainErrorCode.TransactionTitleEmpty);
+                }
+
+                return DomainResult<Unit>.Ok();
+        }
+
+        public DomainResult<Unit> ChangeAmount(decimal amount)
+        {
+                if(amount == 0)
+                {
+                        return DomainResult<Unit>.Fail(DomainErrorCode.WrongAmount );
+                }
+                
+                return DomainResult<Unit>.Ok();
         }
 
 

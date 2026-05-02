@@ -35,6 +35,12 @@ public class Category
 
     public static DomainResult<Category> Create(Guid userId, string name, bool isDefault)
     {
+
+        if(userId == Guid.Empty)
+        {
+             return DomainResult<Category>.Fail(DomainErrorCode.InvalidId);
+        }
+
         if (string.IsNullOrWhiteSpace(name)){
             return DomainResult<Category>.Fail(DomainErrorCode.CategoryNameEmpty);
         }
