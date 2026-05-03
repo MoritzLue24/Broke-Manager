@@ -13,19 +13,17 @@ If invariants are violated, the method returns `DomainResult` with `DomainResult
 - Amount must not be zero
 - A transactions category must belong to the same user as the transaction
 - A transactions date must not be in the future
-- `standingOrder` could be null -> `Transaction` is not recurring
-
-**StandingOrder**
-- If no `executionDay` is specified, `executionDay = 1`
-- If no `endDate` is specified, `endDate = DateOnly.MaxValue`
-- `startDate <= endDate`
 
 **Category**
-- Name not empty / whitespace
+- `name` not empty / whitespace
 - Cannot be deleted if its the default-category
-- Keywords of the default-category cannot be added / removed
-- Keywords within a category must be unique
-- Keyword not empty / whitespace
+- `keyword`'s of the default-category cannot be added / removed
+- `keyword`'s within a category must be unique
+- `keyword`'s not empty / whitespace
+- `recurringDetail`:
+	- If no `executionDay` is specified, `executionDay = 1`? not sure
+	- If no `endDate` is specified, `endDate = DateOnly.MaxValue`
+	- `startDate <= endDate`
 
 **Cross-Aggregate Rules**
 - Unique email
@@ -67,17 +65,6 @@ classDiagram
         +title: string
         +counterParty: string
     }
-    
-    class StandingOrder {
-	    <<Entity>>
-	    +id: Guid
-	    +userId: Guid
-	    +interval: Interval
-	    +executionDay: int
-	    +startDate: DateOnly
-	    +endDate: DateOnly
-	    +createdAt: DateTime
-    }
 
     class Category {
         <<Entity>>
@@ -85,7 +72,8 @@ classDiagram
         +userId: Guid
         +name: string
         +isDefault: bool
-        +keywords: Keyword[]
+        +keywords: string[]
+        +recurringDetail: RecurringDetail | null
         +createdAt: DateTime
     }
 
@@ -99,12 +87,14 @@ classDiagram
         <<ValueObject>>
         +value: string
     }
-
-    class Keyword {
-        <<ValueObject>>
-        +value: string
-    }
-
+	
+	class RecurringDetail {
+		<<ValueObject>>
+		+interval: Interval
+	    +executionDay: int
+	    +startDate: DateOnly
+	    +endDate: DateOnly
+	}
 
 
     class Role {
@@ -129,19 +119,18 @@ classDiagram
     }
 
 
-	User "1" --> "n" StandingOrder
-	StandingOrder --> Interval : uses
-	StandingOrder "1" --> "n" Transaction
-	User "1" --> "n" Transaction
-	User "1" --> "n" Category
-    Category "1" --> "n" Transaction
-    
-    User --> Email : uses
+	User --> Email : uses
     User --> Hash : uses
     User --> Role : uses
+
+	User "1" --> "n" Category
+    Category "1" --> "n" Transaction
+	Category --> RecurringDetail : uses
+    RecurringDetail --> Interval : uses
+
+	User "1" --> "n" Transaction
     
     Transaction --> CategorySource : uses
-    Category --> Keyword : uses
 ```
 
 **User**
@@ -152,15 +141,11 @@ classDiagram
 **Transaction**
 - The core entity of our application
 - Owned by **one** user
-- Transaction has no `StandingOrder` attribute -> Transaction is not recurring
 - `categorySource` is specified to give custom rules for certain actions (e.g. auto-categorize)
-**StandingOrder**
-- Used to generate a good **financial forecast**, and check for missing transactions
-- Owned by **one** user
-- Owns n `Transaction`'s
-- `executionDay` is depended on `interval`, if `interval = Weekly` and `executionDay = 2`, the standing order is expected to be executed on Tuesday.  
 **Category**
 - Used to (auto-) categorize `Transaction`'s and give a good overview on financial analytics to the user.
 - Owned by **one** user
-- Owns n `Transaction`'s
-- Has keywords, used for auto-categorization.
+- References n `Transaction`'s
+- Has keywords, used fyor auto-categorization.
+- `recurringDetail` could be null -> category not recurring
+-  `recurringDetail.executionDay` is depended on `interval`, if `interval = Weekly` and `executionDay = 2`, the standing order is expected to be executed on Tuesday.  
