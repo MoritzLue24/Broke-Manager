@@ -13,6 +13,8 @@ If invariants are violated, the method returns `DomainResult` with `DomainResult
 - Amount must not be zero
 - A transactions category must belong to the same user as the transaction
 - A transactions date must not be in the future
+- `title` not empty / whitespace
+- `amount` always positive, not zero
 
 **Category**
 - `name` not empty / whitespace
@@ -20,28 +22,45 @@ If invariants are violated, the method returns `DomainResult` with `DomainResult
 - `keyword`'s of the default-category cannot be added / removed
 - `keyword`'s within a category must be unique
 - `keyword`'s not empty / whitespace
-- `recurringDetail`:
-	- If no `executionDay` is specified, `executionDay = 1`? not sure
-	- If no `endDate` is specified, `endDate = DateOnly.MaxValue`
-	- `startDate <= endDate`
+
+**StandingOrder**
+- `name` not empty / whitespace
+- `keyword` must be unique within array
+- `keyword` not empty / whitespace
+-  If no `endDate` is specified, `endDate = DateOnly.MaxValue`
+- `startDate <= endDate`
+
+**StandingOrderPause**
+- `from <= to`
 
 **Cross-Aggregate Rules**
 - Unique email
-- Deleting user deletes all related categories & transactions
-- Category name must be unique per user
-- User has exactly one default category
-- When a category is deleted, the corresponding transactions are assigned to default-category
-- On transaction creation, if no category is specified, the users default-category is assigned
-- Default category cannot be set to not-default if its the only default category
+- `Category` name must be unique per user
+- `StandingOrder` name must be unique per user
+- User has exactly one `Category` with `isDefault = true`
+- Before a `Category` is deleted, it must not have referencing `Transaction`'s or `StandingOrder`'s
+- Before a `Category` is deleted, the corresponding `Transaction`'s are assigned to default-category
+- On `Transaction` creation, if no category is specified, the users default-category is assigned
+- When a `StandingOrder` is deleted, the connected `Transaction`'s are not deleted, just unassigned
+- If `standingOrderId != null`: `Transaction.date` must be within its `StandingOrder.startDate` and `endDate`, and on the corresponding `executionDay`. Does not apply if the transactions date is inside `StandingOrderPause` ranges.
+
 Cross-Aggregate rules are **not** enforced on this domain-layer.
 
 
 ## 2. Aggregates
-All entities are aggregate-roots, because loading all `Transaction`s & `Categorie`s when loading a `User` would be too inefficient if we just want the email for example.
+The following entities are aggregate-roots to improve performance (e.g. loading all transactions when loading the user is inefficient):
+- `User`
+- `Transaction`
+- `Category`
+- `StandingOrder`
+	- contains `StandingOrderPause`
+
+The `StandingOrderPause` entity is child-entity of `StandingOrder` because its functionality is directly connected.
+
 
 
 ## 3. Diagram
-Explanation below
+Comments below
 ```mermaid
 classDiagram
     class User {
@@ -59,13 +78,17 @@ classDiagram
         +userId: Guid
         +standingOrderId: Guid | null
         +categoryId: Guid
-        +categorySource: CategorySource
+        +categorySource: AssignmentSource
+        +standingOrderSource: AssignmentSource
         +amount: decimal
+        +type: TransactionType
         +date: DateOnly
         +title: string
+        +description: string
         +counterParty: string
+        +createdAt: DateTime
     }
-
+    
     class Category {
         <<Entity>>
         +id: Guid
@@ -73,9 +96,30 @@ classDiagram
         +name: string
         +isDefault: bool
         +keywords: string[]
-        +recurringDetail: RecurringDetail | null
         +createdAt: DateTime
     }
+    
+    class StandingOrder {
+	    <<Entity>>
+	    +id: Guid
+	    +userId: Guid
+	    +categoryId: Guid
+	    +name: string
+	    +keywords: string[]
+	    +startDate: DateOnly
+	    +endDate: DateOnly
+	    +interval: Interval
+	    +executionDay: int
+	    +pauseHistory: Guid[]
+	    +createdAt: DateTime
+    }
+    
+    class StandingOrderPause {
+		<<Entity>>
+		id: Guid
+		from: DateOnly
+		to: DateOnly
+	}
 
 
     class Email {
@@ -87,14 +131,6 @@ classDiagram
         <<ValueObject>>
         +value: string
     }
-	
-	class RecurringDetail {
-		<<ValueObject>>
-		+interval: Interval
-	    +executionDay: int
-	    +startDate: DateOnly
-	    +endDate: DateOnly
-	}
 
 
     class Role {
@@ -103,11 +139,17 @@ classDiagram
         Admin
     }
 
-    class CategorySource {
+    class AssignmentSource {
         <<Enumeration>>
-        Default
+        Unmatched
         Manual
         Auto
+    }
+    
+    class TransactionType {
+	    <<Enumeration>>
+	    Income
+	    Expense
     }
 
     class Interval {
@@ -124,28 +166,28 @@ classDiagram
     User --> Role : uses
 
 	User "1" --> "n" Category
-    Category "1" --> "n" Transaction
-	Category --> RecurringDetail : uses
-    RecurringDetail --> Interval : uses
-
 	User "1" --> "n" Transaction
+	User "1" --> "n" StandingOrder
+	
+    Category "1" --> "n" Transaction
+    Category "1" --> "n" StandingOrder
+    StandingOrder "1" --> "n" Transaction
     
-    Transaction --> CategorySource : uses
+    
+    StandingOrder --> Interval : uses
+    StandingOrder "1" --> "n" StandingOrderPause
+    
+    Transaction --> AssignmentSource : uses
+    Transaction --> TransactionType : uses
 ```
 
 **User**
 - We use `email` (or `id` for application logic) for identifying a user, no username
 - Password is stored as a hash
 - `createdAt` is used for analytics and to sort users logically when requesting a list of all users
-- Owns: n `Transaction`'s, n `Categorie`'s and n `StandingOrder`'s
 **Transaction**
 - The core entity of our application
-- Owned by **one** user
-- `categorySource` is specified to give custom rules for certain actions (e.g. auto-categorize)
+- `categorySource` and `standingOrderSource` is specified to give custom rules for certain actions (e.g. auto-categorize)
 **Category**
 - Used to (auto-) categorize `Transaction`'s and give a good overview on financial analytics to the user.
-- Owned by **one** user
-- References n `Transaction`'s
-- Has keywords, used fyor auto-categorization.
-- `recurringDetail` could be null -> category not recurring
--  `recurringDetail.executionDay` is depended on `interval`, if `interval = Weekly` and `executionDay = 2`, the standing order is expected to be executed on Tuesday.  
+- Has keywords, used for auto-categorization.
