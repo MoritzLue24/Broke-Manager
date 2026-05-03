@@ -90,7 +90,6 @@ classDiagram
     }
 
 
-
     class Email {
         <<ValueObject>>
         +value: string
@@ -130,21 +129,19 @@ classDiagram
     }
 
 
-
+	User "1" --> "n" StandingOrder
+	StandingOrder --> Interval : uses
+	StandingOrder "1" --> "n" Transaction
+	User "1" --> "n" Transaction
+	User "1" --> "n" Category
+    Category "1" --> "n" Transaction
+    
     User --> Email : uses
     User --> Hash : uses
     User --> Role : uses
-
-	User "1" --> "n" Transaction
-	User "1" --> "n" StandingOrder
-	User "1" --> "n" Category
-	
-	Transaction --> CategorySource : uses
-    StandingOrder --> Interval : uses
-    Category --> Keyword : uses
     
-    StandingOrder "1" --> "n" Transaction
-    Category "1" --> "n" Transaction
+    Transaction --> CategorySource : uses
+    Category --> Keyword : uses
 ```
 
 **User**
