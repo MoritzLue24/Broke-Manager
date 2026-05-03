@@ -25,12 +25,8 @@ Every possible response has the same (json) format. If the response is successfu
 
 ## 2. Authentication
 We use JWT-based authentication. After logging in, the client receives a token as a cookie.
+TODO
 
-**Get JWT cookie**
-```mermaid
-flowchart LR
-    A
-```
 
 ## 3. Endpoints
 
@@ -64,7 +60,24 @@ flowchart LR
 | DELETE | [`/api/users/{id}`]()             | Delete specific user |
 
 
-### 3.3 Categories
+### 3.3 Transactions
+> [`Transactions.md`](../Features/Transactions.md)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | [`/api/transactions`]() | Get & filter all transactions |
+| GET | [`/api/transactions/{id}`]() | Get specific transaction |
+| POST | [`/api/transactions`]() | Create transaction |
+| PATCH | [`/api/transactions/{id}`]() | Update transaction |
+| DELETE | [`/api/transactions/{id}`]() | Delete transaction |
+| DELETE | [`/api/transactions`]() | Delete all transactions, with filter |
+| POST | [`/api/transactions/auto-categorize`]() | Auto-categorize transactions |
+
+
+### 3.4 Standing orders?? TODO
+
+
+### 3.4 Categories
 > [`Categories.md`](../Features/Categories.md)
 
 | Method | Endpoint | Description |
@@ -83,20 +96,6 @@ flowchart LR
 | POST | [`/api/categories/{categoryId}/keywords`]() | Add keyword |
 | PATCH | [`/api/categories/{categoryId}/keywords/{keywordId}`]() | Update keyword |
 | DELETE | [`/api/categories/{categoryId}/keywords/{keywordId}`]() | Delete keyword |
-
-
-### 3.4 Transactions
-> [`Transactions.md`](../Features/Transactions.md)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | [`/api/transactions`]() | Get & filter all transactions |
-| GET | [`/api/transactions/{id}`]() | Get specific transaction |
-| POST | [`/api/transactions`]() | Create transaction |
-| PATCH | [`/api/transactions/{id}`]() | Update transaction |
-| DELETE | [`/api/transactions/{id}`]() | Delete transaction |
-| DELETE | [`/api/transactions`]() | Delete all transactions, with filter |
-| POST | [`/api/transactions/auto-categorize`]() | Auto-categorize transactions |
 
 
 ### 3.5 Analytics

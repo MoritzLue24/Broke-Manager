@@ -44,8 +44,8 @@ These implementations are then injected with DI (dependency-injection) by the Ap
 1. Client sends HTTP request
 2. ASP.NET maps it to DTO & validates
     - If validation fails, don't execute controller code, send back "bad request", 400
-3. Controller code executes, calls service & appropriate use case
-4. Service executes business logic
+3. Controller code executes, calls appropriate use case from 'Application'
+4. Use case executes business logic
     - On business errors, returns a `Result` with `Result.Error`
 5. External dependencies (DB, etc.) are accessed via interfaces
 6. Domain entities are modified
@@ -79,7 +79,7 @@ flowchart TD
         DOMAINTHROW["`Hard exceptions<br>not caught — thrown upward`"]
     end
 
-    subgraph APP["App"]
+    subgraph APP["Application"]
         APPRES["`Result&lt;T&gt; returned<br>rule violations / success value`"]
         APPTHROW["`Hard exceptions<br>not caught — thrown upward`"]
     end
@@ -110,7 +110,7 @@ flowchart TD
 ```
 
 **Result type** 
-Basically the same on App & Domain layer (and even Api layer), but errors are still mapped before passed on to the layers above.
+Basically the same on Application & Domain layer (and even Api layer), but errors are still mapped before passed on to the layers above.
 ```cs
 enum ErrorCode {
     UserNotFound,
