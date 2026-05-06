@@ -31,7 +31,7 @@ TODO
 ## 3. Endpoints
 
 ### 3.1 Auth
-> [`Auth.md`](../Features/Auth.md)
+> [`Auth.md`](auth.md)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -40,7 +40,7 @@ TODO
 
 
 ### 3.2 Users
-> [`Users.md`](../Features/Users.md)
+> [`Users.md`](users.md)
 
 | Method | Endpoint                            | Description         |
 | ------ | ----------------------------------- | ------------------- |
@@ -61,7 +61,7 @@ TODO
 
 
 ### 3.3 Transactions
-> [`Transactions.md`](../Features/Transactions.md)
+> [`Transactions.md`](transactions.md)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -78,7 +78,7 @@ TODO
 
 
 ### 3.4 Categories
-> [`Categories.md`](../Features/Categories.md)
+> [`Categories.md`](categories.md)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -99,7 +99,7 @@ TODO
 
 
 ### 3.5 Analytics
-> [`Analytics.md`](../Features/Analytics.md)
+> [`Analytics.md`](analytics.md)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -111,7 +111,7 @@ TODO
 
 
 ### 3.6 Transfer
-> [`Transfer.md`](../Features/Transfer.md)
+> [`Transfer.md`](backend/features/transfer.md)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|

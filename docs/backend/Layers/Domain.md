@@ -78,8 +78,8 @@ classDiagram
         +userId: Guid
         +standingOrderId: Guid | null
         +categoryId: Guid
-        +categorySource: AssignmentSource
-        +standingOrderSource: AssignmentSource
+        +categorySource: CategorySource
+        +standingOrderSource: StandingOrderSource
         +amount: decimal
         +type: TransactionType
         +date: DateOnly
@@ -103,7 +103,7 @@ classDiagram
 	    <<Entity>>
 	    +id: Guid
 	    +userId: Guid
-	    +categoryId: Guid
+	    +categoryId: Guid | null
 	    +name: string
 	    +keywords: string[]
 	    +startDate: DateOnly
@@ -139,9 +139,16 @@ classDiagram
         Admin
     }
 
-    class AssignmentSource {
+	class CategorySource {
+		<<Enumeration>>
+		Unmatched
+		Manual
+		Auto
+		FromStandingOrder
+	}
+	
+    class StandingOrderSource {
         <<Enumeration>>
-        Unmatched
         Manual
         Auto
     }
@@ -177,7 +184,8 @@ classDiagram
     StandingOrder --> Interval : uses
     StandingOrder "1" --> "n" StandingOrderPause
     
-    Transaction --> AssignmentSource : uses
+    Transaction --> CategorySource : uses
+    Transaction --> StandingOrderSource : uses
     Transaction --> TransactionType : uses
 ```
 

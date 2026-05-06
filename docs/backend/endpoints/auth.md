@@ -1,5 +1,5 @@
 # Auth
-`/api/auth` handles authentication, registering, logging in, etc. It is **not** responsible for handling users (e.g. delete, update -> [Users.md](./Users.md)) and it is **not** responsible for generating JWTs / hashes. 
+`/api/auth` handles authentication, registering, logging in, etc. It is **not** responsible for handling users (e.g. delete, update -> [Users.md](users.md)) and it is **not** responsible for generating JWTs / hashes. 
 
 - [Endpoints](#1-endpoints)
     - [Registrierung](#11-registrierung)

@@ -43,7 +43,7 @@ Is a not fully direct, but mostly, reflection of the domain model, with one tabl
 
 
 ### 1.2 Data retrieval / manipulation
-Is handled with Repositories, which are defined in the [Application layer](../Architecture.md) and implemented here.
+Is handled with Repositories, which are defined in the [Application layer](architecture.md) and implemented here.
 
 > `SaveChangesAsync()` is not implemented in these repositories. This is inside a `UnitOfWork` implementation 
 

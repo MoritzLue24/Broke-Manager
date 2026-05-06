@@ -1,5 +1,5 @@
 # Users
-`/api/users` ist verantwortlich für die Verwaltung von Benutzern, z.B. das Abrufen von Benutzerinformationen, das Aktualisieren von Benutzerdaten, etc. Es ist NICHT verantwortlich für die Authentifizierung (Registrieren, Einloggen, etc.), da dies in `/api/auth`, [Auth](auth.md), behandelt wird.
+`/api/users` ist verantwortlich für die Verwaltung von Benutzern, z.B. das Abrufen von Benutzerinformationen, das Aktualisieren von Benutzerdaten, etc. Es ist NICHT verantwortlich für die Authentifizierung (Registrieren, Einloggen, etc.), da dies in `/api/auth`, [auth](auth.md), behandelt wird.
 
 - [1. Endpoints](#1-endpoints)
     - [1.1 Benutzerinformationen abrufen](#11-benutzerinformationen-abrufen)

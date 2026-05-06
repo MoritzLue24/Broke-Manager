@@ -3,10 +3,10 @@ How our system is managed, organized, and how it interacts to keep the system ma
 
 ## 1. Overview
 We have 4 distinct layers:
-- [**Api:**](./Layers/Api.md) Boundary to the outside world, communicates with the frontend
+- [**Api:**](api.md) Boundary to the outside world, communicates with the frontend
 - **Application:** All application logic and use cases
-- [**Infrastructure:**](./Layers/Infrastructure.md) Technical implementations such as persistence (DB access), JWT tokens, hashing
-- [**Domain:**](./Layers/Domain.md) The core of the software system. Defines all entities, enums and value objects, including their rules (e.g. an email must contain an @ symbol). Has no dependencies on other layers.
+- [**Infrastructure:**](infrastructure.md) Technical implementations such as persistence (DB access), JWT tokens, hashing
+- [**Domain:**](domain.md) The core of the software system. Defines all entities, enums and value objects, including their rules (e.g. an email must contain an @ symbol). Has no dependencies on other layers.
 
 Each layer has its own .NET project, all bundled in a single solution. This also ensures that layers are genuinely self-contained. It strengthens precise testing and brings much more structure overall. Connections are created with `dotnet add Api reference Application`, but **only** the connections that are architecturally correct:
 
@@ -66,7 +66,7 @@ All other rule violations, e.g. trying to delete the default category, are handl
 
 Sometimes, rules are enforced across the Api and Domain layer, or maybe even more. And that's okay, i guess.
 
-(for our business rules see [Domain.md](./Layers/Domain.md) or the corresponding feature [Api.md](./Layers/Api.md))
+(for our business rules see [Domain.md](domain.md) or the corresponding feature [Api.md](api.md))
 
 
 ## 4. Error propagation
