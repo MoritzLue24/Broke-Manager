@@ -29,6 +29,7 @@ If invariants are violated, the method returns `DomainResult` with `DomainResult
 - `keyword` not empty / whitespace
 -  If no `endDate` is specified, `endDate = DateOnly.MaxValue`
 - `startDate <= endDate`
+- `RecurrencePattern.executionDay > 0`
 
 **StandingOrderPause**
 - `from <= to`
@@ -108,8 +109,7 @@ classDiagram
 	    +keywords: string[]
 	    +startDate: DateOnly
 	    +endDate: DateOnly
-	    +interval: Interval
-	    +executionDay: int
+	    +recurrencePattern: RecurrencePattern
 	    +pauseHistory: Guid[]
 	    +createdAt: DateTime
     }
@@ -131,6 +131,14 @@ classDiagram
         <<ValueObject>>
         +value: string
     }
+
+	class RecurrencePattern {
+		<<ValueObject>>
+		+interval: Interval
+		+executionDay: int
+
+		+GetActualDay(reference: DateOnly) DateOnly
+	}
 
 
     class Role {
@@ -181,7 +189,8 @@ classDiagram
     StandingOrder "1" --> "n" Transaction
     
     
-    StandingOrder --> Interval : uses
+    StandingOrder --> RecurrencePattern : uses
+	RecurrencePattern --> Interval : uses
     StandingOrder "1" --> "n" StandingOrderPause
     
     Transaction --> CategorySource : uses
@@ -189,13 +198,6 @@ classDiagram
     Transaction --> TransactionType : uses
 ```
 
-**User**
 - We use `email` (or `id` for application logic) for identifying a user, no username
-- Password is stored as a hash
 - `createdAt` is used for analytics and to sort users logically when requesting a list of all users
-**Transaction**
-- The core entity of our application
 - `categorySource` and `standingOrderSource` is specified to give custom rules for certain actions (e.g. auto-categorize)
-**Category**
-- Used to (auto-) categorize `Transaction`'s and give a good overview on financial analytics to the user.
-- Has keywords, used for auto-categorization.
