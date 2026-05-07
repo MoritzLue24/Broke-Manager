@@ -217,7 +217,8 @@ classDiagram
     Transaction --> TransactionType : uses
 ```
 
-> Not all methods are mentioned. Only specific methods, that differ from `Update`- & `Create`-Methods
+> Not all methods are mentioned. Only specific methods, that differ from `Update`- & `Create`-Methods.
+> For all public properties: only getters are public.
 
 - We use `email` (or `id` for application logic) for identifying a user, no username
 - `createdAt` is used for analytics and to sort users logically when requesting a list of all users
