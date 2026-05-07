@@ -96,7 +96,7 @@ classDiagram
         +userId: Guid
         +name: string
         +isDefault: bool
-        +keywords: string[]
+        +keywords: Keyword[]
         +createdAt: DateTime
     }
     
@@ -106,7 +106,7 @@ classDiagram
 	    +userId: Guid
 	    +categoryId: Guid | null
 	    +name: string
-	    +keywords: string[]
+	    +keywords: Keyword[]
 	    +startDate: DateOnly
 	    +endDate: DateOnly
 	    +recurrencePattern: RecurrencePattern
@@ -131,6 +131,11 @@ classDiagram
         <<ValueObject>>
         +value: string
     }
+
+	class Keyword {
+		<<ValueObject>>
+		+value: string
+	}
 
 	class RecurrencePattern {
 		<<ValueObject>>
@@ -183,7 +188,9 @@ classDiagram
 	User "1" --> "n" Category
 	User "1" --> "n" Transaction
 	User "1" --> "n" StandingOrder
-	
+
+	Category --> Keyword : uses
+	StandingOrder --> Keyword : uses
     Category "1" --> "n" Transaction
     Category "1" --> "n" StandingOrder
     StandingOrder "1" --> "n" Transaction
