@@ -1,9 +1,7 @@
 using Domain.Common;
 using Domain.ValueObjects;
 
-
-
-namespace Domain.Entiteis;
+namespace Domain.Entities;
 
 public class Category
 {
@@ -24,7 +22,7 @@ public class Category
     }
 
     //private Category () { } Für EfCore?? Ich habe keine Ahnung wie das funktioniert
-    private Category (Guid userId,string name, bool isDefault)
+    private Category (Guid userId, string name, bool isDefault)
     {
         Id = Guid.NewGuid();
         UserId = userId;
@@ -35,21 +33,20 @@ public class Category
 
     public static DomainResult<Category> Create(Guid userId, string name, bool isDefault)
     {
-
         if(userId == Guid.Empty)
-        {
-             return DomainResult<Category>.Fail(DomainErrorCode.InvalidId);
-        }
+            return DomainResult<Category>.Fail(DomainErrorCode.InvalidGuid);
 
-        if (string.IsNullOrWhiteSpace(name)){
+        if (string.IsNullOrWhiteSpace(name))
             return DomainResult<Category>.Fail(DomainErrorCode.CategoryNameEmpty);
-        }
-        
+
         return DomainResult<Category>.Ok(new Category(userId, name, isDefault));
     }
 
     public DomainResult<Unit> ChangeName(string name)
     {
+        if (string.IsNullOrWhiteSpace(name))
+            return DomainResult<Unit>.Fail(DomainErrorCode.CategoryNameEmpty);
+
         Name = name;
         return DomainResult<Unit>.Ok();
     }
@@ -57,43 +54,31 @@ public class Category
     public DomainResult<Unit> AddKeyword(Keyword keyword)
     {
         if(IsDefault)
-        {
             return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
-        }
-        
+
         if(_keywords.Any(k => k == keyword))
-        {
-            return DomainResult<Unit>.Fail(DomainErrorCode.NotUniqueKeywordWithinOneCategory);
-        }
+            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordAlreadyExists);
 
         _keywords.Add(keyword);
         return DomainResult<Unit>.Ok();
     }
 
-    public DomainResult<Unit> DeleteKeyword(Keyword keyword)
+    public DomainResult<Unit> RemoveKeyword(Keyword keyword)
     {
         if(IsDefault)
-        {
             return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
-        }
 
         if (_keywords.Remove(keyword) == false)
-        {
-            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordNotFounInCategory);
-        }
+            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordNotFound);
 
         return DomainResult<Unit>.Ok();
     }
 
-    public DomainResult<Unit> DeleteCategory(Category category)
+    public DomainResult<Unit> Delete()
     {
         if (IsDefault)
-        {
-            return DomainResult<Unit>.Fail(DomainErrorCode.DefaultCategoryCannotDelete );
-        }
+            return DomainResult<Unit>.Fail(DomainErrorCode.CannotDeleteDefaultCategory);
 
         return DomainResult<Unit>.Ok();
     }
-
-    
 }

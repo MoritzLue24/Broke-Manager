@@ -2,7 +2,8 @@ namespace Domain.Enums;
 
 public enum CategorySource
 {
-    Default,
+    Unmatched,
     Manual,
-    Auto
+    Auto,
+    FromStandingOrder
 }
