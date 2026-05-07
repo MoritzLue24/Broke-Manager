@@ -88,6 +88,8 @@ classDiagram
         +description: string
         +counterParty: string
         +createdAt: DateTime
+
+		RemoveStandingOrder()
     }
     
     class Category {
@@ -98,6 +100,9 @@ classDiagram
         +isDefault: bool
         +keywords: Keyword[]
         +createdAt: DateTime
+
+		AddKeyword(keyword: Keyword)
+		RemoveKeyword(keyword: Keyword)
     }
     
     class StandingOrder {
@@ -112,6 +117,11 @@ classDiagram
 	    +recurrencePattern: RecurrencePattern
 	    +pauseHistory: Guid[]
 	    +createdAt: DateTime
+
+		RemoveCategory()
+		AddKeyword(keyword: Keyword)
+		RemoveKeyword(keyword: Keyword)
+		MakeInfinite()
     }
     
     class StandingOrderPause {
@@ -119,6 +129,8 @@ classDiagram
 		id: Guid
 		from: DateOnly
 		to: DateOnly
+
+		MakeInfinite()
 	}
 
 
@@ -204,6 +216,8 @@ classDiagram
     Transaction --> StandingOrderSource : uses
     Transaction --> TransactionType : uses
 ```
+
+> Not all methods are mentioned. Only specific methods, that differ from `Update`- & `Create`-Methods
 
 - We use `email` (or `id` for application logic) for identifying a user, no username
 - `createdAt` is used for analytics and to sort users logically when requesting a list of all users
