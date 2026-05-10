@@ -6,6 +6,7 @@ namespace Infrastructure.DependencyInjection;
 
 public static class ServicesExtension
 {
+    /// Used for runtime, not design-time
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection serviceCollection,
         string connectionString)

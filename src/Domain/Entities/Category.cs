@@ -7,7 +7,7 @@ public class Category
 {
     public Guid Id { get; private set;}
     public Guid UserId { get; private set;}
-    public string Name { get; private set;}
+    public string Name { get; private set;} = null!;    // für leeren constructor
     public bool IsDefault { get; private set;}
     public DateTime CreatedAt {get; private set;}
 
@@ -21,7 +21,8 @@ public class Category
         }
     }
 
-    //private Category () { } Für EfCore?? Ich habe keine Ahnung wie das funktioniert
+    private Category () { }
+    
     private Category (Guid userId, string name, bool isDefault)
     {
         Id = Guid.NewGuid();

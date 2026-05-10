@@ -7,12 +7,12 @@ namespace Domain.Entities;
 public class User
 {
     public Guid Id { get; }
-    public Email Email { get; private set; }
-    public Hash PasswordHash { get; private set; }
+    public Email Email { get; private set; } = null!;   // für leeren constructor
+    public Hash PasswordHash { get; private set; } = null!; // auch
     public Role Role { get; private set; }
     public DateTime CreatedAt { get; }
 
-    // private User() { } // Für EF Core??
+    private User() { } // Für EF Core??
 
     private User(Email email, Hash passwordHash, Role role)
     {

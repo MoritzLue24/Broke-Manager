@@ -14,10 +14,12 @@ public class Transaction
     public decimal Amount { get; private set; }
     public TransactionType Type { get; private set; }
     public DateOnly Date {get; private set;}
-    public string Title {get; private set;}
-    public string Description { get; private set; }
-    public string CounterParty {get; private set;}
+    public string Title {get; private set;} = null!;    // für leeren constructor
+    public string Description { get; private set; } = null!;
+    public string CounterParty {get; private set;} = null!;
     public DateTime CreatedAt { get; }
+
+    private Transaction() { }
 
     private Transaction(
         Guid userId,
