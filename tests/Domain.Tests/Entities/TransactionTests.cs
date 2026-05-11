@@ -24,7 +24,7 @@ public class TransactionTests
     }
 
     [Fact]
-    public void Create_ShouldSucced_When_TransactionValid()
+    public void Create_ShouldSucceed_When_TransactionValid()
     {
         var result = Transaction.Create(
             Guid.NewGuid(),
@@ -109,14 +109,14 @@ public class TransactionTests
 
     [Fact]
 
-    public void Should_Succed_CategoryChange()
+    public void Should_Succeed_CategoryChange()
     {
         var transaction = CreateValidTransaction();
         var id = Guid.NewGuid();
         var result = transaction.ChangeCategory(id, CategorySource.Manual);
         
         Assert.True(result.Success);
-        Assert.Equal(id, transaction.Id);
+        Assert.Equal(id, transaction.CategoryId);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
 
     }
@@ -130,8 +130,60 @@ public class TransactionTests
         Assert.False(result.Success);
         Assert.Equal(DomainErrorCode.InvalidGuid, result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
+    }
+
+    [Fact]
+    public void Should_Succeed_ChangeAmount()
+    {
+        var transaction = CreateValidTransaction();
+        var result = transaction.ChangeAmount(5000.0m, TransactionType.Expense);
+
+        Assert.True(result.Success);
+        Assert.Equal(5000.0m, transaction.Amount);
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
 
     }
+
+    [Fact]
+    public void Should_Fail_ChangeAmount_When_AmountIsNegative()
+    {
+        var transaction = CreateValidTransaction();
+        var result = transaction.ChangeAmount(-5000.0m, TransactionType.Expense);
+
+        Assert.False(result.Success);
+        Assert.Equal(DomainErrorCode.InvalidAmount, result.Error);
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
+    }
+
+    [Fact]
+    public void Should_Succeed_ChangeTitle()
+    {
+        var transaction = CreateValidTransaction();
+        var result = transaction.ChangeTitle("dildo gekauft");
+
+        Assert.True(result.Success);
+        Assert.Equal("dildo gekauft", transaction.Title);
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+    }
+
+    [Fact]
+    public void Should_Fail_ChangeTitle_When_TitleEpmty()
+    {
+        var transaction = CreateValidTransaction();
+        var result = transaction.ChangeTitle("");
+
+        Assert.False(result.Success);
+        Assert.Equal(DomainErrorCode.TransactionTitleEmpty, result.Error);
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
+    }
     
+    /*TODO
+    Create When Amount is zero
+    Create when Amount is negative
+    [ИмяТестируемогоМетода]_[СценарийУсловия]_[ОжидаемыйРезультат] поменять названия всех тестов вот так
+    Посмотреть что за Theory and Incline Data
+    
+    
+    */
 }
 
