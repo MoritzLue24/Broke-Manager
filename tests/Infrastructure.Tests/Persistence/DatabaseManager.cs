@@ -1,0 +1,22 @@
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Tests.Persistence;
+
+public class DatabaseManager
+{
+    public AppDbContext Context { get; private set; }
+
+    public DatabaseManager(string connectionString)
+        => Context = new AppDbContext(
+            new DbContextOptionsBuilder<AppDbContext>()
+                .UseNpgsql(connectionString)
+                .Options
+            );
+
+    public async Task ResetAsync()
+    {
+        await Context.Database.EnsureDeletedAsync();
+        await Context.Database.MigrateAsync();
+    }
+}
