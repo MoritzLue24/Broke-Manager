@@ -171,7 +171,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
         await _db.Context.SaveChangesAsync();
 
         // Execute
-        var exists = await _repo.ExistsForUser(user.Id, category.Id);
+        var exists = await _repo.ExistsForUserAsync(user.Id, category.Id);
 
         // Assert
         Assert.True(exists);
@@ -201,7 +201,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
         await _db.Context.SaveChangesAsync();
 
         // Execute
-        var exists = await _repo.ExistsForUser(userA.Id, category.Id);
+        var exists = await _repo.ExistsForUserAsync(userA.Id, category.Id);
 
         // Assert
         Assert.False(exists);
@@ -225,7 +225,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
         await _db.Context.SaveChangesAsync();
 
         // Execute
-        var exists = await _repo.ExistsForUser(user.Id, category.Id);
+        var exists = await _repo.ExistsForUserAsync(user.Id, category.Id);
 
         // Assert
         Assert.False(exists);
