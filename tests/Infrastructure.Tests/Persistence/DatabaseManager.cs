@@ -14,6 +14,7 @@ public class DatabaseManager
                 .Options
             );
 
+    /// Reset the database for every testcase to ensure a clean db
     public async Task ResetAsync()
     {
         await Context.Database.EnsureDeletedAsync();
