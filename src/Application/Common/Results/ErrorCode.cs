@@ -6,5 +6,12 @@ public enum ErrorCode
     // User
     UserNotFound,
     EmailAlreadyExists,
-    InvalidPassword
+    InvalidPassword,
+
+    // Transaction
+    TransactionNotFound,
+
+    // Category
+    DefaultCategoryNotFound,
+    CategoryNotFound
 }
