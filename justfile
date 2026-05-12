@@ -1,21 +1,18 @@
+# Shows this message
 default:
     @just --list --unsorted
 
-# Counts C# lines without */Migrations/*, */bin/*, */obj/*
+# Counts C# lines without */Migrations/*, and without tmp-merge.cs
 count target=".":
-    @find "{{target}}" -name "*.cs" \
-        -not -path "*/Migrations/*" \
-        -not -path "*/bin/*" \
-        -not -path "*/obj/*" \
-        | xargs wc -l \
-        | sort -n
-    @echo "C# line count"
-    @echo "   $( find "{{target}}" -name "*.cs" \
-        -not -path "*/Migrations/*" \
-        -not -path "*/bin/*" \
-        -not -path "*/obj/*" \
-        | wc -l ) files"
-    @echo "C# file count"
+    ./scripts/count.sh {{target}} -if tmp-merge.cs -ip Migrations
+
+# Merges all C# files in specified dir into one tmp-merge.cs
+merge-cs target="./src":
+    ./scripts/merge-cs.sh tmp-merge.cs {{target}}
+
+# Searches for TODO's in each file of the filetype (default .cs)
+todo filetype="cs":
+    @grep -rn --color=always "TODO\|FIXME" --include="*.{{filetype}}" .
 
 # Dotnet clean & removes bin & obj
 clean:
@@ -42,5 +39,6 @@ db-drop:
     dotnet ef database drop \
         --project src/Infrastructure
 
+# Tests all projects
 test:
     dotnet test --nologo --verbosity minimal
