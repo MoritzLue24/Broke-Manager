@@ -26,15 +26,20 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
     {
         Guid categoryId;
         CategorySource categorySource;
+
+        // Category specified -> source = Manual
         if (command.CategoryId.HasValue)
         {
+            // Check if the given category exists
             if (!await _categoryReaderRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
                 return Result<TransactionDto>.Fail(ErrorCode.CategoryNotFound);
             categoryId = command.CategoryId.Value;
             categorySource = CategorySource.Manual;
         }
+        // No category specified -> (later auto-categorize) -> source = Unmatched with default category
         else
         {
+            // Get default category
             Guid? categoryIdRes = await _categoryReaderRepo.GetDefaultByUserIdAsync(command.UserId);
             if (!categoryIdRes.HasValue)
                 return Result<TransactionDto>.Fail(ErrorCode.DefaultCategoryNotFound);
@@ -54,6 +59,9 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
             command.Description,
             command.CounterParty
         );
+        // On failure, map the domain error to an application error
+        // For now, the errors are basically the same but we dont want to
+        // pass domain errors into the Api layer
         if (!domainResult.Success)
             return domainResult.MapError<TransactionDto, Transaction>();
 

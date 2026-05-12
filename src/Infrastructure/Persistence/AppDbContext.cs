@@ -24,6 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         // foreach (var type in valueObjectTypes)
         //     modelBuilder.Ignore(type);
+        // Und alle VOs in Domain implementen IValueObject
 
         // Lädt alle Classes, die in diesen Projekt IEntityTypeConfiguration implementieren
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

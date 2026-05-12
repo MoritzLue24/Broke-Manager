@@ -23,6 +23,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     }
 
     /// Used for Design-Time, without DI / Program.cs
+    /// For example when running just migrate
     public AppDbContext CreateDbContext(string[] args)
     {
         LoadNearestEnv();

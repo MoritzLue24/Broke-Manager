@@ -6,6 +6,9 @@ namespace Application.Common.Interfaces;
 /// but this would be too much responsibility over the "category feature"
 public interface ICategoryReaderRepository
 {
+    /// Gets the default category by userid
     Task<Guid?> GetDefaultByUserIdAsync(Guid userId);
+
+    /// Check if a category for the user exists
     Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId);
 }

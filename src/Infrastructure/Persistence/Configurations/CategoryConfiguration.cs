@@ -8,6 +8,7 @@ namespace Infrastructure.Persistence.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
+    // Aus irgendeinen grund brauchen wir das hier
     private class KeywordConverter : ValueConverter<Keyword, string>
     {
         public KeywordConverter()

@@ -2,6 +2,9 @@ using Domain.Enums;
 
 namespace Application.Features.Transactions;
 
+/// Basic response dto. Other dtos like 
+/// CreateDto, UpdateDto are now Commands / Queries.
+/// Maybe later more Dtos, like TransactionDetailDto
 public record TransactionDto(
     Guid Id,
     Guid UserId,
