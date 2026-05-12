@@ -2,14 +2,20 @@ default:
     @just --list --unsorted
 
 # Counts C# lines without */Migrations/*, */bin/*, */obj/*
-count:
-    @find . -name "*.cs" \
+count target=".":
+    @find "{{target}}" -name "*.cs" \
         -not -path "*/Migrations/*" \
         -not -path "*/bin/*" \
         -not -path "*/obj/*" \
         | xargs wc -l \
         | sort -n
-    @echo "C# line count, without */Migrations/*, */bin/*, */obj/*"
+    @echo "C# line count"
+    @echo "   $( find "{{target}}" -name "*.cs" \
+        -not -path "*/Migrations/*" \
+        -not -path "*/bin/*" \
+        -not -path "*/obj/*" \
+        | wc -l ) files"
+    @echo "C# file count"
 
 # Dotnet clean & removes bin & obj
 clean:
@@ -35,3 +41,6 @@ db-update:
 db-drop:
     dotnet ef database drop \
         --project src/Infrastructure
+
+test:
+    dotnet test --nologo --verbosity minimal
