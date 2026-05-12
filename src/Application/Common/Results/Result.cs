@@ -13,7 +13,7 @@ public class Result<T>
         ? _value
         : throw new InvalidOperationException("No value on failure");
 
-    public ErrorCode Error => Success
+    public ErrorCode Error => !Success
         ? _error
         : throw new InvalidOperationException("No error on success");
 
