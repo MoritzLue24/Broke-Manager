@@ -18,9 +18,12 @@ public static class DomainResultExtension
         if (domainResult.Success) 
             throw new InvalidOperationException("Cannot map error if there is no error");
 
-        return Result<T>.Fail(domainResult switch
+        return Result<T>.Fail(domainResult.Error switch
         {
             // TODO
+            DomainErrorCode.InvalidGuid => ErrorCode.InvalidGuid,
+            DomainErrorCode.InvalidAmount => ErrorCode.InvalidTransactionAmount,
+            DomainErrorCode.TransactionTitleEmpty => ErrorCode.TransactionTitleEmpty,
             _ => throw new NotImplementedException()
         });
     }
