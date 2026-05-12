@@ -25,11 +25,13 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
     public async Task<Result<TransactionDto>> Handle(CreateTransactionCommand command, CancellationToken ct)
     {
         Guid categoryId;
+        CategorySource categorySource;
         if (command.CategoryId.HasValue)
         {
             if (!await _categoryReaderRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
                 return Result<TransactionDto>.Fail(ErrorCode.CategoryNotFound);
             categoryId = command.CategoryId.Value;
+            categorySource = CategorySource.Manual;
         }
         else
         {
@@ -37,13 +39,14 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
             if (!categoryIdRes.HasValue)
                 return Result<TransactionDto>.Fail(ErrorCode.DefaultCategoryNotFound);
             categoryId = categoryIdRes.Value;
+            categorySource = CategorySource.Unmatched;
         }
 
         var domainResult = Transaction.Create(
             command.UserId,
             // TODO: Auto-categorize?
             categoryId,
-            CategorySource.Manual,
+            categorySource,
             command.Amount,
             command.Type,
             command.Date,
