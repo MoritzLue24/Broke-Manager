@@ -27,7 +27,7 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         Guid categoryId;
         if (command.CategoryId.HasValue)
         {
-            if (!await _categoryReaderRepo.ExistsForUser(command.UserId, command.CategoryId.Value))
+            if (!await _categoryReaderRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
                 return Result<TransactionDto>.Fail(ErrorCode.CategoryNotFound);
             categoryId = command.CategoryId.Value;
         }

@@ -18,7 +18,7 @@ public class CategoryReaderRepository : ICategoryReaderRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> ExistsForUser(Guid userId, Guid categoryId)
+    public async Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId)
     {
         return await _dbContext.Categories
             .Where(c => c.UserId == userId && c.Id == categoryId)

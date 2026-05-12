@@ -7,5 +7,5 @@ namespace Application.Common.Interfaces;
 public interface ICategoryReaderRepository
 {
     Task<Guid?> GetDefaultByUserIdAsync(Guid userId);
-    Task<bool> ExistsForUser(Guid userId, Guid categoryId);
+    Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId);
 }
