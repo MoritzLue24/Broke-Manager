@@ -6,6 +6,6 @@ public class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task SaveChangesAsync()
-        => await _dbContext.SaveChangesAsync();
+    public async Task SaveChangesAsync(CancellationToken ct)
+        => await _dbContext.SaveChangesAsync(ct);
 }
