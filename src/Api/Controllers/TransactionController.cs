@@ -1,4 +1,7 @@
+using Application.Features.Transactions.Commands.CreateTransaction;
 using Contracts.Features.Transactions;
+using Domain.Enums;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -7,22 +10,41 @@ namespace Api.Controllers;
 [Route("transactions")]
 public class TransactionController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public TransactionController(IMediator mediator)
+        => _mediator = mediator;
+
     [HttpPost("")]
-    public ActionResult<TransactionDetailResponse> CreateTransaction(
+    public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
         [FromBody] CreateTransactionRequest createRequest)
     {
-        return Ok(new TransactionDetailResponse(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            "MANUAL",
+        var result = await _mediator.Send(new CreateTransactionCommand(
+            createRequest.UserId,
+            createRequest.CategoryId,
             createRequest.Amount,
-            createRequest.Type,
+            Enum.Parse<TransactionType>(createRequest.Type),
             createRequest.Date,
             createRequest.Title,
             createRequest.Description,
-            createRequest.CounterParty,
-            DateTime.UtcNow
+            createRequest.CounterParty
         ));
+
+        return result.Match<ActionResult<TransactionDetailResponse>>(
+            dto => Ok(new TransactionDetailResponse(
+                dto.Id,
+                dto.UserId,
+                dto.CategoryId,
+                dto.CategorySource.ToString(),
+                dto.Amount,
+                dto.Type.ToString(),
+                dto.Date,
+                dto.Title,
+                dto.Description,
+                dto.CounterParty,
+                dto.CreatedAt
+            )),
+            error => Problem(error.GetType().FullName)
+        ); 
     }
 }
