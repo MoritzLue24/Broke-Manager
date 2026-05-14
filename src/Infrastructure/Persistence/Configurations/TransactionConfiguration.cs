@@ -10,18 +10,19 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
     {
         builder.ToTable("transactions");
 
-        // Id, kein isrequired nötig, autom.
+        // Id
         builder.HasKey(t => t.Id);
         builder.Property(t => t.Id).HasColumnName("id");
 
-        // UserId, autom. IsRequired automatisch
+        // UserId
         builder.Property(t => t.UserId).HasColumnName("user_id");
         builder.HasOne<User>()
             .WithMany()
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-        builder.HasIndex(t => t.UserId)     // Häufige abfrage: all transactions of user
+        builder.HasIndex(t => t.UserId)     
             .HasDatabaseName("ix_transactions_user_id");
+
 
         // StandingOrderId, autom. nicht IsRequired, weil nullable
         builder.Property(t => t.StandingOrderId).HasColumnName("standing_order_id");
@@ -29,7 +30,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         //     .WithMany()
         //     .HasForeignKey(t => t.StandingOrderId)
         //     .OnDelete(DeleteBehavior.SetNull);
-        builder.HasIndex(t => t.StandingOrderId)    // Auch häufige abfrage
+        builder.HasIndex(t => t.StandingOrderId) 
             .HasFilter("\"standing_order_id\" IS NOT NULL")
             .HasDatabaseName("ix_transactions_standing_order_id");
 
@@ -39,21 +40,24 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .WithMany()
             .HasForeignKey(t => t.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
-        builder.HasIndex(t => t.CategoryId) // Häufige abfrage
+        builder.HasIndex(t => t.CategoryId) 
             .HasDatabaseName("ix_transactions_category_id");
 
-        // Sources, IsRequired weil als string gespeichert wird -> nicht autom. manchmal?
+        // Sources
         builder.Property(t => t.CategorySource).HasColumnName("category_source")
             .HasConversion<string>()
             .HasMaxLength(20)
             .IsRequired();
         builder.Property(t => t.StandingOrderSource).HasColumnName("standing_order_source")
             .HasConversion<string>()
-            .HasMaxLength(20);  // kein isRequired, weil ist nullable!
+            .HasMaxLength(20);  
 
         // Amount
         builder.Property(t => t.Amount).HasColumnName("amount")
             .HasColumnType("numeric(12,2)");
+
+        builder.ToTable("transactions", t => 
+            t.HasCheckConstraint("CK_transactions_amount_positive", "amount > 0")); //Amount nicht 0 und immer positiv
 
         // Type
         builder.Property(t => t.Type).HasColumnName("type")
@@ -63,10 +67,10 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         // Date
         builder.Property(t => t.Date).HasColumnName("date");
-        builder.HasIndex(t => new { t.UserId, t.Date }) // Auch häufige abfrage für zeiträume
+        builder.HasIndex(t => new { t.UserId, t.Date }) 
             .HasDatabaseName("ix_transactions_user_id_date");
 
-        // Title, IsRequired weil als string gespeichert wird -> nicht autom. manchmal?
+        // Title
         builder.Property(t => t.Title).HasColumnName("title")
             .HasMaxLength(255)
             .IsRequired();
