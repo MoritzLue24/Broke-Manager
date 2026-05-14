@@ -10,9 +10,15 @@ namespace Infrastructure;
 public static class DependencyInjection
 {
     /// Used for runtime, not design-time
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        string connectionString)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
+            connectionString,
+            builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
+        ));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryReaderRepository, CategoryReaderRepository>();

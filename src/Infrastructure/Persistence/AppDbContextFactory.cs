@@ -28,24 +28,9 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         LoadNearestEnv();
 
-        var host = Environment.GetEnvironmentVariable("POSTGRES_HOST")
-            ?? throw new InvalidOperationException("POSTGRES_HOST not set");
-
-        var port = Environment.GetEnvironmentVariable("POSTGRES_PORT")
-            ?? throw new InvalidOperationException("POSTGRES_PORT not set");
-
-        var user = Environment.GetEnvironmentVariable("POSTGRES_USER")
-            ?? throw new InvalidOperationException("POSTGRES_USER not set");
-
-        var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD")
-            ?? throw new InvalidOperationException("POSTGRES_PASSWORD not set");
-
-        var db = Environment.GetEnvironmentVariable("POSTGRES_DB")
-            ?? throw new InvalidOperationException("POSTGRES_DB not set");
-
         return new(
             new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql($"Host={host};Port={port};Database={db};Username={user};Password={password};Trust Server Certificate=true")
+                .UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection"))
                 .Options
         );
     }
