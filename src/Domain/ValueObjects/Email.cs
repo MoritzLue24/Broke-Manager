@@ -13,7 +13,7 @@ public sealed record Email
     }
         
 
-    public static DomainResult<Email> Create(string value)
+    public static Result<Email> Create(string value)
     {
         MailAddress email;
         try
@@ -22,8 +22,8 @@ public sealed record Email
         }
         catch (Exception)
         {
-            return DomainResult<Email>.Fail(DomainErrorCode.InvalidEmailFormat);
+            return new InvalidEmailFormatError();
         }
-        return DomainResult<Email>.Ok(new Email(email.Address));
+        return new Email(email.Address);
     }
 }

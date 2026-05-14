@@ -25,7 +25,7 @@ public class HashTests
 
         // Assert
         Assert.False(domainResult.Success);
-        Assert.Equal(DomainErrorCode.InvaildHashFormat, domainResult.Error);
+        Assert.Equal(new InvalidHashFormatError(), domainResult.Error);
         Assert.Throws<InvalidOperationException>(() => domainResult.Value);
     }
 }

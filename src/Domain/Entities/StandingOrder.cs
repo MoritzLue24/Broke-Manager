@@ -41,7 +41,7 @@ public class StandingOrder
         CreatedAt = DateTime.UtcNow;
     }
 
-    public static DomainResult<StandingOrder> Create(
+    public static Result<StandingOrder> Create(
         Guid userId,
         string name,
         DateOnly startDate,
@@ -49,93 +49,93 @@ public class StandingOrder
         RecurrencePattern recurrencePattern)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return DomainResult<StandingOrder>.Fail(DomainErrorCode.StandingOrderNameEmpty);
+            throw new NotImplementedException();
 
         if (startDate > (endDate ?? DateOnly.MaxValue))
-            return DomainResult<StandingOrder>.Fail(DomainErrorCode.StandingOrderDatesInvalid);
+            throw new NotImplementedException();
 
-        return DomainResult<StandingOrder>.Ok(new StandingOrder(
+        return new StandingOrder(
             userId,
             name,
             startDate,
             endDate ?? DateOnly.MaxValue,
             recurrencePattern
-        ));
+        );
     }
 
-    public DomainResult<Unit> ChangeCategory(Guid categoryId)
+    public Result<Unit> ChangeCategory(Guid categoryId)
     {
         if (categoryId == Guid.Empty)
-            return DomainResult<Unit>.Fail(DomainErrorCode.InvalidGuid);
+            return new InvalidGuidError();
 
         CategoryId = categoryId;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> RemoveCategory()
+    public Result<Unit> RemoveCategory()
     {
         CategoryId = null;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeName(string name)
+    public Result<Unit> ChangeName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return DomainResult<Unit>.Fail(DomainErrorCode.StandingOrderNameEmpty);
+            throw new NotImplementedException();
 
         Name = name;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> AddKeyword(Keyword keyword)
+    public Result<Unit> AddKeyword(Keyword keyword)
     {
         if(_keywords.Any(k => k == keyword))
-            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordAlreadyExists);
+            throw new NotImplementedException();
 
         _keywords.Add(keyword);
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> RemoveKeyword(Keyword keyword)
+    public Result<Unit> RemoveKeyword(Keyword keyword)
     {
         if (_keywords.Remove(keyword) == false)
-            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordNotFound);
+            throw new NotImplementedException();
 
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeStartDate(DateOnly startDate)
+    public Result<Unit> ChangeStartDate(DateOnly startDate)
     {
         if (startDate > EndDate)
-            return DomainResult<Unit>.Fail(DomainErrorCode.StandingOrderDatesInvalid);
+            throw new NotImplementedException();
 
         StartDate = startDate;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeEndDate(DateOnly endDate)
+    public Result<Unit> ChangeEndDate(DateOnly endDate)
     {
         if (StartDate > endDate)
-            return DomainResult<Unit>.Fail(DomainErrorCode.StandingOrderDatesInvalid);
+            throw new NotImplementedException();
 
         EndDate = endDate;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> MakeInfinite()
+    public Result<Unit> MakeInfinite()
     {
         EndDate = DateOnly.MaxValue;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeRecurrencePattern(RecurrencePattern recurrencePattern)
+    public Result<Unit> ChangeRecurrencePattern(RecurrencePattern recurrencePattern)
     {
         RecurrencePattern = recurrencePattern;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> Delete()
+    public Result<Unit> Delete()
     {
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 }

@@ -1,5 +1,6 @@
+using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common.Results;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -32,7 +33,7 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         {
             // Check if the given category exists
             if (!await _categoryReaderRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
-                return Result<TransactionDto>.Fail(ErrorCode.CategoryNotFound);
+                return new CategoryNotFoundError();
             categoryId = command.CategoryId.Value;
             categorySource = CategorySource.Manual;
         }
@@ -42,7 +43,7 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
             // Get default category
             Guid? categoryIdRes = await _categoryReaderRepo.GetDefaultByUserIdAsync(command.UserId);
             if (!categoryIdRes.HasValue)
-                return Result<TransactionDto>.Fail(ErrorCode.DefaultCategoryNotFound);
+                return new DefaultCategoryNotFoundError();
             categoryId = categoryIdRes.Value;
             categorySource = CategorySource.Unmatched;
         }
@@ -63,10 +64,10 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         // For now, the errors are basically the same but we dont want to
         // pass domain errors into the Api layer
         if (!domainResult.Success)
-            return domainResult.MapError<TransactionDto, Transaction>();
+            return domainResult.Cast<TransactionDto>();
 
         _transactionRepo.Add(domainResult.Value);
         await _uow.SaveChangesAsync(ct);
-        return domainResult.Map(t => t.ToDto());
+        return domainResult.Cast(t => t.ToDto());
     }
 }

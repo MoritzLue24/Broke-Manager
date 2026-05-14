@@ -16,43 +16,43 @@ public class StandingOrderPause
         To = to;
     }
 
-    public static DomainResult<StandingOrderPause> Create(DateOnly from, DateOnly? to)
+    public static Result<StandingOrderPause> Create(DateOnly from, DateOnly? to)
     {
         if (from > (to ?? DateOnly.MaxValue))
-            return DomainResult<StandingOrderPause>.Fail(DomainErrorCode.StandingOrderPauseDatesInvalid);
+            throw new NotImplementedException();
 
-        return DomainResult<StandingOrderPause>.Ok(new(
+        return new StandingOrderPause(
             from,
             to ?? DateOnly.MaxValue
-        ));
+        );
     }
 
-    public DomainResult<Unit> UpdateFrom(DateOnly from)
+    public Result<Unit> UpdateFrom(DateOnly from)
     {
         if (from > To)
-            return DomainResult<Unit>.Fail(DomainErrorCode.StandingOrderPauseDatesInvalid);
+            throw new NotImplementedException();
 
         From = from;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> UpdateTo(DateOnly to)
+    public Result<Unit> UpdateTo(DateOnly to)
     {
         if (From > to)
-            return DomainResult<Unit>.Fail(DomainErrorCode.StandingOrderPauseDatesInvalid);
+            throw new NotImplementedException();
 
         To = to;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> MakeInfinite()
+    public Result<Unit> MakeInfinite()
     {
         To = DateOnly.MaxValue;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> Delete()
+    public Result<Unit> Delete()
     {
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 }

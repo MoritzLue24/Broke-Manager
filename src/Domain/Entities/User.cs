@@ -23,27 +23,26 @@ public class User
         CreatedAt = DateTime.UtcNow;
     }
 
-    public static DomainResult<User> Create(Email email, Hash passwordHash)
+    public static Result<User> Create(Email email, Hash passwordHash)
     {
-        return DomainResult<User>.Ok(new(email, passwordHash, Role.User));
+        return new User(email, passwordHash, Role.User);
     }
-        
 
-    public DomainResult<Unit> ChangeEmail(Email email)
+    public Result<Unit> ChangeEmail(Email email)
     {
         Email = email;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangePasswordHash(Hash passwordHash)
+    public Result<Unit> ChangePasswordHash(Hash passwordHash)
     {
         PasswordHash = passwordHash;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeRole(Role role)
+    public Result<Unit> ChangeRole(Role role)
     {
         Role = role;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 }

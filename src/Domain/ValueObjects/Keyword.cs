@@ -11,11 +11,11 @@ public sealed record Keyword
         Value = value;
     }
 
-    public static DomainResult<Keyword> Create(string value)
+    public static Result<Keyword> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return DomainResult<Keyword>.Fail(DomainErrorCode.KeywordEmpty);
+            return new EmptyKeywordError();
 
-        return DomainResult<Keyword>.Ok(new(value));
+        return new Keyword(value);
     }
 }

@@ -1,4 +1,5 @@
-using Application.Common.Results;
+using Application.Common;
+using Domain.Common;
 using MediatR;
 
 namespace Application.Features.Transactions.Queries.GetTransaction;
@@ -15,8 +16,8 @@ public class GetTransactionHandler : IRequestHandler<GetTransactionQuery, Result
         var transaction = await _transactionRepo.GetByIdAsync(query.TransactionId);
 
         if (transaction == null || transaction.UserId != query.UserId)
-            return Result<TransactionDto>.Fail(ErrorCode.TransactionNotFound);
+            return new TransactionNotFoundError();;
 
-        return Result<TransactionDto>.Ok(transaction.ToDto());
+        return transaction.ToDto();
     }
 }

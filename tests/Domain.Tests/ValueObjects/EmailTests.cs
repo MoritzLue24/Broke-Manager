@@ -30,7 +30,7 @@ public class EmailTests
 
         // Assert
         Assert.False(domainResult.Success);
-        Assert.Equal(DomainErrorCode.InvalidEmailFormat, domainResult.Error);
+        Assert.Equal(new InvalidEmailFormatError(), domainResult.Error);
         Assert.Throws<InvalidOperationException>(() => domainResult.Value);
     }
 }

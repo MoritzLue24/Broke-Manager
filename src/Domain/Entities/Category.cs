@@ -11,7 +11,7 @@ public class Category
     public bool IsDefault { get; private set;}
     public DateTime CreatedAt {get; private set;}
 
-    private readonly List<Keyword> _keywords = new();
+    private readonly List<Keyword> _keywords = [];
 
     public IReadOnlyCollection<Keyword> Keywords
     {
@@ -32,54 +32,51 @@ public class Category
         CreatedAt = DateTime.UtcNow;
     }
 
-    public static DomainResult<Category> Create(Guid userId, string name, bool isDefault)
+    public static Result<Category> Create(Guid userId, string name, bool isDefault)
     {
         if(userId == Guid.Empty)
-            return DomainResult<Category>.Fail(DomainErrorCode.InvalidGuid);
+            return new InvalidGuidError();
 
         if (string.IsNullOrWhiteSpace(name))
-            return DomainResult<Category>.Fail(DomainErrorCode.CategoryNameEmpty);
+            return new EmptyCategoryNameError();
 
-        return DomainResult<Category>.Ok(new Category(userId, name, isDefault));
+        return new Category(userId, name, isDefault);
     }
 
-    public DomainResult<Unit> ChangeName(string name)
+    public Result<Unit> ChangeName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return DomainResult<Unit>.Fail(DomainErrorCode.CategoryNameEmpty);
+            return new EmptyCategoryNameError();
 
         Name = name;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> AddKeyword(Keyword keyword)
+    public Result<Unit> AddKeyword(Keyword keyword)
     {
         if(IsDefault)
-            return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
+            return new CategoryIsDefaultError();
 
         if(_keywords.Any(k => k == keyword))
-            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordAlreadyExists);
+            return new DuplicateKeywordError();
 
         _keywords.Add(keyword);
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> RemoveKeyword(Keyword keyword)
+    public Result<Unit> RemoveKeyword(Keyword keyword)
     {
-        if(IsDefault)
-            return DomainResult<Unit>.Fail(DomainErrorCode.NoKeywordForDefaultCategory);
-
         if (_keywords.Remove(keyword) == false)
-            return DomainResult<Unit>.Fail(DomainErrorCode.KeywordNotFound);
+            return new KeywordNotFoundError();
 
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> Delete()
+    public Result<Unit> Delete()
     {
         if (IsDefault)
-            return DomainResult<Unit>.Fail(DomainErrorCode.CannotDeleteDefaultCategory);
+            return new CategoryIsDefaultError();
 
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 }

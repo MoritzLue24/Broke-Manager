@@ -46,7 +46,7 @@ public class Transaction
         CounterParty = counterParty;
     }
 
-    public static DomainResult<Transaction> Create(
+    public static Result<Transaction> Create(
         Guid userId,
         Guid categoryId,
         CategorySource categorySource,
@@ -58,18 +58,18 @@ public class Transaction
         string counterParty)
     {
         if(userId == Guid.Empty || categoryId == Guid.Empty)
-            return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidGuid);
+            return new InvalidGuidError();
 
         if(amount <= 0)
-            return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidAmount);
+            return new InvalidAmountError();
 
         if (string.IsNullOrWhiteSpace(title))
-            return DomainResult<Transaction>.Fail(DomainErrorCode.TransactionTitleEmpty);
+            return new EmptyTransactionTitleError();
 
         if (!Enum.IsDefined(typeof(CategorySource), categorySource))
-            return DomainResult<Transaction>.Fail(DomainErrorCode.InvalidCategorySource);
+            return new InvalidCategorySourceError();
 
-        return DomainResult<Transaction>.Ok(new Transaction(
+        return new Transaction(
             userId,
             categoryId,
             categorySource,
@@ -79,75 +79,75 @@ public class Transaction
             title,
             description,
             counterParty
-        ));
+        );
     }
 
-    public DomainResult<Unit> ChangeCategory(Guid categoryId, CategorySource source)
+    public Result<Unit> ChangeCategory(Guid categoryId, CategorySource source)
     {
         if(categoryId == Guid.Empty)
-            return DomainResult<Unit>.Fail(DomainErrorCode.InvalidGuid); 
+            return new InvalidGuidError();
 
         CategoryId = categoryId;
         CategorySource = source;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeStandingOrder(Guid standingOrderId, StandingOrderSource source)
+    public Result<Unit> ChangeStandingOrder(Guid standingOrderId, StandingOrderSource source)
     {
         if(standingOrderId == Guid.Empty)
-            return DomainResult<Unit>.Fail(DomainErrorCode.InvalidGuid); 
+            return new InvalidGuidError();
 
         StandingOrderId = standingOrderId;
         StandingOrderSource = source;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> RemoveStandingOrder()
+    public Result<Unit> RemoveStandingOrder()
     {
         StandingOrderId = null;
         StandingOrderSource = null;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeAmount(decimal amount, TransactionType type)
+    public Result<Unit> ChangeAmount(decimal amount, TransactionType type)
     {
         if(amount <= 0)
-            return DomainResult<Unit>.Fail(DomainErrorCode.InvalidAmount);
+            return new InvalidAmountError();
 
         Amount = amount;
         Type = type;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeDate(DateOnly date)
+    public Result<Unit> ChangeDate(DateOnly date)
     {
         Date = date;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeTitle(string title)
+    public Result<Unit> ChangeTitle(string title)
     {
         if (string.IsNullOrWhiteSpace(title))
-            return DomainResult<Unit>.Fail(DomainErrorCode.TransactionTitleEmpty);
+            return new EmptyTransactionTitleError();
 
         Title = title;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeDescription(string description)
+    public Result<Unit> ChangeDescription(string description)
     {
         Description = description;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> ChangeCounterParty(string counterParty)
+    public Result<Unit> ChangeCounterParty(string counterParty)
     {
         CounterParty = counterParty;
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 
-    public DomainResult<Unit> Delete()
+    public Result<Unit> Delete()
     {
-        return DomainResult<Unit>.Ok();
+        return Unit.Value;
     }
 }

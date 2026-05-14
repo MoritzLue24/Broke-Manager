@@ -63,7 +63,7 @@ public class TransactionTests
         );
 
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.TransactionTitleEmpty, result.Error);
+        Assert.Equal(new EmptyTransactionTitleError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -83,7 +83,7 @@ public class TransactionTests
         );
 
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.InvalidGuid, result.Error);
+        Assert.Equal(new InvalidGuidError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
     
@@ -103,7 +103,7 @@ public class TransactionTests
         );
 
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.InvalidGuid, result.Error);
+        Assert.Equal(new InvalidGuidError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -128,7 +128,7 @@ public class TransactionTests
         var result = transaction.ChangeCategory(Guid.Empty, CategorySource.Manual);
         
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.InvalidGuid, result.Error);
+        Assert.Equal(new InvalidGuidError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -151,7 +151,7 @@ public class TransactionTests
         var result = transaction.ChangeAmount(-5000.0m, TransactionType.Expense);
 
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.InvalidAmount, result.Error);
+        Assert.Equal(new InvalidAmountError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -173,7 +173,7 @@ public class TransactionTests
         var result = transaction.ChangeTitle("");
 
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.TransactionTitleEmpty, result.Error);
+        Assert.Equal(new EmptyTransactionTitleError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
     
