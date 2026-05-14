@@ -20,7 +20,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder.ToTable("categories");
 
-        // Id, kein isrequired nötig, autom.
+        // Id
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id).HasColumnName("id");
 
@@ -43,7 +43,11 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         // IsDefault
         builder.Property(c => c.IsDefault).HasColumnName("is_default");
-
+        builder.HasIndex(c => c.UserId) // User has only 1 Default Category
+            .HasFilter("is_default = true") 
+            .IsUnique()                      
+            .HasDatabaseName("ix_categories_user_id_unique_default");
+        
         // Keywords
         builder.PrimitiveCollection<List<Keyword>>("_keywords")
             .HasColumnName("keywords")
