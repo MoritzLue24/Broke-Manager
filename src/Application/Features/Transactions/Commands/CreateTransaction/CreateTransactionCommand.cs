@@ -1,4 +1,4 @@
-using Application.Common.Results;
+using Domain.Common;
 using Domain.Enums;
 using MediatR;
 

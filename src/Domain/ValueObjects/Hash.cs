@@ -10,13 +10,12 @@ public sealed record Hash
     {
         Value = value;
     }
-        
 
-    public static DomainResult<Hash> Create(string hash)
+    public static Result<Hash> Create(string hash)
     {
         if (string.IsNullOrWhiteSpace(hash))
-            return DomainResult<Hash>.Fail(DomainErrorCode.InvaildHashFormat);
+            return new InvalidHashFormatError();
 
-        return DomainResult<Hash>.Ok(new Hash(hash));
+        return new Hash(hash);
     }
 }

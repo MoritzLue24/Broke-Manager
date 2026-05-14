@@ -23,7 +23,7 @@ public class KeywordTests
         var result = Keyword.Create("");
 
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.KeywordEmpty, result.Error);
+        Assert.Equal(new EmptyKeywordError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => result.Value);
     }
 }

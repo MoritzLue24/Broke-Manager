@@ -40,11 +40,10 @@ public class CategoryTest
     [Fact]
     public void Create_ShouldFail_WhenNameIsEmpty()
     {
-        
         var result = Category.Create(Guid.NewGuid(), "", false);
-        
+
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.CategoryNameEmpty, result.Error);
+        Assert.Equal(new EmptyCategoryNameError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -56,9 +55,9 @@ public class CategoryTest
         category.AddKeyword(keyword);
 
         var result = category.AddKeyword(keyword);
-        
+
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.KeywordAlreadyExists, result.Error);
+        Assert.Equal(new DuplicateKeywordError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -67,11 +66,11 @@ public class CategoryTest
     {
         var category = CreateCategory();
         var keyword = CreateKeyword("Sex-Puppe");
-        
+
         var result = category.RemoveKeyword(keyword);
-        
+
         Assert.False(result.Success);
-        Assert.Equal(DomainErrorCode.KeywordNotFound, result.Error);
+        Assert.Equal(new KeywordNotFoundError(), result.Error);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 

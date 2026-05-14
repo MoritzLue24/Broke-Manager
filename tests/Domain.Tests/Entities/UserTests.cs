@@ -7,7 +7,7 @@ namespace Domain.Tests.Entities;
 
 public class UserTests
 {
-    private static DomainResult<User> CreateValidUserResult()
+    private static Result<User> CreateValidUserResult()
         => User.Create(
             CreateValidEmail(),
             CreateValidHash()

@@ -15,18 +15,18 @@ public sealed record RecurrencePattern
         ExecutionDay = executionDay;
     }
 
-    public static DomainResult<RecurrencePattern> Create(Interval interval, int executionDay)
+    public static Result<RecurrencePattern> Create(Interval interval, int executionDay)
     {
         if (executionDay < 1)
-            return DomainResult<RecurrencePattern>.Fail(DomainErrorCode.RecurrencePatternInvalidExecutionDay);
+            throw new NotImplementedException();
 
-        return DomainResult<RecurrencePattern>.Ok(new(
+        return new RecurrencePattern(
             interval,
             executionDay
-        ));
+        );
     }
 
-    public DomainResult<DateOnly> GetActualDay(DateOnly referenceDate)
+    public Result<DateOnly> GetActualDay(DateOnly referenceDate)
     {
         DateOnly periodStart = Interval switch
         {
@@ -59,10 +59,8 @@ public sealed record RecurrencePattern
         };
 
         DateOnly executionDate = periodStart.AddDays(ExecutionDay - 1);
-        return DomainResult<DateOnly>.Ok(
-            executionDate > periodEnd
+        return  executionDate > periodEnd
             ? periodEnd
-            : executionDate
-        );
+            : executionDate;
     }
 }
