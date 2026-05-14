@@ -1,7 +1,8 @@
+using Application.Common;
 using Application.Common.Interfaces;
-using Application.Common.Results;
 using Application.Features.Transactions;
 using Application.Features.Transactions.Commands.CreateTransaction;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
 using NSubstitute;
@@ -92,7 +93,7 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(ErrorCode.CategoryNotFound, result.Error);
+        Assert.Equal(new CategoryNotFoundError(), result.Error);
 
         await _categoryReaderRepo.Received(1).ExistsForUserAsync(userId, categoryId);
         await _categoryReaderRepo.Received(0).GetDefaultByUserIdAsync(Arg.Any<Guid>());
@@ -157,7 +158,7 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(ErrorCode.DefaultCategoryNotFound, result.Error);
+        Assert.Equal(new DefaultCategoryNotFoundError(), result.Error);
 
         await _categoryReaderRepo.Received(0).ExistsForUserAsync(Arg.Any<Guid>(), Arg.Any<Guid>());
         await _categoryReaderRepo.Received(1).GetDefaultByUserIdAsync(userId);
@@ -188,7 +189,7 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(ErrorCode.InvalidGuid, result.Error);
+        Assert.Equal(new InvalidGuidError(), result.Error);
     }
 
     [Fact]
@@ -214,7 +215,7 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(ErrorCode.InvalidTransactionAmount, result.Error);
+        Assert.Equal(new InvalidAmountError(), result.Error);
     }
 
     [Fact]
@@ -240,6 +241,6 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(ErrorCode.TransactionTitleEmpty, result.Error);
+        Assert.Equal(new EmptyTransactionTitleError(), result.Error);
     }
 }
