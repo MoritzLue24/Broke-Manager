@@ -25,13 +25,18 @@ migrate name:
         --project src/Infrastructure \
         --output-dir Persistence/Migrations
 
+# Undos last migration
+undo-migration:
+    dotnet ef migrations remove \
+        --project src/Infrastructure
+
 # Removes all migrations from src/Infrastructure/Persistence/Migrations
 clear-migrations:
     rm -rf src/Infrastructure/Persistence/Migrations
 
 # Updates database from src/Infrastructure
-db-update:
-    dotnet ef database update \
+db-update migration="":
+    dotnet ef database update {{migration}} \
         --project src/Infrastructure
 
 # Drops database from src/Infrastructure
