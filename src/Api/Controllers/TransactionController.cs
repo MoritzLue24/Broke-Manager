@@ -1,3 +1,5 @@
+using Api.Errors;
+using Application.Common;
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Contracts.Features.Transactions;
 using MapsterMapper;
@@ -28,7 +30,7 @@ public class TransactionController : ControllerBase
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
             dto => Ok(_mapper.Map<TransactionDetailResponse>(dto)),
-            error => Problem(error.GetType().FullName)  // TODO: Custom error response
+            error => error.ToProblem(this)
         );
     }
 }
