@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddControllers();
-    
+
     builder.Services.AddInfrastructure(
         builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Default connection string not set"));
@@ -28,3 +28,4 @@ var app = builder.Build();
     app.MapControllers();
     app.Run();
 }
+

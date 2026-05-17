@@ -1,3 +1,5 @@
+set shell := ["bash", "-c"]
+
 # Shows this message
 default:
     @just --list --unsorted
@@ -18,6 +20,12 @@ todo filetype="cs":
 clean:
     dotnet clean Broke-Manager.sln
     find . -type d \( -name bin -o -name obj \) -exec rm -rf {} +
+
+# Sources all .env variables
+source:
+    set -a
+    source .env
+    set +a
 
 # Creates a new migration in src/Infrastructure/Persistence/Migrations
 migrate name:
@@ -47,3 +55,11 @@ db-drop:
 # Tests all projects
 test:
     dotnet test --nologo --verbosity minimal
+
+# Run api with hot-reload
+watch-run:
+    dotnet watch run --project src/Api
+
+# Run api without hot-reload
+run:
+    dotnet run --project src/Api
