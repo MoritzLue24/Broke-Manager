@@ -1,3 +1,4 @@
+using Api;
 using Application;
 using Infrastructure;
 
@@ -8,12 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddControllers();
-
     builder.Services.AddInfrastructure(
         builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("Default connection string not set"));
     builder.Services.AddApplication();
+    builder.Services.AddApi();
 }
 
 var app = builder.Build();

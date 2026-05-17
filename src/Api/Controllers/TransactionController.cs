@@ -1,6 +1,6 @@
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Contracts.Features.Transactions;
-using Domain.Enums;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,40 +11,24 @@ namespace Api.Controllers;
 public class TransactionController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public TransactionController(IMediator mediator)
-        => _mediator = mediator;
+    public TransactionController(IMediator mediator, IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
 
     [HttpPost("")]
     public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
         [FromBody] CreateTransactionRequest createRequest)
     {
-        var result = await _mediator.Send(new CreateTransactionCommand(
-            createRequest.UserId,
-            createRequest.CategoryId,
-            createRequest.Amount,
-            Enum.Parse<TransactionType>(createRequest.Type),
-            createRequest.Date,
-            createRequest.Title,
-            createRequest.Description,
-            createRequest.CounterParty
-        ));
+        var command = _mapper.Map<CreateTransactionCommand>(createRequest);
+        var result = await _mediator.Send(command);
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
-            dto => Ok(new TransactionDetailResponse(
-                dto.Id,
-                dto.UserId,
-                dto.CategoryId,
-                dto.CategorySource.ToString(),
-                dto.Amount,
-                dto.Type.ToString(),
-                dto.Date,
-                dto.Title,
-                dto.Description,
-                dto.CounterParty,
-                dto.CreatedAt
-            )),
-            error => Problem(error.GetType().FullName)
-        ); 
+            dto => Ok(_mapper.Map<TransactionDetailResponse>(dto)),
+            error => Problem(error.GetType().FullName)  // TODO: Custom error response
+        );
     }
 }
