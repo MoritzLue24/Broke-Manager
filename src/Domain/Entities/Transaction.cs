@@ -44,6 +44,7 @@ public class Transaction
         Title = title;
         Description = description;
         CounterParty = counterParty;
+        CreatedAt = DateTime.UtcNow;
     }
 
     public static Result<Transaction> Create(
