@@ -1,4 +1,5 @@
 set shell := ["bash", "-c"]
+set dotenv-load := true
 
 # Shows this message
 default:
