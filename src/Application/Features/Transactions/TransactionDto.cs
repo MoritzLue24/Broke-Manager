@@ -1,3 +1,4 @@
+using Domain.Entities;
 using Domain.Enums;
 
 namespace Application.Features.Transactions;
@@ -18,3 +19,22 @@ public record TransactionDto(
     string CounterParty,
     DateTime CreatedAt
 );
+
+public static class TransactionExtension {
+    public static TransactionDto ToDto(this Transaction t)
+    {
+        return new(
+            t.Id,
+            t.UserId,
+            t.CategoryId,
+            t.CategorySource,
+            t.Amount,
+            t.Type,
+            t.Date,
+            t.Title,
+            t.Description,
+            t.CounterParty,
+            t.CreatedAt
+        );
+    }
+}
