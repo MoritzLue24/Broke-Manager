@@ -1,4 +1,5 @@
 using Api;
+using Api.Middlewares;
 using Application;
 using Infrastructure;
 
@@ -25,6 +26,7 @@ var app = builder.Build();
     }
 
     // app.UseHttpsRedirection();
+    app.UseMiddleware<ExceptionMiddleware>();
     app.MapControllers();
     app.Run();
 }

@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddSingleton(mapsterConfig);   // Needed by mapster to inject into `ServiceMapper` (mapsters implementation of IMapper)
         services.AddScoped<IMapper, ServiceMapper>();
 
+        services.AddProblemDetails();   // To inject `IProblemDetailsService` to `ExceptionMiddleware`
         services.AddControllers();
         return services;
     }
