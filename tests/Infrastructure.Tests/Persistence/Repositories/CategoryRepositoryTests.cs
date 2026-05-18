@@ -7,12 +7,12 @@ namespace Infrastructure.Tests.Persistence.Repositories;
 public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
 {
     private readonly DatabaseManager _db;
-    private readonly CategoryReaderRepository _repo;
+    private readonly CategoryRepository _repo;
 
     public CategoryReaderRepositoryTests(PostgresFixture postgres)
     {
         _db = new DatabaseManager(postgres.ConnectionString);
-        _repo = new CategoryReaderRepository(_db.Context);
+        _repo = new CategoryRepository(_db.Context);
     }
 
     /// GetDefaultByUserIdAsync :)
