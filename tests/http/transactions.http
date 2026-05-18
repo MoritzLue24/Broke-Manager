@@ -2,11 +2,10 @@ POST http://localhost:5180/transactions
 Content-Type: application/json
 
 {
-    "userId": "4743e4dc-4d06-4744-83b3-9ae432a7d7fd",
     "amount": 25,
     "type": "Expense",
     "date": "2026-05-17",
-    "title": "Essen paojdpoawjn",
+    "title": "asd",
     "Description": "wir warne essne",
     "CounterParty": "Essen"
 }

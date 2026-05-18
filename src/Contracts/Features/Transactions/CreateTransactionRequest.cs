@@ -1,7 +1,6 @@
 namespace Contracts.Features.Transactions;
 
 public record CreateTransactionRequest(
-    Guid UserId,
     Guid? CategoryId,
     decimal Amount,
     string Type,

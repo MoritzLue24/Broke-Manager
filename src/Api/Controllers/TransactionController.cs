@@ -1,6 +1,6 @@
 using Api.Errors;
-using Application.Common;
 using Application.Features.Transactions.Commands.CreateTransaction;
+using Application.Features.Transactions.Queries.GetTransactionsByUser;
 using Contracts.Features.Transactions;
 using MapsterMapper;
 using MediatR;
@@ -21,11 +21,11 @@ public class TransactionController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost("")]
+    [HttpPost]
     public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
         [FromBody] CreateTransactionRequest createRequest)
     {
-        var command = _mapper.Map<CreateTransactionCommand>(createRequest);
+        var command = _mapper.Map<CreateTransactionCommand>((createRequest, Guid.NewGuid()));
         var result = await _mediator.Send(command);
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
