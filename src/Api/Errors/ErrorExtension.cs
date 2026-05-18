@@ -44,7 +44,7 @@ public static class ErrorExtension
             );
         }
         if (!errors.Any())
-            throw new InvalidOperationException("Cannot convert errors to result if there are no errors.");
+            throw new InvalidOperationException("Cannot convert errors to ObjectResult if there are no errors.");
         return errors.First().ToProblem(controller);
     }
 }
