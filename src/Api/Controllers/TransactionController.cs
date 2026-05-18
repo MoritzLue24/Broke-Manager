@@ -21,6 +21,18 @@ public class TransactionController : ControllerBase
         _mapper = mapper;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<List<TransactionDetailResponse>>> GetAllByUser()
+    {
+        var query = new GetTransactionsByUserQuery(Guid.NewGuid());
+        var result = await _mediator.Send(query);
+
+        return result.Match<ActionResult<List<TransactionDetailResponse>>>(
+            dtos => Ok(dtos.Select(dto => _mapper.Map<TransactionDetailResponse>(dto))),
+            error => error.ToProblem(this)
+        );
+    }
+
     [HttpPost]
     public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
         [FromBody] CreateTransactionRequest createRequest)
