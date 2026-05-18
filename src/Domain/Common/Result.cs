@@ -3,7 +3,7 @@ namespace Domain.Common;
 public class Result<V>
 {
     private readonly V _value;
-    private readonly Error _error;
+    private readonly IEnumerable<Error> _errors;
 
     public bool Success { get; }
 
@@ -11,31 +11,39 @@ public class Result<V>
         ? _value
         : throw new InvalidOperationException("No value on failure");
 
-    public Error Error => !Success
-        ? _error
+    public IEnumerable<Error> Errors => !Success
+        ? _errors
+        : throw new InvalidOperationException("No error on success");
+
+    public Error FirstError => !Success
+        ? _errors.Any() 
+            ? _errors.First()
+            : throw new InvalidOperationException("Result not successful, but errors are empty")
         : throw new InvalidOperationException("No error on success");
 
     private Result(V value)
     {
         Success = true;
         _value = value;
-        _error = default!;
+        _errors = [];
     }
 
-    private Result(Error error)
+    private Result(IEnumerable<Error> errors)
     {
         Success = false;
         _value = default!;
-        _error = error;
+        _errors = errors;
     }
 
     public static implicit operator Result<V>(V value) => new(value);
-    public static implicit operator Result<V>(Error error) => new(error);
+    public static implicit operator Result<V>(Error error) => new([error]);
+    public static implicit operator Result<V>(List<Error> errors) => new(errors);
+    public static implicit operator Result<V>(Error[] errors) => new(errors);
 
     public Result<U> Cast<U>(Func<V, U>? converter = null)
     {
         if (!Success)
-            return new(_error);
+            return new(_errors);
 
         if (converter != null)
             return new(converter(_value));
@@ -48,6 +56,8 @@ public class Result<V>
         );
     }
 
-    public TOut Match<TOut>(Func<V, TOut> onSuccess, Func<Error, TOut> onError)
-        => Success ? onSuccess(_value) : onError(_error);
+    public TOut Match<TOut>(
+        Func<V, TOut> onSuccess,
+        Func<IEnumerable<Error>, TOut> onError)
+        => Success ? onSuccess(_value) : onError(_errors);
 }

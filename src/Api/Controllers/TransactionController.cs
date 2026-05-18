@@ -29,7 +29,7 @@ public class TransactionController : ControllerBase
 
         return result.Match<ActionResult<List<TransactionDetailResponse>>>(
             dtos => Ok(dtos.Select(dto => _mapper.Map<TransactionDetailResponse>(dto))),
-            error => error.ToProblem(this)
+            errors => errors.ToProblem(this)
         );
     }
 
@@ -42,7 +42,7 @@ public class TransactionController : ControllerBase
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
             dto => Ok(_mapper.Map<TransactionDetailResponse>(dto)),
-            error => error.ToProblem(this)
+            errors => errors.ToProblem(this)
         );
     }
 }
