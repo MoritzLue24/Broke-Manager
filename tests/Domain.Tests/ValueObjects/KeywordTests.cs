@@ -13,7 +13,7 @@ public class KeywordTests
 
         Assert.True(result.Success);
         Assert.Equal("penis", result.Value.Value);
-        Assert.Throws<InvalidOperationException>(() => {var _ = result.Error;});
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class KeywordTests
         var result = Keyword.Create("");
 
         Assert.False(result.Success);
-        Assert.Equal(new EmptyKeywordError(), result.Error);
+        Assert.Equal(new EmptyKeywordError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => result.Value);
     }
 }

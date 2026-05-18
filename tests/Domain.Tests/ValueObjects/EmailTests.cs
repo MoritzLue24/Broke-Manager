@@ -14,7 +14,7 @@ public class EmailTests
         // Assert
         Assert.True(domainResult.Success);
         Assert.Equal("very-valid@email.com", domainResult.Value.Value);
-        Assert.Throws<InvalidOperationException>(() => {var _ = domainResult.Error;});
+        Assert.Throws<InvalidOperationException>(() => {var _ = domainResult.Errors;});
     }
 
     [Theory]
@@ -30,7 +30,7 @@ public class EmailTests
 
         // Assert
         Assert.False(domainResult.Success);
-        Assert.Equal(new InvalidEmailFormatError(), domainResult.Error);
+        Assert.Equal(new InvalidEmailFormatError(), domainResult.FirstError);
         Assert.Throws<InvalidOperationException>(() => domainResult.Value);
     }
 }

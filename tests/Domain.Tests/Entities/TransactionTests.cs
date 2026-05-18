@@ -44,7 +44,7 @@ public class TransactionTests
         Assert.Equal("Test title transaction", result.Value.Title);
         Assert.Equal("Test description Transaction", result.Value.Description);
         Assert.Equal("Test counterparty Transaction", result.Value.CounterParty);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class TransactionTests
         );
 
         Assert.False(result.Success);
-        Assert.Equal(new EmptyTransactionTitleError(), result.Error);
+        Assert.Equal(new EmptyTransactionTitleError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -83,7 +83,7 @@ public class TransactionTests
         );
 
         Assert.False(result.Success);
-        Assert.Equal(new InvalidGuidError(), result.Error);
+        Assert.Equal(new InvalidGuidError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
     
@@ -103,7 +103,7 @@ public class TransactionTests
         );
 
         Assert.False(result.Success);
-        Assert.Equal(new InvalidGuidError(), result.Error);
+        Assert.Equal(new InvalidGuidError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -117,7 +117,7 @@ public class TransactionTests
         
         Assert.True(result.Success);
         Assert.Equal(id, transaction.CategoryId);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
 
     }
 
@@ -128,7 +128,7 @@ public class TransactionTests
         var result = transaction.ChangeCategory(Guid.Empty, CategorySource.Manual);
         
         Assert.False(result.Success);
-        Assert.Equal(new InvalidGuidError(), result.Error);
+        Assert.Equal(new InvalidGuidError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -140,7 +140,7 @@ public class TransactionTests
 
         Assert.True(result.Success);
         Assert.Equal(5000.0m, transaction.Amount);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
 
     }
 
@@ -151,7 +151,7 @@ public class TransactionTests
         var result = transaction.ChangeAmount(-5000.0m, TransactionType.Expense);
 
         Assert.False(result.Success);
-        Assert.Equal(new InvalidAmountError(), result.Error);
+        Assert.Equal(new InvalidAmountError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -163,7 +163,7 @@ public class TransactionTests
 
         Assert.True(result.Success);
         Assert.Equal("dildo gekauft", transaction.Title);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class TransactionTests
         var result = transaction.ChangeTitle("");
 
         Assert.False(result.Success);
-        Assert.Equal(new EmptyTransactionTitleError(), result.Error);
+        Assert.Equal(new EmptyTransactionTitleError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
     

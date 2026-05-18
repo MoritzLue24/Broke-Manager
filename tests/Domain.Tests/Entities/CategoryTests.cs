@@ -26,7 +26,7 @@ public class CategoryTest
 
         Assert.True(result.Success);
         Assert.Equal("Drogen", result.Value.Name);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
     
     [Fact]
@@ -43,7 +43,7 @@ public class CategoryTest
         var result = Category.Create(Guid.NewGuid(), "", false);
 
         Assert.False(result.Success);
-        Assert.Equal(new EmptyCategoryNameError(), result.Error);
+        Assert.Equal(new EmptyCategoryNameError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -57,7 +57,7 @@ public class CategoryTest
         var result = category.AddKeyword(keyword);
 
         Assert.False(result.Success);
-        Assert.Equal(new DuplicateKeywordError(), result.Error);
+        Assert.Equal(new DuplicateKeywordError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -70,7 +70,7 @@ public class CategoryTest
         var result = category.RemoveKeyword(keyword);
 
         Assert.False(result.Success);
-        Assert.Equal(new KeywordNotFoundError(), result.Error);
+        Assert.Equal(new KeywordNotFoundError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
 
@@ -84,7 +84,7 @@ public class CategoryTest
 
         Assert.True(result.Success);
         Assert.Contains(keyword,category.Keywords);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class CategoryTest
         var result = category.RemoveKeyword(keyword);
         Assert.True(result.Success);
         Assert.DoesNotContain(keyword,category.Keywords);
-        Assert.Throws<InvalidOperationException>(() => { var _ = result.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 
 }

@@ -34,7 +34,7 @@ public class UserTests
         // Assert
         Assert.True(domainResult.Success);
         Assert.Equal(CreateValidEmail(), domainResult.Value.Email);
-        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Errors; });
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class UserTests
         // Assert
         Assert.True(domainResult.Success);
         Assert.Equal(CreateValidEmail(), user.Email);
-        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Errors; });
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class UserTests
         // Assert
         Assert.True(domainResult.Success);
         Assert.Equal(CreateValidHash(), user.PasswordHash);
-        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Errors; });
     }
 
     [Fact]
@@ -73,6 +73,6 @@ public class UserTests
         // Assert
         Assert.True(domainResult.Success);
         Assert.Equal(Role.Admin, user.Role);
-        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Error; });
+        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Errors; });
     }
 }
