@@ -1,4 +1,4 @@
-using Application.Features.Transactions;
+using Application.Common.Interfaces.Persistence;
 using Domain.Entities;
 
 namespace Infrastructure.Persistence.Repositories;

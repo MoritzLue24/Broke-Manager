@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Persistence;
 using Domain.Common;
 using MediatR;
 

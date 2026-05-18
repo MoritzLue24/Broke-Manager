@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
@@ -11,16 +12,16 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
 {
     private readonly IUnitOfWork _uow;
     private readonly ITransactionRepository _transactionRepo;
-    private readonly ICategoryReaderRepository _categoryReaderRepo;
+    private readonly ICategoryRepository _categoryRepo;
 
     public CreateTransactionHandler(
         IUnitOfWork uow,
         ITransactionRepository transactionRepo,
-        ICategoryReaderRepository categoryReaderRepo)
+        ICategoryRepository categoryRepo)
     {
         _uow = uow;
         _transactionRepo = transactionRepo;
-        _categoryReaderRepo = categoryReaderRepo;
+        _categoryRepo = categoryRepo;
     }
 
     public async Task<Result<TransactionDto>> Handle(CreateTransactionCommand command, CancellationToken ct)
@@ -32,7 +33,7 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         if (command.CategoryId.HasValue)
         {
             // Check if the given category exists
-            if (!await _categoryReaderRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
+            if (!await _categoryRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
                 return new CategoryNotFoundError();
             categoryId = command.CategoryId.Value;
             categorySource = CategorySource.Manual;
@@ -41,7 +42,7 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         else
         {
             // Get default category
-            Guid? categoryIdRes = await _categoryReaderRepo.GetDefaultByUserIdAsync(command.UserId);
+            Guid? categoryIdRes = await _categoryRepo.GetDefaultByUserIdAsync(command.UserId);
             if (!categoryIdRes.HasValue)
                 return new DefaultCategoryNotFoundError();
             categoryId = categoryIdRes.Value;

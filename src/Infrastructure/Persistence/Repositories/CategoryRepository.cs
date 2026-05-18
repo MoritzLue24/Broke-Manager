@@ -1,13 +1,13 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class CategoryReaderRepository : ICategoryReaderRepository
+public class CategoryRepository : ICategoryRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public CategoryReaderRepository(AppDbContext dbContext)
+    public CategoryRepository(AppDbContext dbContext)
         => _dbContext = dbContext;
 
     public async Task<Guid?> GetDefaultByUserIdAsync(Guid userId)

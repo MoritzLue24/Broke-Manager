@@ -3,7 +3,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Application.Common.Interfaces;
 using Infrastructure.Persistence.Repositories;
-using Application.Features.Transactions;
+using Application.Common.Interfaces.Persistence;
 
 namespace Infrastructure;
 
@@ -21,7 +21,7 @@ public static class DependencyInjection
         ));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<ICategoryReaderRepository, CategoryReaderRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
 
         return services;
