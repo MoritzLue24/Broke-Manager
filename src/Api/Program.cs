@@ -1,7 +1,7 @@
-using Infrastructure;
-using Application;
 using Api;
 using Api.Middlewares;
+using Application;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 {

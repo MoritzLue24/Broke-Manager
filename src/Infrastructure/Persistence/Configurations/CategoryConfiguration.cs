@@ -1,8 +1,8 @@
+using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Domain.Entities;
-using Domain.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations;
 

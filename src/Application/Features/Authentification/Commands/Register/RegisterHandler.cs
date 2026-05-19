@@ -1,10 +1,10 @@
-using MediatR;
-using Domain.Common;
-using Domain.Entities;
-using Domain.ValueObjects;
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
+using Domain.Common;
+using Domain.Entities;
+using Domain.ValueObjects;
+using MediatR;
 
 namespace Application.Features.Authentification.Commands.Register;
 

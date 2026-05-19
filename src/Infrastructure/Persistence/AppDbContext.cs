@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 

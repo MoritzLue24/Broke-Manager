@@ -1,6 +1,6 @@
-using MediatR;
-using Domain.Common;
 using Application.Common.Interfaces.Persistence;
+using Domain.Common;
+using MediatR;
 
 namespace Application.Features.Transactions.Queries.GetTransactionsByUser;
 

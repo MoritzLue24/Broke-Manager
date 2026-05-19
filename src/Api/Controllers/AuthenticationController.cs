@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using MapsterMapper;
-using MediatR;
+using Api.Errors;
 using Application.Features.Authentification.Commands.Register;
 using Contracts.Features.Authentification;
-using Api.Errors;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 

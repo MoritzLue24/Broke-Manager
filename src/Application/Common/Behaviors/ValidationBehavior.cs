@@ -1,6 +1,6 @@
+using Domain.Common;
 using FluentValidation;
 using MediatR;
-using Domain.Common;
 
 namespace Application.Common.Behaviors;
 

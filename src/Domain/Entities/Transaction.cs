@@ -146,6 +146,6 @@ public class Transaction
         return Unit.Value;
     }
 
-    public Result<Unit> Delete()
+    public static Result<Unit> Delete()
         => Unit.Value;
 }

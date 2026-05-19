@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using Domain.Common;
 using Application.Common;
+using Domain.Common;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Errors;
 
