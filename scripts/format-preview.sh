@@ -37,7 +37,7 @@ fi
 
 echo "Looking for formatting errors / warnings..."
 
-dotnet format $TYPE --severity $SEVERITY --verify-no-changes
+dotnet format $TYPE --severity $SEVERITY --exclude src/Infrastructure/Persistence/Migrations --verify-no-changes
 
 echo "Type 'y' to accept: "
 read input
