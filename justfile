@@ -22,6 +22,16 @@ clean:
     dotnet clean Broke-Manager.sln
     find . -type d \( -name bin -o -name obj \) -exec rm -rf {} +
 
+format:
+    dotnet format --verify-no-changes
+    @echo "Type 'y' to accept the changes: "
+    read input
+    if [ "$input" = "y" ]; then
+        echo "Continuing..."
+    else
+        echo "Aborted."
+    fi
+
 # Sources all .env variables
 source:
     set -a

@@ -1,0 +1,183 @@
+root = true
+
+[*]
+# -------------
+# --- FILE ---
+# -------------
+end_of_line = lf
+indent_size = 4
+tab_width = 4
+indent_style = space
+insert_final_newline = true
+
+
+[*.cs]
+# -------------
+# --- RULES ---
+# -------------
+
+# IMPORTS: Fix imports ordering
+dotnet_sort_system_directives_first = true:warning
+
+# IDE0009: Add 'this' or 'Me' qualification
+dotnet_style_qualification_for_field = true:warning
+dotnet_style_qualification_for_property = true:warning
+dotnet_style_qualification_for_method = true:warning
+dotnet_style_qualification_for_event = true:warning
+
+# IDE0040: Accessibility modifiers required
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+# IDE0290: Use primary constructor
+csharp_style_prefer_primary_constructors = false
+
+# IDE0052: Private member can be removed as the value assigned to it is never read
+# Not fixed by dotnet format
+dotnet_diagnostic.IDE0052.severity = warning
+
+# IDE0044: Make field readonly
+dotnet_style_readonly_field = true:error
+
+# IDE0065: Using directives must be placed outside of a namespace declaration
+csharp_using_directive_placement = outside_namespace:warning
+
+
+# ------------------
+# --- FORMATTING ---
+# ------------------
+# (does not show diagnostics in editor, only applied on dotnet format)
+
+# Spaces
+csharp_space_after_cast = false
+csharp_space_before_comma = false
+csharp_space_after_comma = true
+csharp_space_before_dot = false
+csharp_space_after_dot = false
+# Example: class MyClass : IInterface, not class MyClass: IInterface
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+# Example: for (), not for()
+csharp_space_after_keywords_in_control_flow_statements = true
+# Example: for (int i = 0; i < 2; i++), not for (int i = 0;i < 2 ;i++)
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_after_semicolon_in_for_statement = true
+# Example: a + a, not a+a
+csharp_space_around_binary_operators = before_and_after
+# Example: list[0], not list [ 0 ] or list [ ]
+csharp_space_before_open_square_brackets = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_square_brackets = false
+# Example: F(a, b), not F (a, b)
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+# Example: void F(a, b), not void F (a, b), analog zu oberhalb
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+# Example: while (a), not while ( a ), F(a, b), not F( a, b )
+csharp_space_between_parentheses = false
+
+# Newliens
+csharp_new_line_before_catch = true
+csharp_new_line_before_else = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_open_brace = all
+
+# Identation
+csharp_indent_block_contents = true # {}
+csharp_indent_switch_labels = true  # switch {}
+csharp_indent_case_contents = true  # case:
+csharp_indent_case_contents_when_block = true # case: {}
+
+# Wrapping
+csharp_preserve_single_line_blocks = true   # Allows inline blocks: if (a) { .. }
+
+# --------------------
+# --- NAMING RULES ---
+# --------------------
+
+# Types & namespaces
+dotnet_naming_rule.types_should_be_pascal_case.severity = error
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types_and_namespaces
+dotnet_naming_rule.types_should_be_pascal_case.style = pascalcase
+
+# Interfaces
+dotnet_naming_rule.interfaces_should_be_ipascalcase.severity = error
+dotnet_naming_rule.interfaces_should_be_ipascalcase.symbols = interfaces
+dotnet_naming_rule.interfaces_should_be_ipascalcase.style = ipascalcase
+
+# Methods
+dotnet_naming_rule.methods_should_be_pascalcase.severity = error
+dotnet_naming_rule.methods_should_be_pascalcase.symbols = methods
+dotnet_naming_rule.methods_should_be_pascalcase.style = pascalcase
+
+# Properties & events
+dotnet_naming_rule.properties_should_be_pascalcase.severity = error
+dotnet_naming_rule.properties_should_be_pascalcase.symbols = properties
+dotnet_naming_rule.properties_should_be_pascalcase.style = pascalcase
+
+# Public fields
+dotnet_naming_rule.public_fields_should_be_pascalcase.severity = error
+dotnet_naming_rule.public_fields_should_be_pascalcase.symbols = public_fields
+dotnet_naming_rule.public_fields_should_be_pascalcase.style = pascalcase
+
+# Private fields
+dotnet_naming_rule.private_fields_should_be__camelcase.severity = error
+dotnet_naming_rule.private_fields_should_be__camelcase.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be__camelcase.style = _camelcase
+
+# Type parameters
+dotnet_naming_rule.type_parameters_should_be_tpascalcase.severity = error
+dotnet_naming_rule.type_parameters_should_be_tpascalcase.symbols = type_parameters
+dotnet_naming_rule.type_parameters_should_be_tpascalcase.style = tpascalcase
+
+# Local variables & parameters
+dotnet_naming_rule.local_variables_should_be_camelcase.severity = error
+dotnet_naming_rule.local_variables_should_be_camelcase.symbols = local_variables
+dotnet_naming_rule.local_variables_should_be_camelcase.style = camelcase
+
+# --- Symbols ---
+
+# Types & namespaces
+dotnet_naming_symbols.types_and_namespaces.applicable_kinds = namespace, class, struct, enum
+dotnet_naming_symbols.types_and_namespaces.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+
+# Interfaces
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+
+# Methods
+dotnet_naming_symbols.methods.applicable_kinds = method
+dotnet_naming_symbols.methods.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+
+# Properties & events
+dotnet_naming_symbols.properties.applicable_kinds = property, event
+dotnet_naming_symbols.properties.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+
+# Public fields
+dotnet_naming_symbols.public_fields.applicable_kinds = field
+dotnet_naming_symbols.public_fields.applicable_accessibilities = public, internal
+
+# Private fields
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private, protected, protected_internal, private_protected
+
+# Type parameters (generics)
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
+
+# Local variables & parameters
+dotnet_naming_symbols.locals.applicable_kinds = local, parameter
+dotnet_naming_symbols.locals.applicable_accessibilities = *
+
+# --- Naming styles ---
+
+dotnet_naming_style.pascalcase.capitalization = pascal_case
+
+dotnet_naming_style.camelcase.capitalization = camel_case
+
+dotnet_naming_style.ipascalcase.capitalization = pascal_case
+dotnet_naming_style.ipascalcase.required_prefix = I
+
+dotnet_naming_style.tpascalcase.capitalization = pascal_case
+dotnet_naming_style.tpascalcase.required_prefix = T
+
+dotnet_naming_style._camelcase.capitalization = camel_case
+dotnet_naming_style._camelcase.required_prefix = _
