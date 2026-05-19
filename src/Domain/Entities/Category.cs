@@ -5,36 +5,29 @@ namespace Domain.Entities;
 
 public class Category
 {
-    public Guid Id { get; private set;}
-    public Guid UserId { get; private set;}
-    public string Name { get; private set;} = null!;    // für leeren constructor
-    public bool IsDefault { get; private set;}
-    public DateTime CreatedAt {get; private set;}
-
     private readonly List<Keyword> _keywords = [];
 
-    public IReadOnlyCollection<Keyword> Keywords
-    {
-        get 
-        {
-            return _keywords.AsReadOnly();
-        }
-    }
+    public Guid Id { get; private set; }
+    public Guid UserId { get; private set; }
+    public string Name { get; private set; } = null!;    // für leeren constructor
+    public bool IsDefault { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public IReadOnlyCollection<Keyword> Keywords => this._keywords.AsReadOnly();
 
-    private Category () { }
-    
-    private Category (Guid userId, string name, bool isDefault)
+    private Category() { }
+
+    private Category(Guid userId, string name, bool isDefault)
     {
-        Id = Guid.NewGuid();
-        UserId = userId;
-        Name = name;
-        IsDefault = isDefault;
-        CreatedAt = DateTime.UtcNow;
+        this.Id = Guid.NewGuid();
+        this.UserId = userId;
+        this.Name = name;
+        this.IsDefault = isDefault;
+        this.CreatedAt = DateTime.UtcNow;
     }
 
     public static Result<Category> Create(Guid userId, string name, bool isDefault)
     {
-        if(userId == Guid.Empty)
+        if (userId == Guid.Empty)
             return new InvalidGuidError();
 
         if (string.IsNullOrWhiteSpace(name))
@@ -48,25 +41,25 @@ public class Category
         if (string.IsNullOrWhiteSpace(name))
             return new EmptyCategoryNameError();
 
-        Name = name;
+        this.Name = name;
         return Unit.Value;
     }
 
     public Result<Unit> AddKeyword(Keyword keyword)
     {
-        if(IsDefault)
+        if (this.IsDefault)
             return new CategoryIsDefaultError();
 
-        if(_keywords.Any(k => k == keyword))
+        if (this._keywords.Any(k => k == keyword))
             return new DuplicateKeywordError();
 
-        _keywords.Add(keyword);
+        this._keywords.Add(keyword);
         return Unit.Value;
     }
 
     public Result<Unit> RemoveKeyword(Keyword keyword)
     {
-        if (_keywords.Remove(keyword) == false)
+        if (!this._keywords.Remove(keyword))
             return new KeywordNotFoundError();
 
         return Unit.Value;
@@ -74,7 +67,7 @@ public class Category
 
     public Result<Unit> Delete()
     {
-        if (IsDefault)
+        if (this.IsDefault)
             return new CategoryIsDefaultError();
 
         return Unit.Value;

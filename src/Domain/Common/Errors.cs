@@ -2,7 +2,6 @@ namespace Domain.Common;
 
 public abstract record Error;
 
-
 public sealed record InvalidGuidError : Error;
 
 public sealed record InvalidEmailFormatError : Error;

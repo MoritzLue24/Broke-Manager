@@ -1,15 +1,15 @@
-using Domain.Entities;
-using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Domain.Entities;
+using Domain.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     // Aus irgendeinen grund brauchen wir das hier
-    private class KeywordConverter : ValueConverter<Keyword, string>
+    private sealed class KeywordConverter : ValueConverter<Keyword, string>
     {
         public KeywordConverter()
             : base(k => k.Value, v => Keyword.Create(v).Value)
@@ -44,10 +44,10 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         // IsDefault
         builder.Property(c => c.IsDefault).HasColumnName("is_default");
         builder.HasIndex(c => c.UserId) // User has only 1 Default Category
-            .HasFilter("is_default = true") 
-            .IsUnique()                      
+            .HasFilter("is_default = true")
+            .IsUnique()
             .HasDatabaseName("ix_categories_user_id_unique_default");
-        
+
         // Keywords
         builder.PrimitiveCollection<List<Keyword>>("_keywords")
             .HasColumnName("keywords")

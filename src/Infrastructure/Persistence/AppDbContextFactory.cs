@@ -9,14 +9,12 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     /// For example when running just migrate
     public AppDbContext CreateDbContext(string[] args)
     {
-        var connectionString = 
+        var connectionString =
             Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
             ?? throw new InvalidOperationException("Default connection string not set");
 
-        return new(
-            new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(connectionString)
-                .Options
-        );
+        return new(new DbContextOptionsBuilder<AppDbContext>()
+            .UseNpgsql(connectionString)
+            .Options);
     }
 }

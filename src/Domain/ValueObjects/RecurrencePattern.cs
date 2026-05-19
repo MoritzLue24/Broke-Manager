@@ -1,4 +1,3 @@
-
 using Domain.Common;
 using Domain.Enums;
 
@@ -11,8 +10,8 @@ public sealed record RecurrencePattern
 
     private RecurrencePattern(Interval interval, int executionDay)
     {
-        Interval = interval;
-        ExecutionDay = executionDay;
+        this.Interval = interval;
+        this.ExecutionDay = executionDay;
     }
 
     public static Result<RecurrencePattern> Create(Interval interval, int executionDay)
@@ -22,13 +21,12 @@ public sealed record RecurrencePattern
 
         return new RecurrencePattern(
             interval,
-            executionDay
-        );
+            executionDay);
     }
 
     public Result<DateOnly> GetActualDay(DateOnly referenceDate)
     {
-        DateOnly periodStart = Interval switch
+        DateOnly periodStart = this.Interval switch
         {
             Interval.Weekly => referenceDate.AddDays(1 - (
                 referenceDate.DayOfWeek == DayOfWeek.Sunday
@@ -42,14 +40,14 @@ public sealed record RecurrencePattern
             ),
             Interval.Quarterly => new DateOnly(
                 referenceDate.Year,
-                (int)((referenceDate.Month - 1) / 3) * 3 + 1,
+                ((referenceDate.Month - 1) / 3 * 3) + 1,
                 1
             ),
             Interval.Yearly => new DateOnly(referenceDate.Year, 1, 1),
             _ => throw new NotImplementedException()
         };
 
-        DateOnly periodEnd = Interval switch
+        DateOnly periodEnd = this.Interval switch
         {
             Interval.Weekly => periodStart.AddDays(6),
             Interval.Monthly => periodStart.AddMonths(1).AddDays(-1),
@@ -58,8 +56,8 @@ public sealed record RecurrencePattern
             _ => throw new NotImplementedException()
         };
 
-        DateOnly executionDate = periodStart.AddDays(ExecutionDay - 1);
-        return  executionDate > periodEnd
+        DateOnly executionDate = periodStart.AddDays(this.ExecutionDay - 1);
+        return executionDate > periodEnd
             ? periodEnd
             : executionDate;
     }

@@ -14,7 +14,7 @@ public class HashTests
         // Assert
         Assert.True(domainResult.Success);
         Assert.Equal("pqiobawdh0812bnip102ibd", domainResult.Value.Value);
-        Assert.Throws<InvalidOperationException>(() => {var _ = domainResult.Errors;});
+        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Errors; });
     }
 
     [Fact]

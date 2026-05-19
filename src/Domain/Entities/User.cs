@@ -16,33 +16,31 @@ public class User
 
     private User(Email email, Hash passwordHash, Role role)
     {
-        Id = Guid.NewGuid();
-        Email = email;
-        PasswordHash = passwordHash;
-        Role = role;
-        CreatedAt = DateTime.UtcNow;
+        this.Id = Guid.NewGuid();
+        this.Email = email;
+        this.PasswordHash = passwordHash;
+        this.Role = role;
+        this.CreatedAt = DateTime.UtcNow;
     }
 
     public static Result<User> Create(Email email, Hash passwordHash)
-    {
-        return new User(email, passwordHash, Role.User);
-    }
+        => new User(email, passwordHash, Role.User);
 
     public Result<Unit> ChangeEmail(Email email)
     {
-        Email = email;
+        this.Email = email;
         return Unit.Value;
     }
 
     public Result<Unit> ChangePasswordHash(Hash passwordHash)
     {
-        PasswordHash = passwordHash;
+        this.PasswordHash = passwordHash;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeRole(Role role)
     {
-        Role = role;
+        this.Role = role;
         return Unit.Value;
     }
 }

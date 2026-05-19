@@ -1,12 +1,10 @@
-using Application.Common;
-using Application.Common.Interfaces;
-using Application.Common.Interfaces.Persistence;
-using Application.Features.Transactions;
-using Application.Features.Transactions.Commands.CreateTransaction;
+using NSubstitute;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
-using NSubstitute;
+using Application.Common;
+using Application.Common.Interfaces.Persistence;
+using Application.Features.Transactions.Commands.CreateTransaction;
 
 namespace Application.Tests.Features.Transactions.Commands;
 
@@ -19,9 +17,9 @@ public class CreateTransactionTests
     public CreateTransactionTests()
     {
         // Mock interfaces: in each test, set what interface methods should return with what parameters
-        _uow = Substitute.For<IUnitOfWork>();
-        _transactionRepo = Substitute.For<ITransactionRepository>();
-        _categoryRepo = Substitute.For<ICategoryRepository>();
+        this._uow = Substitute.For<IUnitOfWork>();
+        this._transactionRepo = Substitute.For<ITransactionRepository>();
+        this._categoryRepo = Substitute.For<ICategoryRepository>();
     }
 
     [Fact]
@@ -32,9 +30,9 @@ public class CreateTransactionTests
         var categoryId = Guid.NewGuid();
         var date = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        _categoryRepo.ExistsForUserAsync(userId, categoryId).Returns(true);
+        this._categoryRepo.ExistsForUserAsync(userId, categoryId).Returns(true);
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             userId,
             categoryId,
@@ -61,10 +59,10 @@ public class CreateTransactionTests
         Assert.Equal("", result.Value.Description);
         Assert.Equal("Pizza place", result.Value.CounterParty);
 
-        await _categoryRepo.Received(1).ExistsForUserAsync(userId, categoryId);
-        await _categoryRepo.Received(0).GetDefaultByUserIdAsync(Arg.Any<Guid>());
-        _transactionRepo.Received(1).Add(Arg.Any<Transaction>());
-        await _uow.Received(1).SaveChangesAsync(default);
+        await this._categoryRepo.Received(1).ExistsForUserAsync(userId, categoryId);
+        await this._categoryRepo.Received(0).GetDefaultByUserIdAsync(Arg.Any<Guid>());
+        this._transactionRepo.Received(1).Add(Arg.Any<Transaction>());
+        await this._uow.Received(1).SaveChangesAsync(default);
     }
 
     [Fact]
@@ -75,9 +73,9 @@ public class CreateTransactionTests
         var categoryId = Guid.NewGuid();
         var date = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        _categoryRepo.ExistsForUserAsync(userId, categoryId).Returns(false);
+        this._categoryRepo.ExistsForUserAsync(userId, categoryId).Returns(false);
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             userId,
             categoryId,
@@ -94,12 +92,12 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(new CategoryNotFoundError(), result.Error);
+        Assert.Equal(new CategoryNotFoundError(), result.FirstError);
 
-        await _categoryRepo.Received(1).ExistsForUserAsync(userId, categoryId);
-        await _categoryRepo.Received(0).GetDefaultByUserIdAsync(Arg.Any<Guid>());
-        _transactionRepo.Received(0).Add(Arg.Any<Transaction>());
-        await _uow.Received(0).SaveChangesAsync(default);
+        await this._categoryRepo.Received(1).ExistsForUserAsync(userId, categoryId);
+        await this._categoryRepo.Received(0).GetDefaultByUserIdAsync(Arg.Any<Guid>());
+        this._transactionRepo.Received(0).Add(Arg.Any<Transaction>());
+        await this._uow.Received(0).SaveChangesAsync(default);
     }
 
     [Fact]
@@ -108,9 +106,9 @@ public class CreateTransactionTests
         var userId = Guid.NewGuid();
         var defaultCategoryId = Guid.NewGuid();
 
-        _categoryRepo.GetDefaultByUserIdAsync(userId).Returns(defaultCategoryId);
+        this._categoryRepo.GetDefaultByUserIdAsync(userId).Returns(defaultCategoryId);
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             userId,
             null,
@@ -130,19 +128,19 @@ public class CreateTransactionTests
         Assert.Equal(defaultCategoryId, result.Value.CategoryId);
         Assert.Equal(CategorySource.Unmatched, result.Value.CategorySource);
 
-        await _categoryRepo.Received(0).ExistsForUserAsync(Arg.Any<Guid>(), Arg.Any<Guid>());
-        await _categoryRepo.Received(1).GetDefaultByUserIdAsync(userId);
-        _transactionRepo.Received(1).Add(Arg.Any<Transaction>());
-        await _uow.Received(1).SaveChangesAsync(default);
+        await this._categoryRepo.Received(0).ExistsForUserAsync(Arg.Any<Guid>(), Arg.Any<Guid>());
+        await this._categoryRepo.Received(1).GetDefaultByUserIdAsync(userId);
+        this._transactionRepo.Received(1).Add(Arg.Any<Transaction>());
+        await this._uow.Received(1).SaveChangesAsync(default);
     }
 
     [Fact]
     public async Task ShouldReturnDefaultCategoryNotFound_WhenDefaultCategoryDoesntExists()
     {
         var userId = Guid.NewGuid();
-        _categoryRepo.GetDefaultByUserIdAsync(userId).Returns((Guid?)null);
+        this._categoryRepo.GetDefaultByUserIdAsync(userId).Returns((Guid?)null);
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             userId,
             null,
@@ -159,21 +157,21 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(new DefaultCategoryNotFoundError(), result.Error);
+        Assert.Equal(new DefaultCategoryNotFoundError(), result.FirstError);
 
-        await _categoryRepo.Received(0).ExistsForUserAsync(Arg.Any<Guid>(), Arg.Any<Guid>());
-        await _categoryRepo.Received(1).GetDefaultByUserIdAsync(userId);
-        _transactionRepo.Received(0).Add(Arg.Any<Transaction>());
-        await _uow.Received(0).SaveChangesAsync(default);
+        await this._categoryRepo.Received(0).ExistsForUserAsync(Arg.Any<Guid>(), Arg.Any<Guid>());
+        await this._categoryRepo.Received(1).GetDefaultByUserIdAsync(userId);
+        this._transactionRepo.Received(0).Add(Arg.Any<Transaction>());
+        await this._uow.Received(0).SaveChangesAsync(default);
     }
 
     [Fact]
     public async Task ShouldReturnInvalidGuid_WhenUserIdEmpty()
     {
         // Setup
-        _categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
+        this._categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             new Guid(),
             null,
@@ -190,16 +188,16 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(new InvalidGuidError(), result.Error);
+        Assert.Equal(new InvalidGuidError(), result.FirstError);
     }
 
     [Fact]
     public async Task ShouldReturnInvalidTransactionAmount_WhenAmountNegative()
     {
         // Setup
-        _categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
+        this._categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             Guid.NewGuid(),
             null,
@@ -216,16 +214,16 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(new InvalidAmountError(), result.Error);
+        Assert.Equal(new InvalidAmountError(), result.FirstError);
     }
 
     [Fact]
     public async Task ShouldReturnTransactionTitleEmpty_WhenTitleEmpty()
     {
         // Setup
-        _categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
+        this._categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
 
-        var handler = new CreateTransactionHandler(_uow, _transactionRepo, _categoryRepo);
+        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
         var command = new CreateTransactionCommand(
             Guid.NewGuid(),
             null,
@@ -242,6 +240,6 @@ public class CreateTransactionTests
 
         // Assert
         Assert.False(result.Success);
-        Assert.Equal(new EmptyTransactionTitleError(), result.Error);
+        Assert.Equal(new EmptyTransactionTitleError(), result.FirstError);
     }
 }

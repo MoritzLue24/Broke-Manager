@@ -1,5 +1,4 @@
 using Api.Errors;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Middlewares;
 
@@ -11,31 +10,30 @@ public class ExceptionMiddleware
 
     public ExceptionMiddleware(RequestDelegate next, IHostEnvironment env, IProblemDetailsService problemDetailsService)
     {
-        _next = next;
-        _env = env;
-        _problemDetailsService = problemDetailsService;
+        this._next = next;
+        this._env = env;
+        this._problemDetailsService = problemDetailsService;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await this._next(context);
         }
         catch (Exception ex)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-            await _problemDetailsService.WriteAsync(new ProblemDetailsContext
+            await this._problemDetailsService.WriteAsync(new ProblemDetailsContext
             {
                 HttpContext = context,
                 ProblemDetails =
                 {
                     Type = ErrorTypes.Internal,
-                    Title = _env.IsDevelopment()
+                    Title = this._env.IsDevelopment()
                         ? ex.Message
                         : "An internal server error occurred.",
-                    Detail = _env.IsDevelopment()
+                    Detail = this._env.IsDevelopment()
                         ? ex.StackTrace
                         : null
                 }

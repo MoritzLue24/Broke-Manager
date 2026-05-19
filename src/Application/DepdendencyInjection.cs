@@ -1,10 +1,7 @@
-using Application.Common.Behaviors;
-using Application.Features.Transactions;
-using Application.Features.Transactions.Commands.CreateTransaction;
-using Domain.Common;
+using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using Application.Common.Behaviors;
 
 namespace Application;
 

@@ -1,4 +1,5 @@
 using System.Net.Mail;
+
 using Domain.Common;
 
 namespace Domain.ValueObjects;
@@ -9,9 +10,8 @@ public sealed record Email
 
     private Email(string value)
     {
-        Value = value;
+        this.Value = value;
     }
-        
 
     public static Result<Email> Create(string value)
     {

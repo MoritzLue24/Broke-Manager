@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.ValueObjects;
+
 using Infrastructure.Persistence.Repositories;
 
 namespace Infrastructure.Tests.Persistence.Repositories;
@@ -11,8 +12,8 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
 
     public CategoryReaderRepositoryTests(PostgresFixture postgres)
     {
-        _db = new DatabaseManager(postgres.ConnectionString);
-        _repo = new CategoryRepository(_db.Context);
+        this._db = new DatabaseManager(postgres.ConnectionString);
+        this._repo = new CategoryRepository(this._db.Context);
     }
 
     /// GetDefaultByUserIdAsync :)
@@ -20,7 +21,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task GetDefaultByUserIdAsync_ShouldReturnId_WhenExists()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var user = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -30,12 +31,12 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Default",
             true
         ).Value;
-        _db.Context.Users.Add(user);
-        _db.Context.Categories.Add(defaultCategory);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(user);
+        this._db.Context.Categories.Add(defaultCategory);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var id = await _repo.GetDefaultByUserIdAsync(user.Id);
+        var id = await this._repo.GetDefaultByUserIdAsync(user.Id);
 
         // Assert
         Assert.NotNull(id);
@@ -47,7 +48,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task GetDefaultByUserIdAsync_ShouldReturnNull_WhenOnlyNormalCategoryExists()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var user = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -57,12 +58,12 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Essen",
             false
         ).Value;
-        _db.Context.Users.Add(user);
-        _db.Context.Categories.Add(category);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(user);
+        this._db.Context.Categories.Add(category);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var id = await _repo.GetDefaultByUserIdAsync(user.Id);
+        var id = await this._repo.GetDefaultByUserIdAsync(user.Id);
 
         // Assert
         Assert.Null(id);
@@ -73,7 +74,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task GetDefaultByUserIdAsync_ShouldReturnCorrectId_WhenMultipleCategoryExists()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var user = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -88,13 +89,13 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Default",
             true
         ).Value;
-        _db.Context.Users.Add(user);
-        _db.Context.Categories.Add(category);
-        _db.Context.Categories.Add(defaultCategory);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(user);
+        this._db.Context.Categories.Add(category);
+        this._db.Context.Categories.Add(defaultCategory);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var id = await _repo.GetDefaultByUserIdAsync(user.Id);
+        var id = await this._repo.GetDefaultByUserIdAsync(user.Id);
 
         // Assert
         Assert.NotNull(id);
@@ -106,16 +107,16 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task GetDefaultByUserIdAsync_ShouldReturnNull_WhenNoCategoryExists()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var user = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
         ).Value;
-        _db.Context.Users.Add(user);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(user);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var id = await _repo.GetDefaultByUserIdAsync(user.Id);
+        var id = await this._repo.GetDefaultByUserIdAsync(user.Id);
 
         // Assert
         Assert.Null(id);
@@ -126,7 +127,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task GetDefaultByUserIdAsync_ShouldReturnNull_WhenCategoryNotOwned()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var userA = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -140,13 +141,13 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Default",
             true
         ).Value;
-        _db.Context.Users.Add(userA);
-        _db.Context.Users.Add(userB);
-        _db.Context.Categories.Add(defaultCategory);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(userA);
+        this._db.Context.Users.Add(userB);
+        this._db.Context.Categories.Add(defaultCategory);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var id = await _repo.GetDefaultByUserIdAsync(userA.Id);
+        var id = await this._repo.GetDefaultByUserIdAsync(userA.Id);
 
         // Assert
         Assert.Null(id);
@@ -156,7 +157,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task ExistsForUser_ShouldReturnTrue_WhenCategoryExists()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var user = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -166,12 +167,12 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Essen",
             false
         ).Value;
-        _db.Context.Users.Add(user);
-        _db.Context.Categories.Add(category);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(user);
+        this._db.Context.Categories.Add(category);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var exists = await _repo.ExistsForUserAsync(user.Id, category.Id);
+        var exists = await this._repo.ExistsForUserAsync(user.Id, category.Id);
 
         // Assert
         Assert.True(exists);
@@ -181,7 +182,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task ExistsForUser_ShouldReturnFalse_WhenCategoryNotOwned()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var userA = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -195,13 +196,13 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Essen",
             false
         ).Value;
-        _db.Context.Users.Add(userA);
-        _db.Context.Users.Add(userB);
-        _db.Context.Categories.Add(category);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(userA);
+        this._db.Context.Users.Add(userB);
+        this._db.Context.Categories.Add(category);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var exists = await _repo.ExistsForUserAsync(userA.Id, category.Id);
+        var exists = await this._repo.ExistsForUserAsync(userA.Id, category.Id);
 
         // Assert
         Assert.False(exists);
@@ -211,7 +212,7 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
     public async Task ExistsForUser_ShouldReturnFalse_WhenCategoryDoesntExists()
     {
         // Setup
-        await _db.ResetAsync();
+        await this._db.ResetAsync();
         var user = User.Create(
             Email.Create("email@mail.de").Value,
             Hash.Create("pi1n231j23pojk1").Value
@@ -221,11 +222,11 @@ public class CategoryReaderRepositoryTests : IClassFixture<PostgresFixture>
             "Essen",
             false
         ).Value;
-        _db.Context.Users.Add(user);
-        await _db.Context.SaveChangesAsync();
+        this._db.Context.Users.Add(user);
+        await this._db.Context.SaveChangesAsync();
 
         // Execute
-        var exists = await _repo.ExistsForUserAsync(user.Id, category.Id);
+        var exists = await this._repo.ExistsForUserAsync(user.Id, category.Id);
 
         // Assert
         Assert.False(exists);

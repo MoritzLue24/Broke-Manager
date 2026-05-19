@@ -1,10 +1,10 @@
-using Api.Errors;
+using Microsoft.AspNetCore.Mvc;
+using MediatR;
+using MapsterMapper;
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Application.Features.Transactions.Queries.GetTransactionsByUser;
 using Contracts.Features.Transactions;
-using MapsterMapper;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Api.Errors;
 
 namespace Api.Controllers;
 
@@ -17,18 +17,18 @@ public class TransactionController : ControllerBase
 
     public TransactionController(IMediator mediator, IMapper mapper)
     {
-        _mediator = mediator;
-        _mapper = mapper;
+        this._mediator = mediator;
+        this._mapper = mapper;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<TransactionDetailResponse>>> GetAllByUser()
     {
         var query = new GetTransactionsByUserQuery(Guid.NewGuid());
-        var result = await _mediator.Send(query);
+        var result = await this._mediator.Send(query);
 
         return result.Match<ActionResult<List<TransactionDetailResponse>>>(
-            dtos => Ok(dtos.Select(dto => _mapper.Map<TransactionDetailResponse>(dto))),
+            dtos => this.Ok(dtos.Select(dto => this._mapper.Map<TransactionDetailResponse>(dto))),
             errors => errors.ToProblem(this)
         );
     }
@@ -37,11 +37,11 @@ public class TransactionController : ControllerBase
     public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
         [FromBody] CreateTransactionRequest createRequest)
     {
-        var command = _mapper.Map<CreateTransactionCommand>((createRequest, Guid.NewGuid()));
-        var result = await _mediator.Send(command);
+        var command = this._mapper.Map<CreateTransactionCommand>((createRequest, Guid.NewGuid()));
+        var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
-            dto => Ok(_mapper.Map<TransactionDetailResponse>(dto)),
+            dto => this.Ok(this._mapper.Map<TransactionDetailResponse>(dto)),
             errors => errors.ToProblem(this)
         );
     }

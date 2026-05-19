@@ -8,7 +8,7 @@ public sealed record Hash
 
     private Hash(string value)
     {
-        Value = value;
+        this.Value = value;
     }
 
     public static Result<Hash> Create(string hash)

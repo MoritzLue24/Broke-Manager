@@ -8,8 +8,8 @@ public class KeywordTests
     [Fact]
     public void Create_ShouldReturnKeyword_WhenNotEmpty()
     {
-        
-        var result= Keyword.Create("penis");
+
+        var result = Keyword.Create("penis");
 
         Assert.True(result.Success);
         Assert.Equal("penis", result.Value.Value);
@@ -19,7 +19,7 @@ public class KeywordTests
     [Fact]
     public void Create_ShouldReturnKeywordEmpty_WhenEmpty()
     {
-        
+
         var result = Keyword.Create("");
 
         Assert.False(result.Success);

@@ -20,7 +20,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .WithMany()
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-        builder.HasIndex(t => t.UserId)     
+        builder.HasIndex(t => t.UserId)
             .HasDatabaseName("ix_transactions_user_id");
 
 
@@ -30,7 +30,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         //     .WithMany()
         //     .HasForeignKey(t => t.StandingOrderId)
         //     .OnDelete(DeleteBehavior.SetNull);
-        builder.HasIndex(t => t.StandingOrderId) 
+        builder.HasIndex(t => t.StandingOrderId)
             .HasFilter("\"standing_order_id\" IS NOT NULL")
             .HasDatabaseName("ix_transactions_standing_order_id");
 
@@ -40,7 +40,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .WithMany()
             .HasForeignKey(t => t.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
-        builder.HasIndex(t => t.CategoryId) 
+        builder.HasIndex(t => t.CategoryId)
             .HasDatabaseName("ix_transactions_category_id");
 
         // Sources
@@ -50,13 +50,13 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .IsRequired();
         builder.Property(t => t.StandingOrderSource).HasColumnName("standing_order_source")
             .HasConversion<string>()
-            .HasMaxLength(20);  
+            .HasMaxLength(20);
 
         // Amount
         builder.Property(t => t.Amount).HasColumnName("amount")
             .HasColumnType("numeric(12,2)");
 
-        builder.ToTable("transactions", t => 
+        builder.ToTable("transactions", t =>
             t.HasCheckConstraint("CK_transactions_amount_positive", "amount > 0")); //Amount nicht 0 und immer positiv
 
         // Type
@@ -67,7 +67,7 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         // Date
         builder.Property(t => t.Date).HasColumnName("date");
-        builder.HasIndex(t => new { t.UserId, t.Date }) 
+        builder.HasIndex(t => new { t.UserId, t.Date })
             .HasDatabaseName("ix_transactions_user_id_date");
 
         // Title

@@ -1,63 +1,62 @@
 namespace Domain.Common;
 
-public class Result<V>
+public class Result<TValue>
 {
-    private readonly V _value;
+    private readonly TValue _value;
     private readonly IEnumerable<Error> _errors;
 
     public bool Success { get; }
 
-    public V Value => Success
-        ? _value
+    public TValue Value => this.Success
+        ? this._value
         : throw new InvalidOperationException("No value on failure");
 
-    public IEnumerable<Error> Errors => !Success
-        ? _errors
+    public IEnumerable<Error> Errors => !this.Success
+        ? this._errors
         : throw new InvalidOperationException("No error on success");
 
-    public Error FirstError => !Success
-        ? _errors.Any() 
-            ? _errors.First()
+    public Error FirstError => !this.Success
+        ? this._errors.Any()
+            ? this._errors.First()
             : throw new InvalidOperationException("Result not successful, but errors are empty")
         : throw new InvalidOperationException("No error on success");
 
-    private Result(V value)
+    private Result(TValue value)
     {
-        Success = true;
-        _value = value;
-        _errors = [];
+        this.Success = true;
+        this._value = value;
+        this._errors = [];
     }
 
     private Result(IEnumerable<Error> errors)
     {
-        Success = false;
-        _value = default!;
-        _errors = errors;
+        this.Success = false;
+        this._value = default!;
+        this._errors = errors;
     }
 
-    public static implicit operator Result<V>(V value) => new(value);
-    public static implicit operator Result<V>(Error error) => new([error]);
-    public static implicit operator Result<V>(List<Error> errors) => new(errors);
-    public static implicit operator Result<V>(Error[] errors) => new(errors);
+    public static implicit operator Result<TValue>(TValue value) => new(value);
+    public static implicit operator Result<TValue>(Error error) => new([error]);
+    public static implicit operator Result<TValue>(List<Error> errors) => new(errors);
+    public static implicit operator Result<TValue>(Error[] errors) => new(errors);
 
-    public Result<U> Cast<U>(Func<V, U>? converter = null)
+    public Result<TResult> Cast<TResult>(Func<TValue, TResult>? converter = null)
     {
-        if (!Success)
-            return new(_errors);
+        if (!this.Success)
+            return new(this._errors);
 
         if (converter != null)
-            return new(converter(_value));
+            return new(converter(this._value));
 
-        if (_value is U valueAsU)
+        if (this._value is TResult valueAsU)
             return new(valueAsU);
 
         throw new InvalidOperationException(
-            $"Cannot convert {typeof(V).Name} to {typeof(U).Name} without converter"
-        );
+            $"Cannot convert {typeof(TValue).Name} to {typeof(TResult).Name} without converter");
     }
 
     public TOut Match<TOut>(
-        Func<V, TOut> onSuccess,
+        Func<TValue, TOut> onSuccess,
         Func<IEnumerable<Error>, TOut> onError)
-        => Success ? onSuccess(_value) : onError(_errors);
+        => this.Success ? onSuccess(this._value) : onError(this._errors);
 }

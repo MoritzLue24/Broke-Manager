@@ -1,6 +1,6 @@
-using Domain.Common;
 using FluentValidation;
 using MediatR;
+using Domain.Common;
 
 namespace Application.Common.Behaviors;
 
@@ -15,18 +15,22 @@ public class ValidationBehavior<TRequest, TResponse>
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-        => _validators = validators;
+    {
+        this._validators = validators;
+    }
 
+    // Gets called before every mediator call. 
+    // `next` is the actual mediator call, just like in the exception middleware
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        if (!_validators.Any())
+        if (!this._validators.Any())
             return await next(cancellationToken);
 
         // Task.WhenAll hab ich nicht wirklich gecheckt :/
-        var validationResults = await Task.WhenAll(_validators.Select(async v
+        var validationResults = await Task.WhenAll(this._validators.Select(async v
             => await v.ValidateAsync(request, cancellationToken)
         ));
 

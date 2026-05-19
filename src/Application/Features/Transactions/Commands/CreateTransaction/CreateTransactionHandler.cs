@@ -1,10 +1,9 @@
-using Application.Common;
-using Application.Common.Interfaces;
-using Application.Common.Interfaces.Persistence;
+using MediatR;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
-using MediatR;
+using Application.Common;
+using Application.Common.Interfaces.Persistence;
 
 namespace Application.Features.Transactions.Commands.CreateTransaction;
 
@@ -19,30 +18,32 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         ITransactionRepository transactionRepo,
         ICategoryRepository categoryRepo)
     {
-        _uow = uow;
-        _transactionRepo = transactionRepo;
-        _categoryRepo = categoryRepo;
+        this._uow = uow;
+        this._transactionRepo = transactionRepo;
+        this._categoryRepo = categoryRepo;
     }
 
-    public async Task<Result<TransactionDto>> Handle(CreateTransactionCommand command, CancellationToken ct)
+    public async Task<Result<TransactionDto>> Handle(
+        CreateTransactionCommand request,
+        CancellationToken cancellationToken)
     {
         Guid categoryId;
         CategorySource categorySource;
 
         // Category specified -> source = Manual
-        if (command.CategoryId.HasValue)
+        if (request.CategoryId.HasValue)
         {
             // Check if the given category exists
-            if (!await _categoryRepo.ExistsForUserAsync(command.UserId, command.CategoryId.Value))
+            if (!await this._categoryRepo.ExistsForUserAsync(request.UserId, request.CategoryId.Value))
                 return new CategoryNotFoundError();
-            categoryId = command.CategoryId.Value;
+            categoryId = request.CategoryId.Value;
             categorySource = CategorySource.Manual;
         }
         // No category specified -> (later auto-categorize) -> source = Unmatched with default category
         else
         {
             // Get default category
-            Guid? categoryIdRes = await _categoryRepo.GetDefaultByUserIdAsync(command.UserId);
+            Guid? categoryIdRes = await this._categoryRepo.GetDefaultByUserIdAsync(request.UserId);
             if (!categoryIdRes.HasValue)
                 return new DefaultCategoryNotFoundError();
             categoryId = categoryIdRes.Value;
@@ -50,16 +51,16 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         }
 
         var domainResult = Transaction.Create(
-            command.UserId,
+            request.UserId,
             // TODO: Auto-categorize?
             categoryId,
             categorySource,
-            command.Amount,
-            command.Type,
-            command.Date,
-            command.Title,
-            command.Description,
-            command.CounterParty
+            request.Amount,
+            request.Type,
+            request.Date,
+            request.Title,
+            request.Description,
+            request.CounterParty
         );
         // On failure, map the domain error to an application error
         // For now, the errors are basically the same but we dont want to
@@ -67,8 +68,8 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         if (!domainResult.Success)
             return domainResult.Cast<TransactionDto>();
 
-        _transactionRepo.Add(domainResult.Value);
-        await _uow.SaveChangesAsync(ct);
+        this._transactionRepo.Add(domainResult.Value);
+        await this._uow.SaveChangesAsync(cancellationToken);
         return domainResult.Cast(t => t.ToDto());
     }
 }

@@ -1,7 +1,7 @@
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 using Domain.Enums;
+using Domain.ValueObjects;
 
 namespace Domain.Tests.Entities;
 

@@ -1,7 +1,6 @@
 using Domain.Common;
 using Domain.Entities;
 using Domain.ValueObjects;
-using Domain.Enums;
 
 namespace Domain.Tests.Entities;
 
@@ -9,34 +8,30 @@ public class CategoryTest
 {
 
     private static Category CreateCategory(bool isDefault = false)
-    {
-        return Category.Create(Guid.NewGuid(), "Essen", isDefault).Value;
-    }
+        => Category.Create(Guid.NewGuid(), "Essen", isDefault).Value;
 
     private static Keyword CreateKeyword(string value = "Dildo")
-    {
-        return Keyword.Create(value).Value;
-    }
+        => Keyword.Create(value).Value;
 
     [Fact]
     public void Create_ShouldSucceed_WhenDataIsValid()
     {
-        
+
         var result = Category.Create(Guid.NewGuid(), "Drogen", false);
 
         Assert.True(result.Success);
         Assert.Equal("Drogen", result.Value.Name);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
-    
+
     [Fact]
     public void Create_ShouldSetDefault()
     {
         var category = CreateCategory(true);
         Assert.True(category.IsDefault);
     }
-    
-    
+
+
     [Fact]
     public void Create_ShouldFail_WhenNameIsEmpty()
     {
@@ -80,10 +75,10 @@ public class CategoryTest
         var category = CreateCategory();
         var keyword = CreateKeyword("durex");
 
-        var result = category.AddKeyword(keyword );
+        var result = category.AddKeyword(keyword);
 
         Assert.True(result.Success);
-        Assert.Contains(keyword,category.Keywords);
+        Assert.Contains(keyword, category.Keywords);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 
@@ -92,11 +87,11 @@ public class CategoryTest
     {
         var category = CreateCategory();
         var keyword = CreateKeyword("durex");
-        category.AddKeyword(keyword );
-        
+        category.AddKeyword(keyword);
+
         var result = category.RemoveKeyword(keyword);
         Assert.True(result.Success);
-        Assert.DoesNotContain(keyword,category.Keywords);
+        Assert.DoesNotContain(keyword, category.Keywords);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
     }
 

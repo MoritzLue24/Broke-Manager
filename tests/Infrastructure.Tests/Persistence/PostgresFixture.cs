@@ -8,23 +8,23 @@ namespace Infrastructure.Tests.Persistence;
 public class PostgresFixture : IAsyncLifetime
 {
     public PostgreSqlContainer Container { get; private set; } = null!;
-    public string ConnectionString => Container.GetConnectionString();
+    public string ConnectionString => this.Container.GetConnectionString();
 
     public async Task InitializeAsync()
     {
-        Container = new PostgreSqlBuilder("postgres:latest")
+        this.Container = new PostgreSqlBuilder("postgres:latest")
             .WithDatabase("broke-manager-tests")
             .WithUsername("root-tests")
             .WithPassword("root-tests123!")
             .WithCleanUp(true)
             .WithAutoRemove(true)
             .Build();
-        await Container.StartAsync();
+        await this.Container.StartAsync();
     }
 
     public async Task DisposeAsync()
     {
-        if (Container != null)
-            await Container.DisposeAsync();
+        if (this.Container != null)
+            await this.Container.DisposeAsync();
     }
 }

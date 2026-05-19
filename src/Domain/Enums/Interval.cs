@@ -5,5 +5,5 @@ public enum Interval
     Weekly,
     Monthly,
     Quarterly,
-    Yearly
+    Yearly,
 }

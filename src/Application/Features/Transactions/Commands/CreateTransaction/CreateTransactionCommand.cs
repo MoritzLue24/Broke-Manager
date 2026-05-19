@@ -1,6 +1,6 @@
+using MediatR;
 using Domain.Common;
 using Domain.Enums;
-using MediatR;
 
 namespace Application.Features.Transactions.Commands.CreateTransaction;
 

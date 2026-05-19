@@ -1,5 +1,5 @@
-using Domain.Common;
 using MediatR;
+using Domain.Common;
 
 namespace Application.Features.Transactions.Queries.GetTransaction;
 

@@ -20,10 +20,10 @@ public record TransactionDto(
     DateTime CreatedAt
 );
 
-public static class TransactionExtension {
+public static class TransactionExtension
+{
     public static TransactionDto ToDto(this Transaction t)
-    {
-        return new(
+        => new(
             t.Id,
             t.UserId,
             t.CategoryId,
@@ -36,5 +36,4 @@ public static class TransactionExtension {
             t.CounterParty,
             t.CreatedAt
         );
-    }
 }

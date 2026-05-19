@@ -1,11 +1,16 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 
 namespace Infrastructure.Persistence;
 
-public class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly AppDbContext _dbContext;
+
+    public UnitOfWork(AppDbContext dbContext)
+    {
+        this._dbContext = dbContext;
+    }
 
     public async Task SaveChangesAsync(CancellationToken ct)
-        => await _dbContext.SaveChangesAsync(ct);
+        => await this._dbContext.SaveChangesAsync(ct);
 }

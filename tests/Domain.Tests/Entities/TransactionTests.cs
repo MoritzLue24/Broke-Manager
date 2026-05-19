@@ -1,16 +1,14 @@
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 using Domain.Enums;
 
 namespace Domain.Tests.Entities;
 
 public class TransactionTests
 {
-    
+
     private static Transaction CreateValidTransaction()
-    {
-        return Transaction.Create(
+        => Transaction.Create(
             Guid.NewGuid(),
             Guid.NewGuid(),
             CategorySource.Manual,
@@ -21,7 +19,6 @@ public class TransactionTests
             "Test description Transaction",
             "Test counterparty Transaction"
         ).Value;
-    }
 
     [Fact]
     public void Create_ShouldSucceed_When_TransactionValid()
@@ -86,7 +83,7 @@ public class TransactionTests
         Assert.Equal(new InvalidGuidError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
-    
+
     [Fact]
     public void Should_Fail_When_CategoryId_Empty()
     {
@@ -114,7 +111,7 @@ public class TransactionTests
         var transaction = CreateValidTransaction();
         var id = Guid.NewGuid();
         var result = transaction.ChangeCategory(id, CategorySource.Manual);
-        
+
         Assert.True(result.Success);
         Assert.Equal(id, transaction.CategoryId);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Errors; });
@@ -126,7 +123,7 @@ public class TransactionTests
     {
         var transaction = CreateValidTransaction();
         var result = transaction.ChangeCategory(Guid.Empty, CategorySource.Manual);
-        
+
         Assert.False(result.Success);
         Assert.Equal(new InvalidGuidError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
@@ -176,7 +173,7 @@ public class TransactionTests
         Assert.Equal(new EmptyTransactionTitleError(), result.FirstError);
         Assert.Throws<InvalidOperationException>(() => { var _ = result.Value; });
     }
-    
+
     /*TODO
     Create When Amount is zero
     Create when Amount is negative

@@ -5,23 +5,18 @@ namespace Domain.Entities;
 
 public class StandingOrder
 {
+    private readonly List<Guid> _pauseHistory = [];
+
     public Guid Id { get; }
     public Guid UserId { get; }
     public Guid? CategoryId { get; private set; }
     public string Name { get; private set; }
     private readonly List<Keyword> _keywords = [];
-    public IReadOnlyCollection<Keyword> Keywords
-    {
-        get => _keywords.AsReadOnly();
-    }
+    public IReadOnlyCollection<Keyword> Keywords => this._keywords.AsReadOnly();
     public DateOnly StartDate { get; private set; }
     public DateOnly EndDate { get; private set; }
     public RecurrencePattern RecurrencePattern { get; private set; }
-    private readonly List<Guid> _pauseHistory = [];
-    public IReadOnlyCollection<Guid> PauseHistory
-    {
-        get => _pauseHistory.AsReadOnly();
-    }
+    public IReadOnlyCollection<Guid> PauseHistory => this._pauseHistory.AsReadOnly();
     public DateTime CreatedAt { get; }
 
     private StandingOrder(
@@ -31,14 +26,14 @@ public class StandingOrder
         DateOnly endDate,
         RecurrencePattern recurrencePattern)
     {
-        Id = Guid.NewGuid();
-        UserId = userId;
-        CategoryId = null;
-        Name = name;
-        StartDate = startDate;
-        EndDate = endDate;
-        RecurrencePattern = recurrencePattern;
-        CreatedAt = DateTime.UtcNow;
+        this.Id = Guid.NewGuid();
+        this.UserId = userId;
+        this.CategoryId = null;
+        this.Name = name;
+        this.StartDate = startDate;
+        this.EndDate = endDate;
+        this.RecurrencePattern = recurrencePattern;
+        this.CreatedAt = DateTime.UtcNow;
     }
 
     public static Result<StandingOrder> Create(
@@ -59,8 +54,7 @@ public class StandingOrder
             name,
             startDate,
             endDate ?? DateOnly.MaxValue,
-            recurrencePattern
-        );
+            recurrencePattern);
     }
 
     public Result<Unit> ChangeCategory(Guid categoryId)
@@ -68,13 +62,13 @@ public class StandingOrder
         if (categoryId == Guid.Empty)
             return new InvalidGuidError();
 
-        CategoryId = categoryId;
+        this.CategoryId = categoryId;
         return Unit.Value;
     }
 
     public Result<Unit> RemoveCategory()
     {
-        CategoryId = null;
+        this.CategoryId = null;
         return Unit.Value;
     }
 
@@ -83,22 +77,22 @@ public class StandingOrder
         if (string.IsNullOrWhiteSpace(name))
             throw new NotImplementedException();
 
-        Name = name;
+        this.Name = name;
         return Unit.Value;
     }
 
     public Result<Unit> AddKeyword(Keyword keyword)
     {
-        if(_keywords.Any(k => k == keyword))
+        if (this._keywords.Any(k => k == keyword))
             throw new NotImplementedException();
 
-        _keywords.Add(keyword);
+        this._keywords.Add(keyword);
         return Unit.Value;
     }
 
     public Result<Unit> RemoveKeyword(Keyword keyword)
     {
-        if (_keywords.Remove(keyword) == false)
+        if (!this._keywords.Remove(keyword))
             throw new NotImplementedException();
 
         return Unit.Value;
@@ -106,36 +100,34 @@ public class StandingOrder
 
     public Result<Unit> ChangeStartDate(DateOnly startDate)
     {
-        if (startDate > EndDate)
+        if (startDate > this.EndDate)
             throw new NotImplementedException();
 
-        StartDate = startDate;
+        this.StartDate = startDate;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeEndDate(DateOnly endDate)
     {
-        if (StartDate > endDate)
+        if (this.StartDate > endDate)
             throw new NotImplementedException();
 
-        EndDate = endDate;
+        this.EndDate = endDate;
         return Unit.Value;
     }
 
     public Result<Unit> MakeInfinite()
     {
-        EndDate = DateOnly.MaxValue;
+        this.EndDate = DateOnly.MaxValue;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeRecurrencePattern(RecurrencePattern recurrencePattern)
     {
-        RecurrencePattern = recurrencePattern;
+        this.RecurrencePattern = recurrencePattern;
         return Unit.Value;
     }
 
     public Result<Unit> Delete()
-    {
-        return Unit.Value;
-    }
+        => Unit.Value;
 }

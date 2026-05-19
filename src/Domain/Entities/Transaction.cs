@@ -13,10 +13,10 @@ public class Transaction
     public StandingOrderSource? StandingOrderSource { get; private set; }
     public decimal Amount { get; private set; }
     public TransactionType Type { get; private set; }
-    public DateOnly Date {get; private set;}
-    public string Title {get; private set;} = null!;    // für leeren constructor
+    public DateOnly Date { get; private set; }
+    public string Title { get; private set; } = null!;    // für leeren constructor
     public string Description { get; private set; } = null!;
-    public string CounterParty {get; private set;} = null!;
+    public string CounterParty { get; private set; } = null!;
     public DateTime CreatedAt { get; }
 
     private Transaction() { }
@@ -32,19 +32,19 @@ public class Transaction
         string description,
         string counterParty)
     {
-        Id = Guid.NewGuid();
-        UserId = userId;
-        StandingOrderId = null;
-        CategoryId = categoryId;
-        CategorySource = categorySource;
-        StandingOrderSource = null;
-        Amount = amount;
-        Type = type;
-        Date = date;
-        Title = title;
-        Description = description;
-        CounterParty = counterParty;
-        CreatedAt = DateTime.UtcNow;
+        this.Id = Guid.NewGuid();
+        this.UserId = userId;
+        this.StandingOrderId = null;
+        this.CategoryId = categoryId;
+        this.CategorySource = categorySource;
+        this.StandingOrderSource = null;
+        this.Amount = amount;
+        this.Type = type;
+        this.Date = date;
+        this.Title = title;
+        this.Description = description;
+        this.CounterParty = counterParty;
+        this.CreatedAt = DateTime.UtcNow;
     }
 
     public static Result<Transaction> Create(
@@ -55,13 +55,13 @@ public class Transaction
         TransactionType type,
         DateOnly date,
         string title,
-        string description, 
+        string description,
         string counterParty)
     {
-        if(userId == Guid.Empty || categoryId == Guid.Empty)
+        if (userId == Guid.Empty || categoryId == Guid.Empty)
             return new InvalidGuidError();
 
-        if(amount <= 0)
+        if (amount <= 0)
             return new InvalidAmountError();
 
         if (string.IsNullOrWhiteSpace(title))
@@ -79,50 +79,49 @@ public class Transaction
             date,
             title,
             description,
-            counterParty
-        );
+            counterParty);
     }
 
     public Result<Unit> ChangeCategory(Guid categoryId, CategorySource source)
     {
-        if(categoryId == Guid.Empty)
+        if (categoryId == Guid.Empty)
             return new InvalidGuidError();
 
-        CategoryId = categoryId;
-        CategorySource = source;
+        this.CategoryId = categoryId;
+        this.CategorySource = source;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeStandingOrder(Guid standingOrderId, StandingOrderSource source)
     {
-        if(standingOrderId == Guid.Empty)
+        if (standingOrderId == Guid.Empty)
             return new InvalidGuidError();
 
-        StandingOrderId = standingOrderId;
-        StandingOrderSource = source;
+        this.StandingOrderId = standingOrderId;
+        this.StandingOrderSource = source;
         return Unit.Value;
     }
 
     public Result<Unit> RemoveStandingOrder()
     {
-        StandingOrderId = null;
-        StandingOrderSource = null;
+        this.StandingOrderId = null;
+        this.StandingOrderSource = null;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeAmount(decimal amount, TransactionType type)
     {
-        if(amount <= 0)
+        if (amount <= 0)
             return new InvalidAmountError();
 
-        Amount = amount;
-        Type = type;
+        this.Amount = amount;
+        this.Type = type;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeDate(DateOnly date)
     {
-        Date = date;
+        this.Date = date;
         return Unit.Value;
     }
 
@@ -131,24 +130,22 @@ public class Transaction
         if (string.IsNullOrWhiteSpace(title))
             return new EmptyTransactionTitleError();
 
-        Title = title;
+        this.Title = title;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeDescription(string description)
     {
-        Description = description;
+        this.Description = description;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeCounterParty(string counterParty)
     {
-        CounterParty = counterParty;
+        this.CounterParty = counterParty;
         return Unit.Value;
     }
 
     public Result<Unit> Delete()
-    {
-        return Unit.Value;
-    }
+        => Unit.Value;
 }

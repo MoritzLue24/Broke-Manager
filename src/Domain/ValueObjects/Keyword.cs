@@ -8,7 +8,7 @@ public sealed record Keyword
 
     private Keyword(string value)
     {
-        Value = value;
+        this.Value = value;
     }
 
     public static Result<Keyword> Create(string value)

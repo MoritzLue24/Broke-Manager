@@ -1,4 +1,3 @@
-
 using Domain.Common;
 
 namespace Domain.Entities;
@@ -11,9 +10,9 @@ public class StandingOrderPause
 
     private StandingOrderPause(DateOnly from, DateOnly to)
     {
-        Id = Guid.NewGuid();
-        From = from;
-        To = to;
+        this.Id = Guid.NewGuid();
+        this.From = from;
+        this.To = to;
     }
 
     public static Result<StandingOrderPause> Create(DateOnly from, DateOnly? to)
@@ -23,36 +22,33 @@ public class StandingOrderPause
 
         return new StandingOrderPause(
             from,
-            to ?? DateOnly.MaxValue
-        );
+            to ?? DateOnly.MaxValue);
     }
 
     public Result<Unit> UpdateFrom(DateOnly from)
     {
-        if (from > To)
+        if (from > this.To)
             throw new NotImplementedException();
 
-        From = from;
+        this.From = from;
         return Unit.Value;
     }
 
     public Result<Unit> UpdateTo(DateOnly to)
     {
-        if (From > to)
+        if (this.From > to)
             throw new NotImplementedException();
 
-        To = to;
+        this.To = to;
         return Unit.Value;
     }
 
     public Result<Unit> MakeInfinite()
     {
-        To = DateOnly.MaxValue;
+        this.To = DateOnly.MaxValue;
         return Unit.Value;
     }
 
     public Result<Unit> Delete()
-    {
-        return Unit.Value;
-    }
+        => Unit.Value;
 }
