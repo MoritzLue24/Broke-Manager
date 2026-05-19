@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
-// using Infrastructure.Security;
+using Infrastructure.Security;
 using Application.Common.Interfaces.Persistence;
-// using Application.Common.Interfaces.Security;
+using Application.Common.Interfaces.Security;
 
 namespace Infrastructure;
 
@@ -23,11 +23,11 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
-        /*services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         // Signleton because we do not have a state, just one instance for all injections is enough 
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-        services.AddSingleton<IHasher, Hasher>();*/
+        services.AddSingleton<IHasher, Hasher>();
 
         return services;
     }
