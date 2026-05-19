@@ -37,16 +37,27 @@ fi
 
 echo "Looking for formatting errors / warnings..."
 
-dotnet format $TYPE --severity $SEVERITY --exclude src/Infrastructure/Persistence/Migrations --verify-no-changes
+output=$(dotnet format $TYPE --severity $SEVERITY --exclude src/Infrastructure/Persistence/Migrations --verify-no-changes 2>&1)
+line_count=$(echo "$output" | wc -l)
 
-echo "Type 'y' to accept: "
+echo ""
+
+if [[ $line_count -le 1 && -z "$output" ]]; then
+    echo "No errors / warnings found."
+    exit 0
+fi
+
+echo "$output"
+echo "$line_count errors / warnings found."
+echo ""
+echo -n "Type 'y' to format: "
 read input
 
 if [ "$input" = "y" ]; then
     echo "Modifying files..."
-    dotnet format $TYPE --severity $SEVERITY
+    dotnet format $TYPE --severity $SEVERITY --exclude src/Infrastructure/Persistence/Migrations
     echo "Done."
 else
-    echo "Aborted, no files where modifyed."
+    echo "Aborted, no files where modified."
     exit 1
 fi
