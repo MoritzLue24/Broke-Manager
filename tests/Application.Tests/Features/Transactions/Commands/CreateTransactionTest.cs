@@ -1,10 +1,10 @@
-using NSubstitute;
-using Domain.Common;
-using Domain.Entities;
-using Domain.Enums;
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Features.Transactions.Commands.CreateTransaction;
+using Domain.Common;
+using Domain.Entities;
+using Domain.Enums;
+using NSubstitute;
 
 namespace Application.Tests.Features.Transactions.Commands;
 
