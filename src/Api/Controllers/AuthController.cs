@@ -9,12 +9,12 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("auth")]
-public class AuthenticationController : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
 
-    public AuthenticationController(IMediator mediator, IMapper mapper)
+    public AuthController(IMediator mediator, IMapper mapper)
     {
         this._mediator = mediator;
         this._mapper = mapper;
