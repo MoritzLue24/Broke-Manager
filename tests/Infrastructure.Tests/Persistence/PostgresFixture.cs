@@ -7,18 +7,19 @@ namespace Infrastructure.Tests.Persistence;
 /// but not the database context. -> DatabaseManager
 public class PostgresFixture : IAsyncLifetime
 {
-    public PostgreSqlContainer Container { get; private set; } = null!;
-    public string ConnectionString => this.Container.GetConnectionString();
-
-    public async Task InitializeAsync()
-    {
-        this.Container = new PostgreSqlBuilder("postgres:latest")
+    public PostgreSqlContainer Container { get; private set; }
+        = new PostgreSqlBuilder("postgres:latest")
             .WithDatabase("broke-manager-tests")
             .WithUsername("root-tests")
             .WithPassword("root-tests123!")
             .WithCleanUp(true)
             .WithAutoRemove(true)
             .Build();
+
+    public string ConnectionString => this.Container.GetConnectionString();
+
+    public async Task InitializeAsync()
+    {
         await this.Container.StartAsync();
     }
 
