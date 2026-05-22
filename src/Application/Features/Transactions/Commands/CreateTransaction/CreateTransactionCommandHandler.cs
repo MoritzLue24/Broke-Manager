@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
+using Application.Features.Transactions.Common;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
@@ -7,13 +8,13 @@ using MediatR;
 
 namespace Application.Features.Transactions.Commands.CreateTransaction;
 
-public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand, Result<TransactionDto>>
+public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Result<TransactionResult>>
 {
     private readonly IUnitOfWork _uow;
     private readonly ITransactionRepository _transactionRepo;
     private readonly ICategoryRepository _categoryRepo;
 
-    public CreateTransactionHandler(
+    public CreateTransactionCommandHandler(
         IUnitOfWork uow,
         ITransactionRepository transactionRepo,
         ICategoryRepository categoryRepo)
@@ -23,7 +24,7 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         this._categoryRepo = categoryRepo;
     }
 
-    public async Task<Result<TransactionDto>> Handle(
+    public async Task<Result<TransactionResult>> Handle(
         CreateTransactionCommand request,
         CancellationToken cancellationToken)
     {
@@ -66,10 +67,10 @@ public class CreateTransactionHandler : IRequestHandler<CreateTransactionCommand
         // For now, the errors are basically the same but we dont want to
         // pass domain errors into the Api layer
         if (!domainResult.Success)
-            return domainResult.Cast<TransactionDto>();
+            return domainResult.Cast<TransactionResult>();
 
         this._transactionRepo.Add(domainResult.Value);
         await this._uow.SaveChangesAsync(cancellationToken);
-        return domainResult.Cast(t => t.ToDto());
+        return domainResult.Cast(t => t.ToResult());
     }
 }

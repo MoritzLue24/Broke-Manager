@@ -1,3 +1,4 @@
+using Application.Features.Transactions.Common;
 using Domain.Common;
 using Domain.Enums;
 using MediatR;
@@ -13,4 +14,4 @@ public record CreateTransactionCommand(
     string Title,
     string Description,
     string CounterParty
-) : IRequest<Result<TransactionDto>>;
+) : IRequest<Result<TransactionResult>>;

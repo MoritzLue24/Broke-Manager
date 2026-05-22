@@ -1,12 +1,12 @@
 using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Features.Transactions;
+namespace Application.Features.Transactions.Common;
 
-/// Basic response dto. Other dtos like 
+/// Basic transaction result. Other dtos like 
 /// CreateDto, UpdateDto are now Commands / Queries.
-/// Maybe later more Dtos, like TransactionDetailDto
-public record TransactionDto(
+/// Maybe later more Dtos, like TransactionDetailResult
+public record TransactionResult(
     Guid Id,
     Guid UserId,
     Guid CategoryId,
@@ -22,7 +22,7 @@ public record TransactionDto(
 
 public static class TransactionExtension
 {
-    public static TransactionDto ToDto(this Transaction t)
+    public static TransactionResult ToResult(this Transaction t)
         => new(
             t.Id,
             t.UserId,

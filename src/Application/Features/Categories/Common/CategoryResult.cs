@@ -1,10 +1,19 @@
 using Domain.Entities;
 
-namespace Application.Features.Categories;
+namespace Application.Features.Categories.Common;
+
+public record CategoryResult(
+    Guid Id,
+    Guid UserId,
+    string Name,
+    bool IsDefault,
+    List<string> Keywords,
+    DateTime CreatedAt
+);
 
 public static class CategoryExtension
 {
-    public static CategoryDto ToDto(this Category category)
+    public static CategoryResult ToDto(this Category category)
         => new(
             category.Id,
             category.UserId,
