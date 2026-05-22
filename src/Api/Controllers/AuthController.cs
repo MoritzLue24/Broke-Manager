@@ -1,6 +1,6 @@
 using Api.Errors;
-using Application.Features.Authentification.Commands.Register;
-using Contracts.Features.Authentification;
+using Application.Features.Auth.Commands.Register;
+using Contracts.Features.Auth;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

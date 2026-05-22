@@ -1,4 +1,4 @@
-namespace Contracts.Features.Authentification;
+namespace Contracts.Features.Auth;
 
 public record RegisterRequest(
     string Email,
