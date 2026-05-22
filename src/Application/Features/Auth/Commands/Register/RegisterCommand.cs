@@ -7,4 +7,4 @@ public record RegisterCommand(
     string Email,
     string Password,
     string ConfirmPassword  // Not really used, just for validation
-) : IRequest<Result<AuthentificationDto>>;
+) : IRequest<Result<AuthDto>>;

@@ -21,14 +21,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<AuthentificationResponse>> Register(
+    public async Task<ActionResult<AuthResponse>> Register(
         [FromBody] RegisterRequest request)
     {
         var command = this._mapper.Map<RegisterCommand>(request);
         var result = await this._mediator.Send(command);
 
-        return result.Match<ActionResult<AuthentificationResponse>>(
-            dto => this.Ok(this._mapper.Map<AuthentificationResponse>(dto)),
+        return result.Match<ActionResult<AuthResponse>>(
+            dto => this.Ok(this._mapper.Map<AuthResponse>(dto)),
             errors => errors.ToProblem(this)
         );
     }

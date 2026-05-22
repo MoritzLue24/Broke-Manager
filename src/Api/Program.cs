@@ -10,9 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    builder.Services.AddInfrastructure(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("Default connection string not set"));
+    builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddApplication();
     builder.Services.AddApi();
 }

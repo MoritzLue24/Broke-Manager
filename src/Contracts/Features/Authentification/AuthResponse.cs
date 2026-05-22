@@ -1,5 +1,6 @@
 namespace Contracts.Features.Authentification;
 
-public record AuthentificationResponse(
+public record AuthResponse(
+    Guid UserId,
     string Token
 );

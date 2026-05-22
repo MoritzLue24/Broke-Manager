@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Application.Features.Authentification.Commands.Register;
 
-public class RegisterHandler : IRequestHandler<RegisterCommand, Result<AuthentificationDto>>
+public class RegisterHandler : IRequestHandler<RegisterCommand, Result<AuthDto>>
 {
     private readonly IUnitOfWork _uow;
     private readonly IUserRepository _userRepo;
@@ -27,7 +27,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, Result<Authentif
         this._tokenGenerator = tokenGenerator;
     }
 
-    public async Task<Result<AuthentificationDto>> Handle(
+    public async Task<Result<AuthDto>> Handle(
         RegisterCommand request,
         CancellationToken cancellationToken)
     {
@@ -36,11 +36,11 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, Result<Authentif
 
         var emailRes = Email.Create(request.Email);
         if (!emailRes.Success)
-            return emailRes.Cast<AuthentificationDto>();
+            return emailRes.Cast<AuthDto>();
 
         var hashRes = Hash.Create(this._hasher.Hash(request.Password));
         if (!hashRes.Success)
-            return hashRes.Cast<AuthentificationDto>();
+            return hashRes.Cast<AuthDto>();
 
         var domainResult = User.Create(
             emailRes.Value,
@@ -48,14 +48,14 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, Result<Authentif
         );
 
         if (!domainResult.Success)
-            return domainResult.Cast<AuthentificationDto>();
+            return domainResult.Cast<AuthDto>();
 
         this._userRepo.Add(domainResult.Value);
         await this._uow.SaveChangesAsync(cancellationToken);
 
         // TODO: Create default-category
 
-        var token = this._tokenGenerator.GenToken(domainResult.Value.Id);
-        return new AuthentificationDto(token);
+        var token = this._tokenGenerator.GenToken(domainResult.Value.Id, domainResult.Value.Role);
+        return new AuthDto(domainResult.Value.Id, token);
     }
 }

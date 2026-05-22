@@ -1,5 +1,6 @@
 namespace Application.Features.Authentification;
 
-public record AuthentificationDto(
+public record AuthDto(
+    Guid UserId,
     string Token
 );
