@@ -1,3 +1,4 @@
+using Api.Configuration;
 using Mapster;
 using MapsterMapper;
 
@@ -14,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddProblemDetails();   // To inject `IProblemDetailsService` to `ExceptionMiddleware`
+        services.ConfigureOptions<JwtBearerOptionsSetup>(); // For custom unauthorized response
         services.AddControllers();
         return services;
     }
