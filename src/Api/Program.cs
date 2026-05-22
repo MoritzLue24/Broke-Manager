@@ -25,6 +25,8 @@ var app = builder.Build();
 
     // app.UseHttpsRedirection();
     app.UseMiddleware<ExceptionMiddleware>();
+    app.UseAuthentication();
+    app.UseAuthorization();
     app.MapControllers();
     app.Run();
 }
