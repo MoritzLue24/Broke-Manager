@@ -7,7 +7,10 @@ namespace Api.Errors;
 public static class ErrorExtension
 {
     public static ObjectResult ToProblem(this Error error, ControllerBase controller)
-        => error switch
+    {
+        var env = controller.HttpContext.RequestServices.GetRequiredService<IHostEnvironment>();
+
+        return error switch
         {
             ValidationError validationError => controller.Problem(
                 type: ErrorTypes.Validation,
@@ -27,9 +30,15 @@ public static class ErrorExtension
             _ => controller.Problem(
                 type: ErrorTypes.Internal,
                 statusCode: StatusCodes.Status500InternalServerError,
-                title: "An internal server error occured."
+                title: env.IsDevelopment()
+                    ? error.GetType().ToString() 
+                    : "An internal server error occured.",
+                detail: env.IsDevelopment()
+                    ? $"This error was not handled, please fix."
+                    : null
             )
         };
+    }
 
     public static ObjectResult ToProblem(this IEnumerable<Error> errors, ControllerBase controller)
     {
