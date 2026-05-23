@@ -7,6 +7,9 @@ public sealed record ValidationError(
     string Message
 ) : Error;
 
+public sealed record UnauthorizedError : Error;
+public sealed record ForbiddenError : Error;
+
 public sealed record UserAlreadyExistsError : Error;
 
 public sealed record CategoryNotFoundError : Error;

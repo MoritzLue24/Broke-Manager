@@ -13,6 +13,7 @@ public static class DependencyInjection
         {
             config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizeBehavior<,>));
         });
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;

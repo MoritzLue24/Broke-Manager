@@ -1,3 +1,4 @@
+using Application.Common.Interfaces.Security;
 using Application.Features.Transactions.Common;
 using Domain.Common;
 using Domain.Enums;
@@ -14,4 +15,7 @@ public record CreateTransactionCommand(
     string Title,
     string Description,
     string CounterParty
-) : IRequest<Result<TransactionResult>>;
+) : IRequest<Result<TransactionResult>>, IRequireAuthorization
+{
+    public Role[] Roles => [Role.User, Role.Admin];
+}

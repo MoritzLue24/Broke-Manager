@@ -17,6 +17,16 @@ public static class ErrorExtension
                 statusCode: StatusCodes.Status400BadRequest,
                 title: $"{validationError.Property}: '{validationError.Message}'"
             ),
+            UnauthorizedError => controller.Problem(
+                type: ErrorTypes.Unauthorized,
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: "Unauthorized"
+            ),
+            ForbiddenError => controller.Problem(
+                type: ErrorTypes.Forbidden,
+                statusCode: StatusCodes.Status403Forbidden,
+                title: "Forbidden"
+            ),
             CategoryNotFoundError => controller.Problem(
                 type: ErrorTypes.CategoryNotFound,
                 statusCode: StatusCodes.Status404NotFound,

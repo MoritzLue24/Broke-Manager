@@ -97,6 +97,9 @@ public static class DependencyInjection
                 };
             });
 
+        services.AddHttpContextAccessor();  // Because UserContext uses IHttpContextAccessor
+        services.AddScoped<IUserContext, UserContext>();
+
         return services;
     }
 }
