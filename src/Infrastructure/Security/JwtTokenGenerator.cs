@@ -17,18 +17,20 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         this._jwtSettings = jwtSettings.Value;
     }
 
-    public string GenToken(Guid userId, Role role)
+    public string GenToken(Guid userId, IEnumerable<Role> roles)
     {
         var signingCreds = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._jwtSettings.Secret)),
             SecurityAlgorithms.HmacSha256
         );
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim(ClaimTypes.Role, role.ToString())
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
         };
+
+        foreach (Role role in roles)
+            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
 
         var token = new JwtSecurityToken(
             issuer: this._jwtSettings.Issuer,

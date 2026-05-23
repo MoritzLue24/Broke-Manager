@@ -55,8 +55,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         await this._uow.SaveChangesAsync(cancellationToken);
 
         // TODO: Create default-category
-
-        var token = this._tokenGenerator.GenToken(domainResult.Value.Id, domainResult.Value.Role);
+        // TODO: Handle multiple roles
+        var token = this._tokenGenerator.GenToken(domainResult.Value.Id, [domainResult.Value.Role]);
         return new AuthResult(domainResult.Value.Id, token);
     }
 }
