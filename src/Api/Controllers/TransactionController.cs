@@ -24,7 +24,7 @@ public class TransactionController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<TransactionDetailResponse>>> GetAllByUser()
     {
-        var query = new GetTransactionsByUserQuery(Guid.NewGuid());
+        var query = new GetAllTransactionsQuery(Guid.NewGuid());
         var result = await this._mediator.Send(query);
 
         return result.Match<ActionResult<List<TransactionDetailResponse>>>(
