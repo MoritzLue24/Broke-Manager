@@ -7,7 +7,7 @@ namespace Api.Configuration;
 
 // Configures the http side of JwtBearerOptions, because
 // we dont want to change http things like responses inside the Infrastructure layer
-public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
+public class JwtBearerOptionsConfiguration : IConfigureNamedOptions<JwtBearerOptions>
 {
     public void Configure(string? name, JwtBearerOptions options)
     {
