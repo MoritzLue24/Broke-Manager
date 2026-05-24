@@ -6,6 +6,7 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IHostEnvironment _env;
+    // We need this to generate a proper problem response
     private readonly IProblemDetailsService _problemDetailsService;
 
     public ExceptionMiddleware(RequestDelegate next, IHostEnvironment env, IProblemDetailsService problemDetailsService)

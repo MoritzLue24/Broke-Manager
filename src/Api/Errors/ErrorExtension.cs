@@ -52,8 +52,11 @@ public static class ErrorExtension
 
     public static ObjectResult ToProblem(this IEnumerable<Error> errors, ControllerBase controller)
     {
+        // If all errors are an instance of `ValidationError`
         if (errors.All(e => e is ValidationError))
         {
+            // Add all validation errors to model state
+            // (model state = dictionary where all validation errors are written, is from aspdotnet)
             foreach (ValidationError error in errors.Cast<ValidationError>())
                 controller.ModelState.AddModelError(error.Property, error.Message);
             return (ObjectResult)controller.ValidationProblem(
@@ -64,6 +67,10 @@ public static class ErrorExtension
         }
         if (!errors.Any())
             throw new InvalidOperationException("Cannot convert errors to ObjectResult if there are no errors.");
+
+        // For now, if we have at least 1 error & not all errors are ValidationErrors,
+        // Map only the first error, all other are dropped for now.
+        // Maybe we need to change this, but for now a multiple-error-response is only valid for validation errors
         return errors.First().ToProblem(controller);
     }
 }

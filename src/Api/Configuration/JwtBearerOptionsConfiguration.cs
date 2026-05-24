@@ -11,10 +11,13 @@ public class JwtBearerOptionsConfiguration : IConfigureNamedOptions<JwtBearerOpt
 {
     public void Configure(string? name, JwtBearerOptions options)
     {
+        // Only assign options.Events new if options.Events is null.
+        // Because we dont want to overwrite the options.Events set in the Infrastructure layer
         options.Events ??= new JwtBearerEvents();
+        // Gets called if a request is not authenticated
         options.Events.OnChallenge = async ctx =>
         {
-            ctx.HandleResponse();
+            ctx.HandleResponse();   // "Drop" the standard response
             ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
             ctx.Response.ContentType = "application/problem+json";
             await ctx.Response.WriteAsJsonAsync(new ProblemDetails
@@ -26,6 +29,7 @@ public class JwtBearerOptionsConfiguration : IConfigureNamedOptions<JwtBearerOpt
         };
     }
 
+    // We need both overloads
     public void Configure(JwtBearerOptions options)
         => this.Configure(string.Empty, options);
 }

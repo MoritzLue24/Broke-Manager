@@ -17,5 +17,7 @@ public record CreateTransactionCommand(
     string CounterParty
 ) : IRequest<Result<TransactionResult>>, IRequireAuthorization
 {
+    // Admins and Users can execute this command
+    // (not both roles are needed)
     public Role[] Roles => [Role.User, Role.Admin];
 }

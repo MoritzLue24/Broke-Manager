@@ -39,5 +39,7 @@ public class UserContext : IUserContext
                     return role;
                 throw new InvalidOperationException("Invalid role in Role claim");
             }).ToArray()
-            ?? [];
+            // If HttpContext is null -> User is null -> FindAll is null -> ...
+            // If this is the case, dont want to return null, but an empty collection / array
+            ?? []; 
 }

@@ -55,12 +55,16 @@ public static class DependencyInjection
         if (!jwtSection.Exists())
             throw new InvalidOperationException($"Jwt-settings section '{JwtSettings.SectionName}' is not set.");
 
+        // "Parses" the jwtSection into an actual JwtSettings object
         var jwtSettings = jwtSection.Get<JwtSettings>()
             ?? throw new InvalidOperationException($"Jwt-settings section '{JwtSettings.SectionName}' could not be bound.");
 
+        // It is possible that some properties of `jwtSettings` are null, if they are not set
+        // so we need to validate
         if (!jwtSettings.Validate())
             throw new InvalidOperationException("Jwt-settings are invalid.");
 
+        // Inject the jwt settings
         services.AddSingleton(Options.Create(jwtSettings));
 
         // Token generator
@@ -87,6 +91,7 @@ public static class DependencyInjection
                 options.Events = new JwtBearerEvents
                 {
                     // Called first, before token is read
+                    // We need to set the cookie here
                     OnMessageReceived = ctx =>
                     {
                         var cookie = ctx.Request.Cookies[jwtSettings.CookieName];

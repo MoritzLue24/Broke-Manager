@@ -19,6 +19,8 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
     public string GenToken(Guid userId, IEnumerable<Role> roles)
     {
+        // Specify the signing credentials
+        // SecurityKey has to match the one specified in DependencyInjection.cs
         var signingCreds = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._jwtSettings.Secret)),
             SecurityAlgorithms.HmacSha256

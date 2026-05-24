@@ -35,7 +35,8 @@ public class AuthorizeBehavior<TRequest, TResponse>
         if (this._userContext.UserId == null)
             return (dynamic)new UnauthorizedError();
 
-        if (!((IRequireAuthorization)request).Roles.Any(role=> this._userContext.UserRoles.Contains(role)))
+        // If there is not one request's valid roles that are in the user roles, return error
+        if (!((IRequireAuthorization)request).Roles.Any(role => this._userContext.UserRoles.Contains(role)))
             return (dynamic)new ForbiddenError();
 
         return await next(cancellationToken);

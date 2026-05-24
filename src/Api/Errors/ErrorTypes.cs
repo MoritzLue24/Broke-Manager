@@ -1,5 +1,7 @@
 namespace Api.Errors;
 
+// The string that gets passed in the "type" field of a problem response.
+// Used to identify the error, RFC standard
 public static class ErrorTypes
 {
     private const string Base = "urn:broke-manager:errors";

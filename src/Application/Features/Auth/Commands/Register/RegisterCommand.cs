@@ -9,3 +9,5 @@ public record RegisterCommand(
     string Password,
     string ConfirmPassword  // Not really used, just for validation
 ) : IRequest<Result<AuthResult>>;
+
+// TODO: RegisterCommand Validation

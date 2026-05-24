@@ -8,5 +8,6 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
     {
         this.RuleFor(x => x.Amount)
             .GreaterThan(0);
+        // TODO: validate all properties
     }
 }
