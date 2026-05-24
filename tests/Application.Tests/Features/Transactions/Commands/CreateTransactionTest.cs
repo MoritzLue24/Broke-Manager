@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Security;
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Domain.Common;
 using Domain.Entities;
@@ -10,6 +11,7 @@ namespace Application.Tests.Features.Transactions.Commands;
 
 public class CreateTransactionTests
 {
+    private readonly IUserContext _userContext;
     private readonly IUnitOfWork _uow;
     private readonly ITransactionRepository _transactionRepo;
     private readonly ICategoryRepository _categoryRepo;
@@ -17,6 +19,7 @@ public class CreateTransactionTests
     public CreateTransactionTests()
     {
         // Mock interfaces: in each test, set what interface methods should return with what parameters
+        this._userContext = Substitute.For<IUserContext>();
         this._uow = Substitute.For<IUnitOfWork>();
         this._transactionRepo = Substitute.For<ITransactionRepository>();
         this._categoryRepo = Substitute.For<ICategoryRepository>();
@@ -30,11 +33,17 @@ public class CreateTransactionTests
         var categoryId = Guid.NewGuid();
         var date = DateOnly.FromDateTime(DateTime.UtcNow);
 
+        this._userContext.UserId.Returns(userId);
+        this._userContext.UserRoles.Returns([Role.User]);
         this._categoryRepo.ExistsForUserAsync(userId, categoryId).Returns(true);
 
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
+        var handler = new CreateTransactionCommandHandler(
+            this._userContext,
+            this._uow,
+            this._transactionRepo,
+            this._categoryRepo
+        );
         var command = new CreateTransactionCommand(
-            userId,
             categoryId,
             20,
             TransactionType.Expense,
@@ -73,11 +82,17 @@ public class CreateTransactionTests
         var categoryId = Guid.NewGuid();
         var date = DateOnly.FromDateTime(DateTime.UtcNow);
 
+        this._userContext.UserId.Returns(userId);
+        this._userContext.UserRoles.Returns([Role.User]);
         this._categoryRepo.ExistsForUserAsync(userId, categoryId).Returns(false);
 
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
+        var handler = new CreateTransactionCommandHandler(
+            this._userContext,
+            this._uow,
+            this._transactionRepo,
+            this._categoryRepo
+        );
         var command = new CreateTransactionCommand(
-            userId,
             categoryId,
             20,
             TransactionType.Expense,
@@ -106,11 +121,17 @@ public class CreateTransactionTests
         var userId = Guid.NewGuid();
         var defaultCategoryId = Guid.NewGuid();
 
+        this._userContext.UserId.Returns(userId);
+        this._userContext.UserRoles.Returns([Role.User]);
         this._categoryRepo.GetDefaultByUserIdAsync(userId).Returns(defaultCategoryId);
 
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
+        var handler = new CreateTransactionCommandHandler(
+            this._userContext,
+            this._uow,
+            this._transactionRepo,
+            this._categoryRepo
+        );
         var command = new CreateTransactionCommand(
-            userId,
             null,
             20,
             TransactionType.Expense,
@@ -138,11 +159,17 @@ public class CreateTransactionTests
     public async Task ShouldReturnDefaultCategoryNotFound_WhenDefaultCategoryDoesntExists()
     {
         var userId = Guid.NewGuid();
+        this._userContext.UserId.Returns(userId);
+        this._userContext.UserRoles.Returns([Role.User]);
         this._categoryRepo.GetDefaultByUserIdAsync(userId).Returns((Guid?)null);
 
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
+        var handler = new CreateTransactionCommandHandler(
+            this._userContext,
+            this._uow,
+            this._transactionRepo,
+            this._categoryRepo
+        );
         var command = new CreateTransactionCommand(
-            userId,
             null,
             20,
             TransactionType.Expense,
@@ -166,40 +193,21 @@ public class CreateTransactionTests
     }
 
     [Fact]
-    public async Task ShouldReturnInvalidGuid_WhenUserIdEmpty()
-    {
-        // Setup
-        this._categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
-
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
-        var command = new CreateTransactionCommand(
-            new Guid(),
-            null,
-            20,
-            TransactionType.Expense,
-            DateOnly.FromDateTime(DateTime.UtcNow),
-            "Essen gehen",
-            "",
-            "Pizza place"
-        );
-
-        // Execute
-        var result = await handler.Handle(command, default);
-
-        // Assert
-        Assert.False(result.Success);
-        Assert.Equal(new InvalidGuidError(), result.FirstError);
-    }
-
-    [Fact]
     public async Task ShouldReturnInvalidTransactionAmount_WhenAmountNegative()
     {
         // Setup
+        Guid userId = Guid.NewGuid();
+        this._userContext.UserId.Returns(userId);
+        this._userContext.UserRoles.Returns([Role.User]);
         this._categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
 
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
+        var handler = new CreateTransactionCommandHandler(
+            this._userContext,
+            this._uow,
+            this._transactionRepo,
+            this._categoryRepo
+        );
         var command = new CreateTransactionCommand(
-            Guid.NewGuid(),
             null,
             -20,
             TransactionType.Expense,
@@ -221,11 +229,18 @@ public class CreateTransactionTests
     public async Task ShouldReturnTransactionTitleEmpty_WhenTitleEmpty()
     {
         // Setup
+        var userId = Guid.NewGuid();
+        this._userContext.UserId.Returns(userId);
+        this._userContext.UserRoles.Returns([Role.User]);
         this._categoryRepo.GetDefaultByUserIdAsync(Arg.Any<Guid>()).Returns(Guid.NewGuid());
 
-        var handler = new CreateTransactionHandler(this._uow, this._transactionRepo, this._categoryRepo);
+        var handler = new CreateTransactionCommandHandler(
+            this._userContext,
+            this._uow,
+            this._transactionRepo,
+            this._categoryRepo
+        );
         var command = new CreateTransactionCommand(
-            Guid.NewGuid(),
             null,
             20,
             TransactionType.Expense,
