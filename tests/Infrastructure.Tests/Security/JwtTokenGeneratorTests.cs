@@ -27,7 +27,7 @@ public class JwtTokenGeneratorTests
         var role = Role.User;
 
         // Execute
-        var token = jwtGenerator.GenToken(userId, role);
+        var token = jwtGenerator.GenToken(userId, [role]);
         var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
         // Assert
@@ -46,7 +46,7 @@ public class JwtTokenGeneratorTests
         var role = Role.User;
 
         // Execute
-        var token = jwtGenerator.GenToken(userId, role);
+        var token = jwtGenerator.GenToken(userId, [role]);
         var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
         // Assert
@@ -63,7 +63,7 @@ public class JwtTokenGeneratorTests
         var role = Role.User;
 
         // Execute
-        var token = jwtGenerator.GenToken(userId, role);
+        var token = jwtGenerator.GenToken(userId, [role]);
 
         var validationParams = new TokenValidationParameters
         {

@@ -1,8 +1,10 @@
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 
-namespace Infrastructure.Tests.Persistence;
+namespace Infrastructure.Tests.Persistence.Common;
 
-/// Lives across all tests, created & injected by xunit because IAsyncLifetime
+/// Lives across all tests, created
 /// Creates and handles a postgreSql container,
 /// but not the database context. -> DatabaseManager
 public class PostgresFixture : IAsyncLifetime
@@ -20,11 +22,19 @@ public class PostgresFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        Console.WriteLine("STARTED");
         await this.Container.StartAsync();
+
+        var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
+            .UseNpgsql(this.ConnectionString)
+            .Options);
+        await db.Database.MigrateAsync();
+        await db.DisposeAsync();
     }
 
     public async Task DisposeAsync()
     {
+        Console.WriteLine("DISPOSED");
         if (this.Container != null)
             await this.Container.DisposeAsync();
     }
