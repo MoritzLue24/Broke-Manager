@@ -7,7 +7,6 @@ using MediatR;
 namespace Application.Features.Transactions.Commands.CreateTransaction;
 
 public record CreateTransactionCommand(
-    Guid UserId,
     Guid? CategoryId,
     decimal Amount,
     TransactionType Type,

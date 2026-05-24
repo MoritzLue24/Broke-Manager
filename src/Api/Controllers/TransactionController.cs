@@ -24,7 +24,7 @@ public class TransactionController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<TransactionDetailResponse>>> GetAllByUser()
     {
-        var query = new GetAllTransactionsQuery(Guid.NewGuid());
+        var query = new GetAllTransactionsQuery();
         var result = await this._mediator.Send(query);
 
         return result.Match<ActionResult<List<TransactionDetailResponse>>>(
@@ -37,11 +37,12 @@ public class TransactionController : ControllerBase
     public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
         [FromBody] CreateTransactionRequest createRequest)
     {
-        var command = this._mapper.Map<CreateTransactionCommand>((createRequest, Guid.NewGuid()));
+        var command = this._mapper.Map<CreateTransactionCommand>(createRequest);
         var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
-            dto => this.Ok(this._mapper.Map<TransactionDetailResponse>(dto)),
+            // FIXME: Change to CreatedAtAction?
+            dto => this.Created(string.Empty, this._mapper.Map<TransactionDetailResponse>(dto)),
             errors => errors.ToProblem(this)
         );
     }

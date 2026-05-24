@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Security;
 using Application.Features.Transactions.Common;
 using Domain.Common;
 using Domain.Entities;
@@ -11,15 +12,18 @@ namespace Application.Features.Transactions.Commands.CreateTransaction;
 // TODO: Use IUserContext
 public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Result<TransactionResult>>
 {
+    private readonly IUserContext _userContext;
     private readonly IUnitOfWork _uow;
     private readonly ITransactionRepository _transactionRepo;
     private readonly ICategoryRepository _categoryRepo;
 
     public CreateTransactionCommandHandler(
+        IUserContext userContext,
         IUnitOfWork uow,
         ITransactionRepository transactionRepo,
         ICategoryRepository categoryRepo)
     {
+        this._userContext = userContext;
         this._uow = uow;
         this._transactionRepo = transactionRepo;
         this._categoryRepo = categoryRepo;
@@ -29,6 +33,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         CreateTransactionCommand request,
         CancellationToken cancellationToken)
     {
+        Guid userId = this._userContext.UserId!.Value;
         Guid categoryId;
         CategorySource categorySource;
 
@@ -36,7 +41,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         if (request.CategoryId.HasValue)
         {
             // Check if the given category exists
-            if (!await this._categoryRepo.ExistsForUserAsync(request.UserId, request.CategoryId.Value))
+            if (!await this._categoryRepo.ExistsForUserAsync(userId, request.CategoryId.Value))
                 return new CategoryNotFoundError();
             categoryId = request.CategoryId.Value;
             categorySource = CategorySource.Manual;
@@ -45,7 +50,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         else
         {
             // Get default category
-            Guid? categoryIdRes = await this._categoryRepo.GetDefaultByUserIdAsync(request.UserId);
+            Guid? categoryIdRes = await this._categoryRepo.GetDefaultByUserIdAsync(userId);
             if (!categoryIdRes.HasValue)
                 return new DefaultCategoryNotFoundError();
             categoryId = categoryIdRes.Value;
@@ -53,7 +58,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         }
 
         var domainResult = Transaction.Create(
-            request.UserId,
+            userId,
             // TODO: Auto-categorize?
             categoryId,
             categorySource,
