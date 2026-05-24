@@ -2,7 +2,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 
-namespace Infrastructure.Tests.Persistence.Common;
+namespace Infrastructure.Tests.TestInfrastructure.Persistence;
 
 /// Lives across all tests, created
 /// Creates and handles a postgreSql container,
@@ -22,7 +22,6 @@ public class PostgresFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        Console.WriteLine("STARTED");
         await this.Container.StartAsync();
 
         var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
@@ -34,7 +33,6 @@ public class PostgresFixture : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        Console.WriteLine("DISPOSED");
         if (this.Container != null)
             await this.Container.DisposeAsync();
     }

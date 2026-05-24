@@ -2,7 +2,7 @@ using Domain.Entities;
 using Domain.ValueObjects;
 
 using Infrastructure.Persistence.Repositories;
-using Infrastructure.Tests.Persistence.Common;
+using Infrastructure.Tests.TestInfrastructure.Persistence;
 
 namespace Infrastructure.Tests.Persistence.Repositories;
 
@@ -20,8 +20,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task GetDefaultByUserIdAsync_ShouldReturnId_WhenExists()
     {
-        Console.WriteLine("GetDefaultByUserIdAsync_ShouldReturnId_WhenExists");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,
@@ -48,8 +46,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task GetDefaultByUserIdAsync_ShouldReturnNull_WhenOnlyNormalCategoryExists()
     {
-        Console.WriteLine("GetDefaultByUserIdAsync_ShouldReturnNull_WhenOnlyNormalCategoryExists");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,
@@ -75,8 +71,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task GetDefaultByUserIdAsync_ShouldReturnCorrectId_WhenMultipleCategoryExists()
     {
-        Console.WriteLine("GetDefaultByUserIdAsync_ShouldReturnCorrectId_WhenMultipleCategoryExists");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,
@@ -109,8 +103,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task GetDefaultByUserIdAsync_ShouldReturnNull_WhenNoCategoryExists()
     {
-        Console.WriteLine("GetDefaultByUserIdAsync_ShouldReturnNull_WhenNoCategoryExists");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,
@@ -130,8 +122,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task GetDefaultByUserIdAsync_ShouldReturnNull_WhenCategoryNotOwned()
     {
-        Console.WriteLine("GetDefaultByUserIdAsync_ShouldReturnNull_WhenCategoryNotOwned");
-
         // Setup
         var userA = User.Create(
             Email.Create("email@mail.de").Value,
@@ -161,8 +151,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task ExistsForUser_ShouldReturnTrue_WhenCategoryExists()
     {
-        Console.WriteLine("ExistsForUser_ShouldReturnTrue_WhenCategoryExists");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,
@@ -187,8 +175,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task ExistsForUser_ShouldReturnFalse_WhenCategoryNotOwned()
     {
-        Console.WriteLine("ExistsForUser_ShouldReturnFalse_WhenCategoryNotOwned");
-
         // Setup
         var userA = User.Create(
             Email.Create("email@mail.de").Value,
@@ -218,8 +204,6 @@ public class CategoryReaderRepositoryTests : BaseTest
     [Fact]
     public async Task ExistsForUser_ShouldReturnFalse_WhenCategoryDoesntExists()
     {
-        Console.WriteLine("ExistsForUser_ShouldReturnFalse_WhenCategoryDoesntExists");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,

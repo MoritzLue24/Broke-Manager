@@ -3,7 +3,7 @@ using Domain.Enums;
 using Domain.ValueObjects;
 
 using Infrastructure.Persistence.Repositories;
-using Infrastructure.Tests.Persistence.Common;
+using Infrastructure.Tests.TestInfrastructure.Persistence;
 
 namespace Infrastructure.Tests.Persistence.Repositories;
 
@@ -21,8 +21,6 @@ public class TransactionRepositoryTests : BaseTest
     [Fact]
     public async Task Add_ShouldAddCategory_WhenContextValid()
     {
-        Console.WriteLine("Add_ShouldAddCategory_WhenContextValid");
-
         // Setup
         var user = User.Create(
             Email.Create("email@mail.de").Value,

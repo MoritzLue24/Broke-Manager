@@ -1,4 +1,4 @@
-namespace Infrastructure.Tests.Persistence.Common;
+namespace Infrastructure.Tests.TestInfrastructure.Persistence;
 
 // Defines a collection so that only one instance of
 // Postgres fixture gets created.
