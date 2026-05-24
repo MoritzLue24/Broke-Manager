@@ -20,6 +20,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         ConfigurationManager configuration)
     {
+
         services.AddPersistence(configuration);
         services.AddAuth(configuration);
 
@@ -33,10 +34,14 @@ public static class DependencyInjection
         this IServiceCollection services,
         ConfigurationManager configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new InvalidOperationException("Default connection string not set");
+
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
-            configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Default connection string not set"),
-            builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+            configuration.GetConnectionString("DefaultConnection"),
+            builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
+        ));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
