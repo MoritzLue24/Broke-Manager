@@ -93,17 +93,18 @@ output=$(dotnet format $TYPE --severity $SEVERITY --exclude src/Infrastructure/P
 if [[ -z "$output" && $? -eq 0 ]]; then
     echo ""
     echo "No errors / warnings found."
-    exit 0
+    echo -n "Format anyway? Type 'y' to format: "
+else
+    echo ""
+    print_formatted_output
+    line_count=$(echo "$output" | wc -l)
+
+    echo ""
+    echo "$line_count errors / warnings found."
+    echo -n "Type 'y' to format: "
+    echo ""
 fi
 
-echo ""
-print_formatted_output
-line_count=$(echo "$output" | wc -l)
-
-echo ""
-echo "$line_count errors / warnings found."
-echo ""
-echo -n "Type 'y' to format: "
 read input
 
 if [ "$input" = "y" ]; then
