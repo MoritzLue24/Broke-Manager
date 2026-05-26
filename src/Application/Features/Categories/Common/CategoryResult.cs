@@ -19,7 +19,7 @@ public static class CategoryExtension
             category.UserId,
             category.Name,
             category.IsDefault,
-            category.Keywords.Select(k => k.Value).ToList(),
+            category.MatchingRules.Select(k => k.Keyword).ToList(),
             category.CreatedAt
         );
 }
