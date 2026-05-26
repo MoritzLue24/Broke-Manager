@@ -50,8 +50,8 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         else
         {
             // Get default category
-            Guid? categoryIdRes = await this._categoryRepo.GetDefaultByUserIdAsync(userId);
-            if (!categoryIdRes.HasValue)
+            Guid? categoryIdRes = await this._categoryRepo.GetDefaultIdByUserIdAsync(userId);
+            if (categoryIdRes == null)
                 return new DefaultCategoryNotFoundError();
             categoryId = categoryIdRes.Value;
             categorySource = CategorySource.Unmatched;
