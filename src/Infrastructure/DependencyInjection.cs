@@ -2,6 +2,7 @@ using System.Text;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -43,6 +44,7 @@ public static class DependencyInjection
             builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
         ));
 
+        services.AddScoped<PublishDomainEventsInteceptor>();    // Registered in AppDbContext
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
