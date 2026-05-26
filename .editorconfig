@@ -41,6 +41,9 @@ dotnet_style_readonly_field = true:error
 # IDE0065: Using directives must be placed outside of a namespace declaration
 csharp_using_directive_placement = outside_namespace:warning
 
+# Unnecessary usings — fail the build
+dotnet_diagnostic.IDE0005.severity = error
+
 
 # ------------------
 # --- FORMATTING ---

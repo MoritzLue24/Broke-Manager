@@ -1,4 +1,3 @@
-using Api;
 using Api.Middlewares;
 using Application;
 using Infrastructure;

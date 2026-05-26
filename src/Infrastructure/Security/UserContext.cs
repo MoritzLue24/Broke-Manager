@@ -33,7 +33,7 @@ public class UserContext : IUserContext
     public IReadOnlyCollection<Role> UserRoles
         => this._httpContext.HttpContext?.User?
             .FindAll(ClaimTypes.Role)
-            .Select(c => 
+            .Select(c =>
             {
                 if (Enum.TryParse(c.Value, out Role role))
                     return role;
@@ -41,5 +41,5 @@ public class UserContext : IUserContext
             }).ToArray()
             // If HttpContext is null -> User is null -> FindAll is null -> ...
             // If this is the case, dont want to return null, but an empty collection / array
-            ?? []; 
+            ?? [];
 }
