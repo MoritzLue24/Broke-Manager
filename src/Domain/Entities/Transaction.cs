@@ -1,11 +1,12 @@
 using Domain.Common;
+using Domain.Common.Models;
 using Domain.Enums;
+using Domain.Events.Transactions;
 
 namespace Domain.Entities;
 
-public class Transaction
+public class Transaction : AggregateRoot
 {
-    public Guid Id { get; }
     public Guid UserId { get; }
     public Guid? StandingOrderId { get; private set; }
     public Guid CategoryId { get; private set; }
@@ -19,9 +20,10 @@ public class Transaction
     public string CounterParty { get; private set; } = null!;
     public DateTime CreatedAt { get; }
 
-    private Transaction() { }
+    private Transaction() : base(Guid.Empty) { }
 
     private Transaction(
+        Guid id,
         Guid userId,
         Guid categoryId,
         CategorySource categorySource,
@@ -31,8 +33,8 @@ public class Transaction
         string title,
         string description,
         string counterParty)
+        : base(id)
     {
-        this.Id = Guid.NewGuid();
         this.UserId = userId;
         this.StandingOrderId = null;
         this.CategoryId = categoryId;
@@ -70,7 +72,8 @@ public class Transaction
         if (!Enum.IsDefined(typeof(CategorySource), categorySource))
             return new InvalidCategorySourceError();
 
-        return new Transaction(
+        var transaction = new Transaction(
+            Guid.NewGuid(),
             userId,
             categoryId,
             categorySource,
@@ -79,7 +82,12 @@ public class Transaction
             date,
             title,
             description,
-            counterParty);
+            counterParty
+        );
+
+
+        transaction.AddDomainEvent(new TransactionCreatedEvent(transaction.Id));
+        return transaction;
     }
 
     public Result<Unit> ChangeCategory(Guid categoryId, CategorySource source)
@@ -92,6 +100,7 @@ public class Transaction
         return Unit.Value;
     }
 
+    /*
     public Result<Unit> ChangeStandingOrder(Guid standingOrderId, StandingOrderSource source)
     {
         if (standingOrderId == Guid.Empty)
@@ -108,6 +117,7 @@ public class Transaction
         this.StandingOrderSource = null;
         return Unit.Value;
     }
+    */
 
     public Result<Unit> ChangeAmount(decimal amount, TransactionType type)
     {
@@ -146,6 +156,9 @@ public class Transaction
         return Unit.Value;
     }
 
-    public static Result<Unit> Delete()
-        => Unit.Value;
+    public Result<Unit> Delete()
+    {
+        this.AddDomainEvent(new TransactionDeletedEvent());
+        return Unit.Value;
+    }
 }

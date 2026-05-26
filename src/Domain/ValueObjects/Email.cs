@@ -1,10 +1,11 @@
 using System.Net.Mail;
 
 using Domain.Common;
+using Domain.Common.Models;
 
 namespace Domain.ValueObjects;
 
-public sealed record Email
+public sealed class Email : ValueObject
 {
     public string Value { get; }
 
@@ -26,4 +27,7 @@ public sealed record Email
         }
         return new Email(email.Address);
     }
+
+    protected override IEnumerable<object?> GetEqualityComponents()
+        => [this.Value];
 }

@@ -9,10 +9,10 @@ namespace Infrastructure.Persistence.Configurations;
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     // Aus irgendeinen grund brauchen wir das hier
-    private sealed class KeywordConverter : ValueConverter<Keyword, string>
+    private sealed class MatchingRuleConverter : ValueConverter<MatchingRule, string>
     {
-        public KeywordConverter()
-            : base(k => k.Value, v => Keyword.Create(v).Value)
+        public MatchingRuleConverter()
+            : base(k => k.Keyword, keyword => MatchingRule.Create(keyword).Value)
         { }
     }
 
@@ -48,15 +48,30 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .IsUnique()
             .HasDatabaseName("ix_categories_user_id_unique_default");
 
+        // Matching rules
+        // TODO: shared table with recurrence pattern
+        builder.OwnsMany(c => c.MatchingRules, ruleBuilder =>
+        {
+            ruleBuilder.ToTable("matching_rules");
+            ruleBuilder.WithOwner().HasForeignKey("category_id");
+            ruleBuilder.Property(r => r.Keyword)
+                .HasColumnName("keyword")
+                .HasMaxLength(255)
+                .IsRequired();
+        });
+
+        /*
+        // FIXME: own table
         // Keywords
-        builder.PrimitiveCollection<List<Keyword>>("_keywords")
-            .HasColumnName("keywords")
+        builder.PrimitiveCollection<List<MatchingRule>>("_matchingRules")
+            .HasColumnName("matching_rules")
             .IsRequired()
         // Single keyword element
             .ElementType()
-            .HasConversion(typeof(KeywordConverter))
+            .HasConversion(typeof(MatchingRuleConverter))
             .HasMaxLength(255)
             .IsRequired();
+        */
 
         // CreatedAt
         builder.Property(c => c.CreatedAt).HasColumnName("created_at");

@@ -1,3 +1,4 @@
+/*
 using Domain.Common;
 
 namespace Domain.Entities;
@@ -52,3 +53,4 @@ public class StandingOrderPause
     public static Result<Unit> Delete()
         => Unit.Value;
 }
+*/

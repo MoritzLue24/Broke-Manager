@@ -1,3 +1,4 @@
+/*
 using Domain.Common;
 using Domain.ValueObjects;
 
@@ -131,3 +132,4 @@ public class StandingOrder
     public static Result<Unit> Delete()
         => Unit.Value;
 }
+*/

@@ -1,3 +1,4 @@
+/*
 using Domain.Common;
 using Domain.Enums;
 
@@ -62,3 +63,4 @@ public sealed record RecurrencePattern
             : executionDate;
     }
 }
+*/

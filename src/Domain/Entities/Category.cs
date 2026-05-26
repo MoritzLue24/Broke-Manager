@@ -1,24 +1,29 @@
 using Domain.Common;
+using Domain.Common.Models;
+using Domain.Events.Categories;
 using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Category
+public class Category : AggregateRoot
 {
-    private readonly List<Keyword> _keywords = [];
+    private readonly List<MatchingRule> _matchingRules = [];
 
-    public Guid Id { get; private set; }
     public Guid UserId { get; private set; }
     public string Name { get; private set; } = null!;    // für leeren constructor
     public bool IsDefault { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    public IReadOnlyCollection<Keyword> Keywords => this._keywords.AsReadOnly();
+    public IReadOnlyCollection<MatchingRule> MatchingRules => this._matchingRules.AsReadOnly();
 
-    private Category() { }
+    private Category() : base(Guid.Empty) { }
 
-    private Category(Guid userId, string name, bool isDefault)
+    private Category(
+        Guid id,
+        Guid userId,
+        string name,
+        bool isDefault)
+        : base(id)
     {
-        this.Id = Guid.NewGuid();
         this.UserId = userId;
         this.Name = name;
         this.IsDefault = isDefault;
@@ -33,7 +38,10 @@ public class Category
         if (string.IsNullOrWhiteSpace(name))
             return new EmptyCategoryNameError();
 
-        return new Category(userId, name, isDefault);
+        var category = new Category(Guid.NewGuid(), userId, name, isDefault);
+
+        category.AddDomainEvent(new CategoryCreatedEvent(category.Id));
+        return category;
     }
 
     public Result<Unit> ChangeName(string name)
@@ -45,21 +53,21 @@ public class Category
         return Unit.Value;
     }
 
-    public Result<Unit> AddKeyword(Keyword keyword)
+    public Result<Unit> AddRule(MatchingRule rule)
     {
         if (this.IsDefault)
             return new CategoryIsDefaultError();
 
-        if (this._keywords.Any(k => k == keyword))
+        if (this._matchingRules.Any(r => r == rule))
             return new DuplicateKeywordError();
 
-        this._keywords.Add(keyword);
+        this._matchingRules.Add(rule);
         return Unit.Value;
     }
 
-    public Result<Unit> RemoveKeyword(Keyword keyword)
+    public Result<Unit> RemoveRule(MatchingRule rule)
     {
-        if (!this._keywords.Remove(keyword))
+        if (!this._matchingRules.Remove(rule))
             return new KeywordNotFoundError();
 
         return Unit.Value;
@@ -70,6 +78,7 @@ public class Category
         if (this.IsDefault)
             return new CategoryIsDefaultError();
 
+        this.AddDomainEvent(new CategoryDeletedEvent());
         return Unit.Value;
     }
 }

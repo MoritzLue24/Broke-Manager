@@ -1,8 +1,9 @@
 using Domain.Common;
+using Domain.Common.Models;
 
 namespace Domain.ValueObjects;
 
-public sealed record Hash
+public sealed class Hash : ValueObject
 {
     public string Value { get; }
 
@@ -18,4 +19,7 @@ public sealed record Hash
 
         return new Hash(hash);
     }
+
+    protected override IEnumerable<object?> GetEqualityComponents()
+        => [this.Value];
 }

@@ -1,0 +1,5 @@
+using Domain.Common.Models;
+
+namespace Domain.Events.Categories;
+
+public record CategoryDeletedEvent() : IDomainEvent;
