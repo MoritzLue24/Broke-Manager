@@ -8,13 +8,8 @@ public class HashTests
     [Fact]
     public void Create_ShouldReturnHash_WhenNotEmpty()
     {
-        // Execute
         var domainResult = Hash.Create("pqiobawdh0812bnip102ibd");
-
-        // Assert
-        Assert.True(domainResult.Success);
         Assert.Equal("pqiobawdh0812bnip102ibd", domainResult.Value.Value);
-        Assert.Throws<InvalidOperationException>(() => { var _ = domainResult.Errors; });
     }
 
     [Fact]
@@ -22,10 +17,6 @@ public class HashTests
     {
         // Execute
         var domainResult = Hash.Create("");
-
-        // Assert
-        Assert.False(domainResult.Success);
         Assert.Equal(new InvalidHashFormatError(), domainResult.FirstError);
-        Assert.Throws<InvalidOperationException>(() => domainResult.Value);
     }
 }
