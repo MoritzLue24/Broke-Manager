@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260510222002_Test")]
-    partial class Test
+    [Migration("20260526125356_MatchingRuleTable")]
+    partial class MatchingRuleTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,15 +50,12 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
-                    b.Property<string[]>("_keywords")
-                        .IsRequired()
-                        .HasColumnType("character varying(255)[]")
-                        .HasColumnName("keywords");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_categories_user_id");
+                        .IsUnique()
+                        .HasDatabaseName("ix_categories_user_id_unique_default")
+                        .HasFilter("is_default = true");
 
                     b.HasIndex("UserId", "Name")
                         .IsUnique()
@@ -148,7 +145,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId", "Date")
                         .HasDatabaseName("ix_transactions_user_id_date");
 
-                    b.ToTable("transactions", (string)null);
+                    b.ToTable("transactions", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_transactions_amount_positive", "amount > 0");
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -180,6 +180,33 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsMany("Domain.ValueObjects.MatchingRule", "MatchingRules", b1 =>
+                        {
+                            b1.Property<Guid>("category_id")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Keyword")
+                                .IsRequired()
+                                .HasMaxLength(255)
+                                .HasColumnType("character varying(255)")
+                                .HasColumnName("keyword");
+
+                            b1.HasKey("category_id", "Id");
+
+                            b1.ToTable("matching_rules", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("category_id");
+                        });
+
+                    b.Navigation("MatchingRules");
                 });
 
             modelBuilder.Entity("Domain.Entities.Transaction", b =>

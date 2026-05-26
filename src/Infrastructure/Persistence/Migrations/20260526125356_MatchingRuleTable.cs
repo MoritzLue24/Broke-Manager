@@ -1,12 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Test : Migration
+    public partial class MatchingRuleTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,8 +35,7 @@ namespace Infrastructure.Persistence.Migrations
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     is_default = table.Column<bool>(type: "boolean", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    keywords = table.Column<string[]>(type: "character varying(255)[]", nullable: false)
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,6 +44,26 @@ namespace Infrastructure.Persistence.Migrations
                         name: "FK_categories_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "matching_rules",
+                columns: table => new
+                {
+                    category_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    keyword = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_matching_rules", x => new { x.category_id, x.Id });
+                    table.ForeignKey(
+                        name: "FK_matching_rules_categories_category_id",
+                        column: x => x.category_id,
+                        principalTable: "categories",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -69,6 +89,7 @@ namespace Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_transactions", x => x.id);
+                    table.CheckConstraint("CK_transactions_amount_positive", "amount > 0");
                     table.ForeignKey(
                         name: "FK_transactions_categories_category_id",
                         column: x => x.category_id,
@@ -84,15 +105,17 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_categories_user_id",
-                table: "categories",
-                column: "user_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_categories_user_id_name",
                 table: "categories",
                 columns: new[] { "user_id", "name" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_categories_user_id_unique_default",
+                table: "categories",
+                column: "user_id",
+                unique: true,
+                filter: "is_default = true");
 
             migrationBuilder.CreateIndex(
                 name: "ix_transactions_category_id",
@@ -125,6 +148,9 @@ namespace Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "matching_rules");
+
             migrationBuilder.DropTable(
                 name: "transactions");
 
