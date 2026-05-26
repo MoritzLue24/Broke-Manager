@@ -10,8 +10,8 @@ count target=".":
     ./scripts/count.sh {{target}} -if tmp-merge.cs -ip Migrations
 
 # Merges all C# files in specified dir into one tmp-merge.cs
-merge-cs target="./src":
-    ./scripts/merge-cs.sh tmp-merge.cs {{target}}
+merge target="./src" type="cs":
+    ./scripts/merge.sh tmp-merge.{{type}} {{type}} {{target}}
 
 # Searches for TODO's in each file of the filetype (default .cs)
 todo filetype="cs":

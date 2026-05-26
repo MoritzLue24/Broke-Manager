@@ -7,6 +7,7 @@ help() {
     echo ""
     echo "Arguments:"
     echo "  <output_file>   Path to the output file (required)"
+    echo "  <file_type>     The file type to merge"
     echo "  [TARGET_DIR]    Directory to search in (default: .)"
     echo ""
     echo "Options:"
@@ -28,11 +29,17 @@ if [ -z "$OUT" ]; then
     exit 1
 fi
 
+FILE_TYPE="$2"
+if [ -z "$FILE_TYPE" ]; then
+    echo "Error: file_Type not set. See --help for more."
+    exit 1
+fi
+
 # Tests if $2 (2nd cli arg) is zero-length
-if [ -z "$2" ]; then
+if [ -z "$3" ]; then
   TARGET_DIR="."
 else
-  TARGET_DIR="$2"
+  TARGET_DIR="$3"
 fi
 
 # Tests if target dir exists
@@ -60,7 +67,7 @@ while IFS= read -r -d '' FILE; do
     echo "" >> "$OUT"
 
     COUNT=$((COUNT + 1))
-done < <(find "$TARGET_DIR" -name "*.cs" -not -path "*/bin/*" -not -path "*/obj/*" -print0)
+done < <(find "$TARGET_DIR" -name "*.$FILE_TYPE" -not -path "*/bin/*" -not -path "*/obj/*" -print0)
 
 echo "$COUNT Files found."
 echo "Content merged into: $OUT."
