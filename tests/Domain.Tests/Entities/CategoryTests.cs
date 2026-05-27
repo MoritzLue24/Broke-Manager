@@ -114,7 +114,7 @@ public class CategoryTest
     [Fact]
     public void Delete_ShouldAddCategoryDeletedEvent_WhenCategoryNotDefault()
     {
-        var category = Category.Create(Guid.NewGuid(), "asd", true).Value;
+        var category = Category.Create(Guid.NewGuid(), "asd", false).Value;
 
         var result = category.Delete();
 
