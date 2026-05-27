@@ -32,7 +32,7 @@ public class PublishDomainEventsInteceptor : SaveChangesInterceptor
 
     public async Task PublishDomainEventsAsync(DbContext? dbContext)
     {
-        if (dbContext == null)
+        if (dbContext is null)
             return;
 
         var aggregatesWithEvents = dbContext.ChangeTracker.Entries<AggregateRoot>()

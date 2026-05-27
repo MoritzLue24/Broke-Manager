@@ -32,7 +32,7 @@ public class AuthorizeBehavior<TRequest, TResponse>
         // but theres no other option since we have this very unclear 
         // `TResponse` generic as return type
         // FIXME: Find other, more cleaner, approaches
-        if (this._userContext.UserId == null)
+        if (this._userContext.UserId is null)
             return (dynamic)new UnauthorizedError();
 
         // If there is not one request's valid roles that are in the user roles, return error

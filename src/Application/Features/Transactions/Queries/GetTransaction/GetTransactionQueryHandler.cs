@@ -23,7 +23,7 @@ public class GetTransactionQueryHandler : IRequestHandler<GetTransactionQuery, R
             request.TransactionId,
             cancellationToken);
 
-        if (transaction == null || transaction.UserId != request.UserId)
+        if (transaction is null || transaction.UserId != request.UserId)
             return new TransactionNotFoundError(); ;
 
         return transaction.ToResult();
