@@ -13,24 +13,24 @@ public class CategoryRepository : ICategoryRepository
         this._dbContext = dbContext;
     }
 
-    public async Task<Category?> GetById(Guid categoryId)
+    public async Task<Category?> GetByIdAsync(Guid categoryId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.Id == categoryId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(ct);
 
-    public async Task<Guid?> GetDefaultIdByUserIdAsync(Guid userId)
+    public async Task<Guid?> GetDefaultIdByUserIdAsync(Guid userId, CancellationToken ct = default)
     {
         Category? category = await this._dbContext.Categories
             .Where(c => c.UserId == userId && c.IsDefault)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(ct);
 
         if (category is null)
             return null;
         return category.Id;
     }
 
-    public async Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId)
+    public async Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.UserId == userId && c.Id == categoryId)
-            .AnyAsync();
+            .AnyAsync(ct);
 }

@@ -13,7 +13,7 @@ public class UserRepository : IUserRepository
         this._dbContext = dbContext;
     }
 
-    public async Task<bool> EmailExistsAsync(string email, CancellationToken ct)
+    public async Task<bool> EmailExistsAsync(string email, CancellationToken ct = default)
         => await this._dbContext.Users.AnyAsync(u => u.Email.Value == email, ct);
 
     public void Add(User user)

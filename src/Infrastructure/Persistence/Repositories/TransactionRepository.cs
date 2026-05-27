@@ -13,12 +13,12 @@ public class TransactionRepository : ITransactionRepository
         this._dbContext = dbContext;
     }
 
-    public async Task<List<Transaction>> GetAllByUserId(Guid userId, CancellationToken ct)
+    public async Task<List<Transaction>> GetAllByUserIdAsync(Guid userId, CancellationToken ct = default)
         => await this._dbContext.Transactions
             .Where(t => t.UserId == userId)
             .ToListAsync(ct);
 
-    public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken ct)
+    public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken ct = default)
         => await this._dbContext.Transactions.FindAsync([id], ct);
 
     public void Add(Transaction transaction)

@@ -4,11 +4,11 @@ namespace Application.Common.Interfaces.Persistence;
 
 public interface ICategoryRepository
 {
-    Task<Category?> GetById(Guid categoryId);
+    Task<Category?> GetByIdAsync(Guid categoryId, CancellationToken ct = default);
 
     /// Gets the default category by userid
-    Task<Guid?> GetDefaultIdByUserIdAsync(Guid userId);
+    Task<Guid?> GetDefaultIdByUserIdAsync(Guid userId, CancellationToken ct = default);
 
     /// Check if a category for the user exists
-    Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId);
+    Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId, CancellationToken ct = default);
 }
