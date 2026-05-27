@@ -25,7 +25,7 @@ public class GetAllTransactionsQueryHandler : IRequestHandler<GetAllTransactions
     {
         Guid userId = this._userContext.UserId!.Value;
 
-        var transactions = await this._transactionRepo.GetAllByUserId(userId, cancellationToken);
+        var transactions = await this._transactionRepo.GetAllByUserIdAsync(userId, cancellationToken);
         return transactions.Select(t => t.ToResult()).ToList();
     }
 }
