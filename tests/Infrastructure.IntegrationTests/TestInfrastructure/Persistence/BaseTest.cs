@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 // This namespace is called `TestInfrastructure` no matter what our testing project is.
 // If we would test the api it is called `TestInfrastructure` anyway becasue
 // this is the infrastructure we use for testing
-namespace Infrastructure.Tests.TestInfrastructure.Persistence;
+namespace Infrastructure.IntegrationTests.TestInfrastructure.Persistence;
 
 [Collection("PostgresCollection")]
 public abstract class BaseTest : IAsyncLifetime

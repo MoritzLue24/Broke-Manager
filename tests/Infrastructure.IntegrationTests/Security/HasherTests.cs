@@ -1,6 +1,6 @@
 using Infrastructure.Security;
 
-namespace Infrastructure.Tests.Security;
+namespace Infrastructure.IntegrationTests.Security;
 
 public class HasherTests
 {

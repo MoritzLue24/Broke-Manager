@@ -6,7 +6,7 @@ using Infrastructure.Security;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Tests.Security;
+namespace Infrastructure.IntegrationTests.Security;
 
 public class JwtTokenGeneratorTests
 {

@@ -2,7 +2,7 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 
-namespace Infrastructure.Tests.TestInfrastructure.Persistence;
+namespace Infrastructure.IntegrationTests.TestInfrastructure.Persistence;
 
 /// Lives across all tests, created
 /// Creates and handles a postgreSql container,
