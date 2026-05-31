@@ -13,6 +13,11 @@ public class UserRepository : IUserRepository
         this._dbContext = dbContext;
     }
 
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
+        => await this._dbContext.Users
+            .Where(u => u.Email.Value == email)
+            .SingleOrDefaultAsync(ct);
+
     public async Task<bool> EmailExistsAsync(string email, CancellationToken ct = default)
         => await this._dbContext.Users.AnyAsync(u => u.Email.Value == email, ct);
 
