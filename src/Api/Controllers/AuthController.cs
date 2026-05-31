@@ -1,5 +1,6 @@
 using Api.Errors;
 using Application.Features.Auth.Commands.Register;
+using Application.Features.Auth.Queries.Login;
 using Contracts.Features.Auth;
 using MapsterMapper;
 using MediatR;
@@ -28,7 +29,21 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<AuthResponse>>(
-            dto => this.Ok(this._mapper.Map<AuthResponse>(dto)),
+            // TODO: Change to created
+            authResult => this.Ok(this._mapper.Map<AuthResponse>(authResult)),
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<AuthResponse>> Login(
+        [FromBody] LoginRequest request)
+    {
+        var query = this._mapper.Map<LoginQuery>(request);
+        var result = await this._mediator.Send(query);
+
+        return result.Match<ActionResult<AuthResponse>>(
+            authResult => this.Ok(this._mapper.Map<AuthResponse>(authResult)),
             errors => errors.ToProblem(this)
         );
     }
