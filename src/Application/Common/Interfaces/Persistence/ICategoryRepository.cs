@@ -11,4 +11,6 @@ public interface ICategoryRepository
 
     /// Check if a category for the user exists
     Task<bool> ExistsForUserAsync(Guid userId, Guid categoryId, CancellationToken ct = default);
+
+    void Add(Category category);
 }

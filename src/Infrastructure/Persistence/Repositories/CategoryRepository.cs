@@ -33,4 +33,7 @@ public class CategoryRepository : ICategoryRepository
         => await this._dbContext.Categories
             .Where(c => c.UserId == userId && c.Id == categoryId)
             .AnyAsync(ct);
+
+    public void Add(Category category)
+        => this._dbContext.Categories.Add(category);
 }
