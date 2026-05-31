@@ -41,7 +41,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         if (request.CategoryId.HasValue)
         {
             // Check if the given category exists
-            if (!await this._categoryRepo.ExistsForUserAsync(userId, request.CategoryId.Value))
+            if (!await this._categoryRepo.ExistsForUserAsync(userId, request.CategoryId.Value, cancellationToken))
                 return new CategoryNotFoundError();
             categoryId = request.CategoryId.Value;
             categorySource = CategorySource.Manual;
@@ -50,7 +50,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         else
         {
             // Get default category
-            Guid? categoryIdRes = await this._categoryRepo.GetDefaultIdByUserIdAsync(userId);
+            Guid? categoryIdRes = await this._categoryRepo.GetDefaultIdByUserIdAsync(userId, cancellationToken);
             if (categoryIdRes is null)
                 return new DefaultCategoryNotFoundError();
             categoryId = categoryIdRes.Value;
