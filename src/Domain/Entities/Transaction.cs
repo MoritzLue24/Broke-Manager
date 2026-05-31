@@ -69,6 +69,9 @@ public class Transaction : AggregateRoot
         if (string.IsNullOrWhiteSpace(title))
             return new EmptyTransactionTitleError();
 
+        if (description is null)
+            return new TransactionDescriptionNullError();
+
         if (!Enum.IsDefined(typeof(CategorySource), categorySource))
             return new InvalidCategorySourceError();
 
