@@ -11,6 +11,7 @@ public sealed record EmptyKeywordError : Error;
 public sealed record InvalidAmountError : Error;
 public sealed record EmptyTransactionTitleError : Error;
 public sealed record TransactionDescriptionNullError : Error;
+public sealed record TransactionCounterPartyNullError : Error;
 public sealed record InvalidCategorySourceError : Error;
 
 public sealed record EmptyCategoryNameError : Error;

@@ -72,6 +72,9 @@ public class Transaction : AggregateRoot
         if (description is null)
             return new TransactionDescriptionNullError();
 
+        if (counterParty is null)
+            return new TransactionCounterPartyNullError();
+
         if (!Enum.IsDefined(typeof(CategorySource), categorySource))
             return new InvalidCategorySourceError();
 
