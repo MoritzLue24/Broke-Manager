@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 
 namespace Api.Configuration;
 
-// Used by Mapper
 public class InvalidModelStateConfiguration : IConfigureOptions<ApiBehaviorOptions>
 {
     public void Configure(ApiBehaviorOptions options)
