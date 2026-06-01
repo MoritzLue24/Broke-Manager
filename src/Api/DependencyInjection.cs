@@ -15,8 +15,9 @@ public static class DependencyInjection
         services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddProblemDetails();   // To inject `IProblemDetailsService` to `ExceptionMiddleware`
-        services.ConfigureOptions<JwtBearerOptionsConfiguration>(); // For custom unauthorized response
         services.AddControllers();
+        services.ConfigureOptions<InvalidModelStateConfiguration>(); // For custom problem responses for Mapping errors
+        services.ConfigureOptions<JwtBearerOptionsConfiguration>(); // For custom unauthorized response
         return services;
     }
 }
