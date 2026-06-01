@@ -1,5 +1,6 @@
 using Api.Errors;
 using Application.Features.Transactions.Commands.CreateTransaction;
+using Application.Features.Transactions.Queries.GetTransaction;
 using Application.Features.Transactions.Queries.GetTransactionsByUser;
 using Contracts.Features.Transactions;
 using MapsterMapper;
@@ -29,6 +30,19 @@ public class TransactionController : ControllerBase
 
         return result.Match<ActionResult<List<TransactionDetailResponse>>>(
             dtos => this.Ok(dtos.Select(dto => this._mapper.Map<TransactionDetailResponse>(dto))),
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpGet("{transactionId}")]
+    public async Task<ActionResult<TransactionDetailResponse>> GetById(
+        [FromRoute] Guid transactionId)
+    {
+        var query = new GetTransactionQuery(transactionId);
+        var result = await this._mediator.Send(query);
+
+        return result.Match<ActionResult<TransactionDetailResponse>>(
+            dto => this.Ok(this._mapper.Map<TransactionDetailResponse>(dto)),
             errors => errors.ToProblem(this)
         );
     }
