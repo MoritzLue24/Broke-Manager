@@ -7,6 +7,8 @@ namespace Api.Mappings;
 public class TransactionMappings : IRegister
 {
     public void Register(TypeAdapterConfig config)
-        => config.NewConfig<CreateTransactionRequest, CreateTransactionCommand>()
+    {
+        config.NewConfig<CreateTransactionRequest, CreateTransactionCommand>()
             .Map(dest => dest, src => src);
+    }
 }
