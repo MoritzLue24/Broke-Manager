@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Security;
 using Application.Features.Transactions.Common;
 using Domain.Common;
 using MediatR;
@@ -8,10 +9,12 @@ namespace Application.Features.Transactions.Queries.GetTransaction;
 
 public class GetTransactionQueryHandler : IRequestHandler<GetTransactionQuery, Result<TransactionResult>>
 {
+    private readonly IUserContext _userContext;
     private readonly ITransactionRepository _transactionRepo;
 
-    public GetTransactionQueryHandler(ITransactionRepository transactionRepo)
+    public GetTransactionQueryHandler(IUserContext userContext, ITransactionRepository transactionRepo)
     {
+        this._userContext = userContext;
         this._transactionRepo = transactionRepo;
     }
 
@@ -23,7 +26,7 @@ public class GetTransactionQueryHandler : IRequestHandler<GetTransactionQuery, R
             request.TransactionId,
             cancellationToken);
 
-        if (transaction is null || transaction.UserId != request.UserId)
+        if (transaction is null || transaction.UserId != this._userContext.UserId)
             return new TransactionNotFoundError(); ;
 
         return transaction.ToResult();
