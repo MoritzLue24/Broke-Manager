@@ -1,0 +1,19 @@
+info:
+  name: get-transaction
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/transactions/:transactionId"
+  params:
+    - name: transactionId
+      value: 9797908c-b481-4608-a3bb-9c9ea083af57
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
