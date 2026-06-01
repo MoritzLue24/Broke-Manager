@@ -57,6 +57,6 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         // TODO: Create default-category
         // TODO: Handle multiple roles
         var token = this._tokenGenerator.GenToken(domainResult.Value.Id, [domainResult.Value.Role]);
-        return new AuthResult(domainResult.Value.Id, token);
+        return new AuthResult(token);
     }
 }

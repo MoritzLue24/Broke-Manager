@@ -36,6 +36,6 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthResult>>
 
         // TODO: Handle multiple roles
         var token = this._tokenGenerator.GenToken(user.Id, [user.Role]);
-        return new AuthResult(user.Id, token);
+        return new AuthResult(token);
     }
 }
