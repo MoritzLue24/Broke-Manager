@@ -29,8 +29,8 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<AuthResponse>>(
-            // TODO: Change to created
-            authResult => this.Ok(this._mapper.Map<AuthResponse>(authResult)),
+            // TODO: Change to created at action
+            authResult => this.Created(string.Empty, this._mapper.Map<AuthResponse>(authResult)),
             errors => errors.ToProblem(this)
         );
     }
