@@ -6,12 +6,12 @@ using MediatR;
 
 namespace Application.Features.Transactions.Queries.GetTransactionsByUser;
 
-public class GetAllTransactionsQueryHandler : IRequestHandler<GetAllTransactionsQuery, Result<List<TransactionResult>>>
+public class GetTransactionsByUserQueryHandler : IRequestHandler<GetTransactionsByUserQuery, Result<List<TransactionResult>>>
 {
     private readonly IUserContext _userContext;
     private readonly ITransactionRepository _transactionRepo;
 
-    public GetAllTransactionsQueryHandler(
+    public GetTransactionsByUserQueryHandler(
         IUserContext userContext,
         ITransactionRepository transactionRepo)
     {
@@ -20,7 +20,7 @@ public class GetAllTransactionsQueryHandler : IRequestHandler<GetAllTransactions
     }
 
     public async Task<Result<List<TransactionResult>>> Handle(
-        GetAllTransactionsQuery request,
+        GetTransactionsByUserQuery request,
         CancellationToken cancellationToken)
     {
         Guid userId = this._userContext.UserId!.Value;

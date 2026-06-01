@@ -4,5 +4,5 @@ using MediatR;
 
 namespace Application.Features.Transactions.Queries.GetTransactionsByUser;
 
-public record GetAllTransactionsQuery(   // TODO: with pages etc.
+public record GetTransactionsByUserQuery(   // TODO: with pages etc.
 ) : IRequest<Result<List<TransactionResult>>>;
