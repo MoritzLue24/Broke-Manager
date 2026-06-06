@@ -1,4 +1,5 @@
 using Application.Features.Categories.Commands.CreateCategory;
+using Application.Features.Categories.Commands.UpdateCategory;
 using Application.Features.Categories.Common;
 using Contracts.Features.Categories;
 using Mapster;
@@ -14,5 +15,9 @@ public class CategoryMappings : IRegister
 
         config.NewConfig<CreateCategoryRequest, CreateCategoryCommand>()
             .Map(dest => dest, src => src);
+
+        config.NewConfig<(Guid id, UpdateCategoryRequest request), UpdateCategoryCommand>()
+            .Map(dest => dest.CategoryId, src => src.id)
+            .Map(dest => dest, src => src.request);
     }
 }

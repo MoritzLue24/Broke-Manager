@@ -46,6 +46,9 @@ public class Category : AggregateRoot
 
     public Result<Unit> ChangeName(string name)
     {
+        if (this.IsDefault)
+            return new CategoryIsDefaultError();
+
         if (string.IsNullOrWhiteSpace(name))
             return new EmptyCategoryNameError();
 
@@ -67,6 +70,9 @@ public class Category : AggregateRoot
 
     public Result<Unit> RemoveRule(MatchingRule rule)
     {
+        if (this.IsDefault)
+            return new CategoryIsDefaultError();
+
         if (!this._matchingRules.Remove(rule))
             return new KeywordNotFoundError();
 
