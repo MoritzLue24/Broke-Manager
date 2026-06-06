@@ -106,6 +106,18 @@ public class Transaction : AggregateRoot
         return Unit.Value;
     }
 
+    public Result<Unit> ResetCategory(Guid defaultCategoryId)
+    {
+        if (defaultCategoryId == Guid.Empty)
+            return new InvalidGuidError();
+
+        // TODO: Check if defaultCategory isDefault
+
+        this.CategoryId = defaultCategoryId;
+        this.CategorySource = CategorySource.Unmatched;
+        return Unit.Value;
+    }
+
     /*
     public Result<Unit> ChangeStandingOrder(Guid standingOrderId, StandingOrderSource source)
     {

@@ -1,5 +1,6 @@
 using Api.Errors;
 using Application.Features.Transactions.Commands.CreateTransaction;
+using Application.Features.Transactions.Commands.DeleteTransaction;
 using Application.Features.Transactions.Queries.GetTransaction;
 using Application.Features.Transactions.Queries.GetTransactionsByUser;
 using Contracts.Features.Transactions;
@@ -57,6 +58,19 @@ public class TransactionController : ControllerBase
         return result.Match<ActionResult<TransactionDetailResponse>>(
             // FIXME: Change to CreatedAtAction?
             dto => this.Created(string.Empty, this._mapper.Map<TransactionDetailResponse>(dto)),
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpDelete("{transactionId}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid transactionId)
+    {
+        var command = new DeleteTransactionCommand(transactionId);
+        var result = await this._mediator.Send(command);
+
+        return result.Match<IActionResult>(
+            unit => this.NoContent(),
             errors => errors.ToProblem(this)
         );
     }

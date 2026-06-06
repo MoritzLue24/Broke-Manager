@@ -8,5 +8,9 @@ public interface ITransactionRepository
 
     Task<List<Transaction>> GetAllByUserIdAsync(Guid userId, CancellationToken ct = default);    // TODO: not all
 
+    Task<List<Transaction>> GetAllByCategoryIdAsync(Guid categoryId, CancellationToken ct = default);
+
     void Add(Transaction transaction);
+
+    void Delete(Transaction transaction);
 }
