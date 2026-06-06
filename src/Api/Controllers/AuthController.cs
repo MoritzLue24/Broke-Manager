@@ -46,7 +46,8 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(command);
 
         return result.Match<IActionResult>(
-            authResult => {
+            authResult =>
+            {
                 this.SetAuthCookie(authResult.Token);
                 // TODO: Change to created at action
                 // TODO: Return user
@@ -64,7 +65,8 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(query);
 
         return result.Match<IActionResult>(
-            authResult => {
+            authResult =>
+            {
                 this.SetAuthCookie(authResult.Token);
                 return this.Ok();
             },

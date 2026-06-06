@@ -6,6 +6,6 @@ public class GetTransactionsByUserQueryValidator : AbstractValidator<GetTransact
 {
     public GetTransactionsByUserQueryValidator()
     {
-        
+
     }
 }
