@@ -1,6 +1,7 @@
 using Api.Errors;
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Application.Features.Transactions.Commands.DeleteTransaction;
+using Application.Features.Transactions.Commands.UpdateTransaction;
 using Application.Features.Transactions.Queries.GetTransaction;
 using Application.Features.Transactions.Queries.GetTransactionsByUser;
 using Contracts.Features.Transactions;
@@ -30,7 +31,7 @@ public class TransactionController : ControllerBase
         var result = await this._mediator.Send(query);
 
         return result.Match<ActionResult<List<TransactionDetailResponse>>>(
-            dtos => this.Ok(dtos.Select(dto => this._mapper.Map<TransactionDetailResponse>(dto))),
+            results => this.Ok(results.Select(transactionResult => this._mapper.Map<TransactionDetailResponse>(transactionResult))),
             errors => errors.ToProblem(this)
         );
     }
@@ -43,13 +44,13 @@ public class TransactionController : ControllerBase
         var result = await this._mediator.Send(query);
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
-            dto => this.Ok(this._mapper.Map<TransactionDetailResponse>(dto)),
+            transactionResult => this.Ok(this._mapper.Map<TransactionDetailResponse>(transactionResult)),
             errors => errors.ToProblem(this)
         );
     }
 
     [HttpPost]
-    public async Task<ActionResult<TransactionDetailResponse>> CreateTransaction(
+    public async Task<ActionResult<TransactionDetailResponse>> Create(
         [FromBody] CreateTransactionRequest createRequest)
     {
         var command = this._mapper.Map<CreateTransactionCommand>(createRequest);
@@ -57,7 +58,21 @@ public class TransactionController : ControllerBase
 
         return result.Match<ActionResult<TransactionDetailResponse>>(
             // FIXME: Change to CreatedAtAction?
-            dto => this.Created(string.Empty, this._mapper.Map<TransactionDetailResponse>(dto)),
+            transactionResult => this.Created(string.Empty, this._mapper.Map<TransactionDetailResponse>(transactionResult)),
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpPatch("{transactionId}")]
+    public async Task<ActionResult<TransactionDetailResponse>> Update(
+        [FromRoute] Guid transactionId,
+        [FromBody] UpdateTransactionRequest updateRequest)
+    {
+        var command = this._mapper.Map<UpdateTransactionCommand>((transactionId, updateRequest));
+        var result = await this._mediator.Send(command);
+
+        return result.Match<ActionResult<TransactionDetailResponse>>(
+            transactionResult => this.Ok(this._mapper.Map<TransactionDetailResponse>(transactionResult)),
             errors => errors.ToProblem(this)
         );
     }
