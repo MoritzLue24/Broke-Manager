@@ -39,13 +39,13 @@ public class AuthController : ControllerBase
         );
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(
+    public async Task<ActionResult<RegisterResponse>> Register(
         [FromBody] RegisterRequest request)
     {
         var command = this._mapper.Map<RegisterCommand>(request);
         var result = await this._mediator.Send(command);
 
-        return result.Match<IActionResult>(
+        return result.Match<ActionResult<RegisterResponse>>(
             registerResult =>
             {
                 this.SetAuthCookie(registerResult.Token);
