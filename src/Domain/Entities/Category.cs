@@ -78,7 +78,7 @@ public class Category : AggregateRoot
         if (this.IsDefault)
             return new CategoryIsDefaultError();
 
-        this.AddDomainEvent(new CategoryDeletedEvent());
+        this.AddDomainEvent(new CategoryDeletedEvent(this.Id));
         return Unit.Value;
     }
 }

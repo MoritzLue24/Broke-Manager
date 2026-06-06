@@ -1,5 +1,6 @@
 using Api.Errors;
 using Application.Features.Categories.Commands.CreateCategory;
+using Application.Features.Categories.Commands.DeleteCategory;
 using Application.Features.Categories.Queries.GetCategoriesByUser;
 using Application.Features.Categories.Queries.GetCategory;
 using Contracts.Features.Categories;
@@ -57,6 +58,19 @@ public class CategoryController : ControllerBase
         return result.Match<ActionResult<CategoryDetailResponse>>(
             // FIXME: Change to CreatedAtAction?
             categoryResult => this.Created(string.Empty, this._mapper.Map<CategoryDetailResponse>(categoryResult)),
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpDelete("{categoryId}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid categoryId)
+    {
+        var command = new DeleteCategoryCommand(categoryId);
+        var result = await this._mediator.Send(command);
+
+        return result.Match<IActionResult>(
+            unit => this.NoContent(),
             errors => errors.ToProblem(this)
         );
     }

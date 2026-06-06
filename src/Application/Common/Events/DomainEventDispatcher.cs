@@ -1,5 +1,7 @@
 using Application.Features.Auth.Events.UserCreated;
+using Application.Features.Categories.Events.CategoryDeleted;
 using Domain.Common.Models;
+using Domain.Events.Categories;
 using Domain.Events.Users;
 using MediatR;
 
@@ -24,6 +26,7 @@ public class DomainEventDispatcher
             INotification notification = domainEvent switch
             {
                 UserCreatedEvent e => e.ToNotification(),
+                CategoryDeletedEvent e => e.ToNotification(),
                 _ => new UnhandledEventNotification(domainEvent)
             };
             await this._mediator.Publish(notification);

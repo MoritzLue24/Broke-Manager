@@ -46,4 +46,7 @@ public class CategoryRepository : ICategoryRepository
 
     public void Add(Category category)
         => this._dbContext.Categories.Add(category);
+
+    public void Delete(Category category)
+        => this._dbContext.Categories.Remove(category);
 }
