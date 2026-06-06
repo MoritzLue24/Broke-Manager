@@ -4,14 +4,12 @@ using MediatR;
 
 namespace Application.Features.Auth.Events.UserCreated;
 
-public class UserCreatedHandler : INotificationHandler<UserCreatedNotification>
+public class UserCreatedNotificationHandler : INotificationHandler<UserCreatedNotification>
 {
-#pragma warning disable IDE0052 // Remove unread private members
     private readonly IUnitOfWork _uow;
     private readonly ICategoryRepository _categoryRepo;
-#pragma warning restore IDE0052 // Remove unread private members
 
-    public UserCreatedHandler(IUnitOfWork uow, ICategoryRepository categoryRepo)
+    public UserCreatedNotificationHandler(IUnitOfWork uow, ICategoryRepository categoryRepo)
     {
         this._uow = uow;
         this._categoryRepo = categoryRepo;
