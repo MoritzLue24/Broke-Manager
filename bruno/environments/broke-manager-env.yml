@@ -2,5 +2,3 @@ name: broke-manager-env
 variables:
   - name: baseUrl
     value: http://localhost:5180
-  - secret: true
-    name: accessToken
