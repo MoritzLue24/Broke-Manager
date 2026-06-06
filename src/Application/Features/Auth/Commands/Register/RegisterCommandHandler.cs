@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Application.Features.Auth.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthResult>>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<RegisterResult>>
 {
     private readonly IUnitOfWork _uow;
     private readonly IUserRepository _userRepo;
@@ -28,7 +28,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         this._tokenGenerator = tokenGenerator;
     }
 
-    public async Task<Result<AuthResult>> Handle(
+    public async Task<Result<RegisterResult>> Handle(
         RegisterCommand request,
         CancellationToken cancellationToken)
     {
@@ -37,11 +37,11 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
 
         var emailRes = Email.Create(request.Email);
         if (!emailRes.Success)
-            return emailRes.Cast<AuthResult>();
+            return emailRes.Cast<RegisterResult>();
 
         var hashRes = Hash.Create(this._hasher.Hash(request.Password));
         if (!hashRes.Success)
-            return hashRes.Cast<AuthResult>();
+            return hashRes.Cast<RegisterResult>();
 
         var domainResult = User.Create(
             emailRes.Value,
@@ -49,14 +49,22 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Au
         );
 
         if (!domainResult.Success)
-            return domainResult.Cast<AuthResult>();
+            return domainResult.Cast<RegisterResult>();
 
-        this._userRepo.Add(domainResult.Value);
+        var user = domainResult.Value;
+        this._userRepo.Add(user);
         await this._uow.SaveChangesAsync(cancellationToken);
 
         // TODO: Create default-category
         // TODO: Handle multiple roles
         var token = this._tokenGenerator.GenToken(domainResult.Value.Id, [domainResult.Value.Role]);
-        return new AuthResult(token);
+
+        return new RegisterResult(
+            user.Id,
+            user.Email.Value,
+            user.Role,
+            user.CreatedAt,
+            token
+        );
     }
 }

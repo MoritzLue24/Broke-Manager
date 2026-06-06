@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Features.Auth.Queries.Login;
 
-public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthResult>>
+public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<LoginResult>>
 {
     private readonly IUserRepository _userRepo;
     private readonly IHasher _hasher;
@@ -23,7 +23,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthResult>>
         this._tokenGenerator = tokenGenerator;
     }
 
-    public async Task<Result<AuthResult>> Handle(
+    public async Task<Result<LoginResult>> Handle(
         LoginQuery request,
         CancellationToken cancellationToken)
     {
@@ -36,6 +36,6 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthResult>>
 
         // TODO: Handle multiple roles
         var token = this._tokenGenerator.GenToken(user.Id, [user.Role]);
-        return new AuthResult(token);
+        return new LoginResult(token);
     }
 }

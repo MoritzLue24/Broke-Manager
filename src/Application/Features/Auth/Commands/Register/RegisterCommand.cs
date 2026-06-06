@@ -8,6 +8,6 @@ public record RegisterCommand(
     string Email,
     string Password,
     string ConfirmPassword  // Not really used, just for validation
-) : IRequest<Result<AuthResult>>;
+) : IRequest<Result<RegisterResult>>;
 
 // TODO: RegisterCommand Validation

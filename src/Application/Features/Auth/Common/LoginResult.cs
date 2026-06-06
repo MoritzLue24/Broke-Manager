@@ -1,5 +1,5 @@
 namespace Application.Features.Auth.Common;
 
-public record AuthResult(
+public record LoginResult(
     string Token
 );
