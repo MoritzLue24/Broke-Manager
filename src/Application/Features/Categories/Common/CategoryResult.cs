@@ -7,13 +7,13 @@ public record CategoryResult(
     Guid UserId,
     string Name,
     bool IsDefault,
-    List<string> Keywords,
+    List<string> Keywords,  // TODO: Matching rule object list
     DateTime CreatedAt
 );
 
 public static class CategoryExtension
 {
-    public static CategoryResult ToDto(this Category category)
+    public static CategoryResult ToResult(this Category category)
         => new(
             category.Id,
             category.UserId,

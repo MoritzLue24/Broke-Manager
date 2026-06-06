@@ -15,5 +15,6 @@ public sealed record InvalidCredentialsError : Error;
 
 public sealed record CategoryNotFoundError : Error;
 public sealed record DefaultCategoryNotFoundError : Error;
+public sealed record CategoryNameAlreadyExistsError : Error;
 
 public sealed record TransactionNotFoundError : Error;
