@@ -80,14 +80,14 @@ public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransaction
 
         if (request.Description is not null)
         {
-            var domainResult = transaction.ChangeTitle(request.Description);
+            var domainResult = transaction.ChangeDescription(request.Description);
             if (!domainResult.Success)
                 return domainResult.Cast<TransactionResult>();
         }
 
         if (request.CounterParty is not null)
         {
-            var domainResult = transaction.ChangeTitle(request.CounterParty);
+            var domainResult = transaction.ChangeCounterParty(request.CounterParty);
             if (!domainResult.Success)
                 return domainResult.Cast<TransactionResult>();
         }
