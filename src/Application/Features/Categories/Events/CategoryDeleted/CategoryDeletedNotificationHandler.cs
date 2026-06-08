@@ -1,5 +1,7 @@
+using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
+using Domain.Common;
 using MediatR;
 
 namespace Application.Features.Categories.Events.CategoryDeleted;
@@ -31,8 +33,7 @@ public class CategoryDeletedNotificationHandler : INotificationHandler<CategoryD
 
         var transactions = await this._transactionRepo.GetAllByCategoryIdAsync(notification.CategoryId, cancellationToken);
         var defaultCategoryId = await this._categoryRepo.GetDefaultIdByUserIdAsync(userId, cancellationToken)
-            // TODO: Custom exception
-            ?? throw new InvalidOperationException("Default category not found");
+            ?? throw new InvariantViolationException("User has no default category");
 
         foreach (var transaction in transactions)
         {
@@ -40,8 +41,7 @@ public class CategoryDeletedNotificationHandler : INotificationHandler<CategoryD
                 continue;
             var domainResult = transaction.ResetCategory(defaultCategoryId);
             if (!domainResult.Success)
-                // TODO: Custom exception
-                throw new InvalidOperationException(domainResult.Errors.ToString());
+                throw new InvariantViolationException(domainResult.Errors.ToErrorString() ?? "");
         }
 
         await this._uow.SaveChangesAsync(cancellationToken);
