@@ -1,4 +1,5 @@
 using Api.Errors;
+using Application.Features.Users.Commands.UpdateCurrentUser;
 using Application.Features.Users.Queries.GetCurrentUser;
 using Contracts.Features.Users;
 using MapsterMapper;
@@ -32,12 +33,11 @@ public class UserController : ControllerBase
         );
     }
 
-    /*
     [HttpPatch("me")]
     public async Task<ActionResult<UserDetailResponse>> UpdateMe(
-        [FromBody] UpdateUserRequest updateRequest)
+        [FromBody] UpdateMeRequest updateRequest)
     {
-        var command = this._mapper.Map<UpdateUserCommand>((null, updateRequest));
+        var command = this._mapper.Map<UpdateCurrentUserCommand>(updateRequest);
         var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<UserDetailResponse>>(
