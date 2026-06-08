@@ -13,6 +13,11 @@ public class UserRepository : IUserRepository
         this._dbContext = dbContext;
     }
 
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        => await this._dbContext.Users
+            .Where(u => u.Id == id)
+            .SingleOrDefaultAsync(ct);
+
     public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
         => await this._dbContext.Users
             .Where(u => u.Email.Value == email)

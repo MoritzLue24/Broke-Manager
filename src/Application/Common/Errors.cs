@@ -10,6 +10,7 @@ public sealed record ValidationError(
 public sealed record UnauthorizedError : Error;
 public sealed record ForbiddenError : Error;
 
+public sealed record UserNotFoundError : Error;
 public sealed record UserAlreadyExistsError : Error;
 public sealed record InvalidCredentialsError : Error;
 
