@@ -1,11 +1,11 @@
 info:
-  name: login
+  name: update-me
   type: http
   seq: 2
 
 http:
-  method: POST
-  url: "{{baseUrl}}/auth/login"
+  method: PATCH
+  url: "{{baseUrl}}/users/me"
   headers:
     - name: Content-Type
       value: application/json
@@ -13,8 +13,7 @@ http:
     type: json
     data: |-
       {
-        "email": "myemail@e.de",
-        "password": "5asd"
+        "email": "myemail@e.de"
       }
   auth: inherit
 

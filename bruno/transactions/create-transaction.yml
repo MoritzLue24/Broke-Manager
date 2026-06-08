@@ -13,10 +13,13 @@ http:
     type: json
     data: |-
       {
+        "categoryId": "e13acbc9-7940-4d7f-8df6-b37f6219f76c",
         "amount": 50,
         "type": "Expense",
         "date": "2026-06-02",
-        "title": "Eiasdlasdn title"
+        "title": "PH 3",
+        "description": "",
+        "counterParty": ""
       }
   auth: inherit
 

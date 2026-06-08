@@ -1,20 +1,23 @@
 info:
-  name: login
+  name: update-category
   type: http
-  seq: 2
+  seq: 5
 
 http:
-  method: POST
-  url: "{{baseUrl}}/auth/login"
+  method: PATCH
+  url: "{{baseUrl}}/categories/:id"
   headers:
     - name: Content-Type
       value: application/json
+  params:
+    - name: id
+      value: ee38e9b4-6d2c-447d-b113-a5785a4d39a5
+      type: path
   body:
     type: json
     data: |-
       {
-        "email": "myemail@e.de",
-        "password": "5asd"
+        "name": "New PH name"
       }
   auth: inherit
 

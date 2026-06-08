@@ -1,20 +1,23 @@
 info:
-  name: login
+  name: update-transaction
   type: http
-  seq: 2
+  seq: 4
 
 http:
-  method: POST
-  url: "{{baseUrl}}/auth/login"
+  method: PATCH
+  url: "{{baseUrl}}/transactions/:id"
   headers:
     - name: Content-Type
       value: application/json
+  params:
+    - name: id
+      value: 3f966a53-a26f-4147-8634-e60e31f201af
+      type: path
   body:
     type: json
     data: |-
       {
-        "email": "myemail@e.de",
-        "password": "5asd"
+        "type": "Income"
       }
   auth: inherit
 

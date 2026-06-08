@@ -1,0 +1,19 @@
+info:
+  name: delete-category
+  type: http
+  seq: 4
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/categories/:id"
+  params:
+    - name: id
+      value: ee38e9b4-6d2c-447d-b113-a5785a4d39a5
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
