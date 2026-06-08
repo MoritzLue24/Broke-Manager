@@ -1,4 +1,5 @@
 using Api.Errors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Middlewares;
 
@@ -25,19 +26,24 @@ public class ExceptionMiddleware
         catch (Exception ex)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+            var problemDetails = new ProblemDetails
+            {
+                Type = ErrorTypes.Internal,
+                Title = this._env.IsDevelopment()
+                    ? ex.ToString()
+                    : "An internal server error occurred.",
+                Detail = this._env.IsDevelopment()
+                    ? ex.Message
+                    : null,
+            };
+            if (this._env.IsDevelopment())
+                problemDetails.Extensions.Add("stackTrace", ex.StackTrace);
+
             await this._problemDetailsService.WriteAsync(new ProblemDetailsContext
             {
                 HttpContext = context,
-                ProblemDetails =
-                {
-                    Type = ErrorTypes.Internal,
-                    Title = this._env.IsDevelopment()
-                        ? ex.Message
-                        : "An internal server error occurred.",
-                    Detail = this._env.IsDevelopment()
-                        ? ex.StackTrace
-                        : null
-                }
+                ProblemDetails = problemDetails
             });
         }
     }
