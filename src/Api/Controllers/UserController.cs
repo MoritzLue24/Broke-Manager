@@ -1,4 +1,5 @@
 using Api.Errors;
+using Application.Features.Users.Commands.ChangePassword;
 using Application.Features.Users.Commands.UpdateCurrentUser;
 using Application.Features.Users.Queries.GetCurrentUser;
 using Contracts.Features.Users;
@@ -46,7 +47,6 @@ public class UserController : ControllerBase
         );
     }
 
-    /*
     [HttpPatch("me/change-password")]
     public async Task<IActionResult> ChangePassword(
         [FromBody] ChangePasswordRequest changePasswordRequest)
@@ -60,7 +60,7 @@ public class UserController : ControllerBase
         );
     }
 
-
+    /*ä
     [HttpDelete("me")]
     public async Task<IActionResult> DeleteMe()
     {
