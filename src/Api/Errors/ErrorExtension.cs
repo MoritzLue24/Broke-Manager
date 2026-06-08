@@ -41,7 +41,7 @@ public static class ErrorExtension
                 type: ErrorTypes.Internal,
                 statusCode: StatusCodes.Status500InternalServerError,
                 title: env.IsDevelopment()
-                    ? error.GetType().ToString()
+                    ? error.ToErrorString()
                     : "An internal server error occured.",
                 detail: env.IsDevelopment()
                     ? $"This error was not handled, please fix."
