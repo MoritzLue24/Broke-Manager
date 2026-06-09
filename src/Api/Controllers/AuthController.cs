@@ -70,7 +70,7 @@ public class AuthController : ControllerBase
             loginResult =>
             {
                 this.SetAuthCookie(loginResult.Token);
-                return this.Ok();
+                return this.NoContent();
             },
             errors => errors.ToProblem(this)
         );
