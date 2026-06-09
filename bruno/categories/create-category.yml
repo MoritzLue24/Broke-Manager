@@ -13,8 +13,8 @@ http:
     type: json
     data: |-
       {
-        "name": "Pornhub2",
-        "keywords": ["sex", "porn"]
+        "name": "Essen",
+        "keywords": ["rewe", "edeka"]
       }
   auth: inherit
 
