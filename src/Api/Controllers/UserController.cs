@@ -1,5 +1,6 @@
 using Api.Errors;
 using Application.Features.Users.Commands.ChangePassword;
+using Application.Features.Users.Commands.DeleteCurrentUser;
 using Application.Features.Users.Commands.UpdateCurrentUser;
 using Application.Features.Users.Queries.GetCurrentUser;
 using Contracts.Features.Users;
@@ -60,7 +61,6 @@ public class UserController : ControllerBase
         );
     }
 
-    /*ä
     [HttpDelete("me")]
     public async Task<IActionResult> DeleteMe()
     {
@@ -72,5 +72,4 @@ public class UserController : ControllerBase
             errors => errors.ToProblem(this)
         );
     }
-    */
 }

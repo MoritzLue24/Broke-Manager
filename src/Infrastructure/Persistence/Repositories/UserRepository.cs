@@ -28,4 +28,7 @@ public class UserRepository : IUserRepository
 
     public void Add(User user)
         => this._dbContext.Users.Add(user);
+
+    public void Delete(User user)
+        => this._dbContext.Users.Remove(user);
 }

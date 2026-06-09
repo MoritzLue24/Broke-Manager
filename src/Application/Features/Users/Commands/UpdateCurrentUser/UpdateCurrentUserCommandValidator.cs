@@ -8,6 +8,7 @@ public class UpdateCurrentUserCommandValidator : AbstractValidator<UpdateCurrent
     {
         this.RuleFor(x => x.Email)
             .EmailAddress()
+            .MaximumLength(255)
             .When(x => x.Email is not null);
     }
 }
