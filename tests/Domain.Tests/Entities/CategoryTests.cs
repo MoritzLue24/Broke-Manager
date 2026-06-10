@@ -1,7 +1,6 @@
 using Domain.Common;
 using Domain.Entities;
 using Domain.Events.Categories;
-using Domain.ValueObjects;
 
 namespace Domain.Tests.Entities;
 
@@ -72,7 +71,7 @@ public class CategoryTest
 
         var result = category.AddRule(rule);
 
-        Assert.Equal(new DuplicateKeywordError(), result.FirstError);
+        Assert.Equal(new DuplicateRuleError(), result.FirstError);
     }
 
     [Fact]
@@ -81,9 +80,9 @@ public class CategoryTest
         var category = Category.Create(Guid.NewGuid(), "asd", false).Value;
         var rule = MatchingRule.Create("Sex-Puppe").Value;
 
-        var result = category.RemoveRule(rule);
+        var result = category.RemoveRule(rule.Id);
 
-        Assert.Equal(new KeywordNotFoundError(), result.FirstError);
+        Assert.Equal(new RuleNotFoundError(), result.FirstError);
     }
 
     [Fact]
@@ -105,7 +104,7 @@ public class CategoryTest
         var rule = MatchingRule.Create("durex").Value;
         category.AddRule(rule);
 
-        var result = category.RemoveRule(rule);
+        var result = category.RemoveRule(rule.Id);
 
         Assert.True(result.Success);
         Assert.DoesNotContain(rule, category.MatchingRules);
@@ -119,7 +118,7 @@ public class CategoryTest
         var result = category.Delete();
 
         Assert.True(result.Success);
-        Assert.Contains(new CategoryDeletedEvent(), category.DomainEvents);
+        Assert.Contains(new CategoryDeletedEvent(category.Id), category.DomainEvents);
     }
 
     [Fact]

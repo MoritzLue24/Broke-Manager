@@ -50,7 +50,7 @@ public class TransactionControllerTests : BaseTest
             $"access_token={this.JwtTokenGenerator.GenToken(user.Id, [user.Role])}"
         );
         var response = await this.Client.PostAsJsonAsync("/transactions", request);
-        var transactionDetail = await response.Content.ReadFromJsonAsync<TransactionDetailResponse>();
+        var transactionDetail = await response.Content.ReadFromJsonAsync<TransactionResponse>();
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);

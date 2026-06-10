@@ -1,5 +1,5 @@
 using Domain.Common;
-using Domain.ValueObjects;
+using Domain.Entities;
 
 namespace Domain.Tests.ValueObjects;
 
