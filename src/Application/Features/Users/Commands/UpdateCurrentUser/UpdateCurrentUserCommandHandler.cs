@@ -34,7 +34,7 @@ public class UpdateCurrentUserCommandHandler : IRequestHandler<UpdateCurrentUser
         var user = await this._userRepo.GetByIdAsync(userId, cancellationToken);
 
         if (user is null)
-            return new UserNotFoundError();
+            return new UserNoLongerExistsError();
 
         if (request.Email is not null)
         {

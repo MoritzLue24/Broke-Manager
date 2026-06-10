@@ -27,7 +27,7 @@ public class GetCurrenUserQueryHandler : IRequestHandler<GetCurrentUserQuery, Re
         var me = await this._userRepo.GetByIdAsync(this._userContext.UserId!.Value, cancellationToken);
 
         if (me is null)
-            return new UserNotFoundError();
+            return new UserNoLongerExistsError();
 
         return me.ToResult();
     }
