@@ -25,21 +25,22 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-            var problemDetails = new ProblemDetails
+            ProblemDetails problemDetails = new()
             {
                 Type = ErrorTypes.Internal,
-                Title = this._env.IsDevelopment()
-                    ? ex.ToString()
-                    : "An internal server error occurred.",
+                Title = "An internal server error occurred.",
                 Detail = this._env.IsDevelopment()
                     ? ex.Message
-                    : null,
+                    : null
             };
-            if (this._env.IsDevelopment())
-                problemDetails.Extensions.Add("stackTrace", ex.StackTrace);
 
+            if (this._env.IsDevelopment())
+            {
+                problemDetails.Extensions.Add("exception", ex.GetType().ToString());
+                problemDetails.Extensions.Add("stackTrace", ex.StackTrace);
+            }
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await this._problemDetailsService.WriteAsync(new ProblemDetailsContext
             {
                 HttpContext = context,
