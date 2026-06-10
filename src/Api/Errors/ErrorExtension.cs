@@ -12,11 +12,15 @@ public static class ErrorExtension
 
         return error switch
         {
+            // Common
             ValidationError validationError => controller.Problem(
                 type: ErrorTypes.Validation,
                 statusCode: StatusCodes.Status400BadRequest,
                 title: $"{validationError.Property}: '{validationError.Message}'"
             ),
+            // InvalidGuidError is considered a internal error -> handeled by default case
+
+            // Auth
             UnauthorizedError => controller.Problem(
                 type: ErrorTypes.Unauthorized,
                 statusCode: StatusCodes.Status401Unauthorized,
@@ -27,16 +31,113 @@ public static class ErrorExtension
                 statusCode: StatusCodes.Status403Forbidden,
                 title: "Forbidden"
             ),
+            UserAlreadyExistsError => controller.Problem(
+                type: ErrorTypes.Duplicate,
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Email already registered"
+            ),
+            InvalidCredentialsError => controller.Problem(
+                type: ErrorTypes.InvalidCredentials,
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: "Invalid email or password"
+            ),
+            UserNoLongerExistsError => controller.Problem(
+                type: ErrorTypes.TokenInvalid,
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: "User no longer exists"
+            ),
+
+            // Users
+            UserNotFoundError => controller.Problem(
+                type: ErrorTypes.NotFound,
+                statusCode: StatusCodes.Status404NotFound,
+                title: "User not found"
+            ),
+            RoleAlreadyCurrentRoleError => controller.Problem(
+                type: ErrorTypes.PropertyAlreadyAssigned,
+                statusCode: StatusCodes.Status422UnprocessableEntity,
+                title: "Given role is already the current role"
+            ),
+            InvalidEmailFormatError => controller.Problem(
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Invalid email format"
+            ),
+            // InvalidHashFormatError is considered a internal error -> handled by default case 
+
+            // Categories
             CategoryNotFoundError => controller.Problem(
-                type: ErrorTypes.CategoryNotFound,
+                type: ErrorTypes.NotFound,
                 statusCode: StatusCodes.Status404NotFound,
                 title: "Category not found."
             ),
+            CategoryNameAlreadyExistsError => controller.Problem(
+                type: ErrorTypes.Duplicate,
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Category with given name already exists"
+            ),
+            EmptyCategoryNameError => controller.Problem(   // Handeled by Validator -> should not be used
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Category name is empty"
+            ),
+            CategoryIsDefaultError => controller.Problem(
+                type: ErrorTypes.CategoryIsDefault,
+                statusCode: StatusCodes.Status422UnprocessableEntity,
+                title: "Cannot execute this action on the default category"
+            ),
+
+            // Rules
+            // DuplicateRuleError should not happen -> internal server error 
+            RuleNotFoundError => controller.Problem(    // Handeled by Validator -> should not be used
+                type: ErrorTypes.NotFound,  // FIXME?: maybe change to a more specific URN like `..:rule:not-found`
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Rule not found"
+            ),
+            EmptyKeywordError => controller.Problem(    // Handeled by Validator -> should not be used
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Keyword value is empty"
+            ),
+
+            // Transactions
             DefaultCategoryNotFoundError => controller.Problem(
                 type: ErrorTypes.DefaultCategoryNotFound,
                 statusCode: StatusCodes.Status404NotFound,
                 title: "Default category not found."
             ),
+            TransactionNotFoundError => controller.Problem(
+                type: ErrorTypes.NotFound,
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Transaction not found"
+            ),
+            InvalidAmountError => controller.Problem(   // Handeled by Validator -> should not be used
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Amount must be greater than 0"
+            ),
+            EmptyTransactionTitleError => controller.Problem(   // Handeled by Validator -> should not be used
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Transaction title is empty"
+            ),
+            TransactionDescriptionNullError => controller.Problem(  // Handeled by Validator -> should not be used
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "No description given"
+            ),
+            TransactionCounterPartyNullError => controller.Problem( // Handeled by Validator -> should not be used
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "No counter party given"
+            ),
+            InvalidCategorySourceError => controller.Problem(
+                type: ErrorTypes.Validation,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Category source is not a valid value"
+            ),
+
+            // Other
             _ => controller.Problem(
                 type: ErrorTypes.Internal,
                 statusCode: StatusCodes.Status500InternalServerError,

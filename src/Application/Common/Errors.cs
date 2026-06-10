@@ -9,10 +9,11 @@ public sealed record ValidationError(
 
 public sealed record UnauthorizedError : Error;
 public sealed record ForbiddenError : Error;
+public sealed record InvalidCredentialsError : Error;
+public sealed record UserAlreadyExistsError : Error;
+public sealed record UserNoLongerExistsError : Error;
 
 public sealed record UserNotFoundError : Error;
-public sealed record UserAlreadyExistsError : Error;
-public sealed record InvalidCredentialsError : Error;
 
 public sealed record CategoryNotFoundError : Error;
 public sealed record DefaultCategoryNotFoundError : Error;
