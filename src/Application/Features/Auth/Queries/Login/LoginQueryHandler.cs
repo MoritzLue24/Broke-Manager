@@ -2,12 +2,13 @@ using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
 using Application.Features.Auth.Common;
+using Application.Features.Users.Common;
 using Domain.Common;
 using MediatR;
 
 namespace Application.Features.Auth.Queries.Login;
 
-public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<LoginResult>>
+public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthResult>>
 {
     private readonly IUserRepository _userRepo;
     private readonly IHasher _hasher;
@@ -23,7 +24,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<LoginResult>
         this._tokenGenerator = tokenGenerator;
     }
 
-    public async Task<Result<LoginResult>> Handle(
+    public async Task<Result<AuthResult>> Handle(
         LoginQuery request,
         CancellationToken cancellationToken)
     {
@@ -36,6 +37,6 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, Result<LoginResult>
 
         // TODO: Handle multiple roles
         var token = this._tokenGenerator.GenToken(user.Id, [user.Role]);
-        return new LoginResult(token);
+        return new AuthResult(user.ToResult(), token);
     }
 }

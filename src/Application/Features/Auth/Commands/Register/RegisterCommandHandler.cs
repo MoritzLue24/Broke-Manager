@@ -2,6 +2,7 @@ using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
 using Application.Features.Auth.Common;
+using Application.Features.Users.Common;
 using Domain.Common;
 using Domain.Entities;
 using Domain.ValueObjects;
@@ -9,7 +10,7 @@ using MediatR;
 
 namespace Application.Features.Auth.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<RegisterResult>>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthResult>>
 {
     private readonly IUnitOfWork _uow;
     private readonly IUserRepository _userRepo;
@@ -28,7 +29,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Re
         this._tokenGenerator = tokenGenerator;
     }
 
-    public async Task<Result<RegisterResult>> Handle(
+    public async Task<Result<AuthResult>> Handle(
         RegisterCommand request,
         CancellationToken cancellationToken)
     {
@@ -37,11 +38,11 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Re
 
         var emailRes = Email.Create(request.Email);
         if (!emailRes.Success)
-            return emailRes.Cast<RegisterResult>();
+            return emailRes.Cast<AuthResult>();
 
         var hashRes = Hash.Create(this._hasher.Hash(request.Password));
         if (!hashRes.Success)
-            return hashRes.Cast<RegisterResult>();
+            return hashRes.Cast<AuthResult>();
 
         var domainResult = User.Create(
             emailRes.Value,
@@ -49,22 +50,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Re
         );
 
         if (!domainResult.Success)
-            return domainResult.Cast<RegisterResult>();
+            return domainResult.Cast<AuthResult>();
 
         var user = domainResult.Value;
         this._userRepo.Add(user);
         await this._uow.SaveChangesAsync(cancellationToken);
 
-        // TODO: Create default-category
         // TODO: Handle multiple roles
         var token = this._tokenGenerator.GenToken(domainResult.Value.Id, [domainResult.Value.Role]);
-
-        return new RegisterResult(
-            user.Id,
-            user.Email.Value,
-            user.Role,
-            user.CreatedAt,
-            token
-        );
+        return new AuthResult(user.ToResult(), token);
     }
 }

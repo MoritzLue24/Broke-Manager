@@ -2,6 +2,7 @@ using Api.Errors;
 using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Queries.Login;
 using Contracts.Features.Auth;
+using Contracts.Features.Users;
 using Infrastructure.Security;
 using MapsterMapper;
 using MediatR;
@@ -39,20 +40,20 @@ public class AuthController : ControllerBase
         );
 
     [HttpPost("register")]
-    public async Task<ActionResult<RegisterResponse>> Register(
+    public async Task<ActionResult<UserResponse>> Register(
         [FromBody] RegisterRequest request)
     {
         var command = this._mapper.Map<RegisterCommand>(request);
         var result = await this._mediator.Send(command);
 
-        return result.Match<ActionResult<RegisterResponse>>(
-            registerResult =>
+        return result.Match<ActionResult<UserResponse>>(
+            authResult =>
             {
-                this.SetAuthCookie(registerResult.Token);
+                this.SetAuthCookie(authResult.Token);
                 // TODO: Change to created at action
                 return this.Created(
                     string.Empty,
-                    this._mapper.Map<RegisterResponse>(registerResult)
+                    this._mapper.Map<UserResponse>(authResult)
                 );
             },
             errors => errors.ToProblem(this)
@@ -67,10 +68,10 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(query);
 
         return result.Match<IActionResult>(
-            loginResult =>
+            authResult =>
             {
-                this.SetAuthCookie(loginResult.Token);
-                return this.NoContent();
+                this.SetAuthCookie(authResult.Token);
+                return this.Ok(this._mapper.Map<UserResponse>(authResult));
             },
             errors => errors.ToProblem(this)
         );

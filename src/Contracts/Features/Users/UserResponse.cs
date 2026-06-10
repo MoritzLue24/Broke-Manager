@@ -1,6 +1,6 @@
 namespace Contracts.Features.Users;
 
-public record UserDetailResponse(
+public record UserResponse(
     Guid Id,
     string Email,
     string Role,

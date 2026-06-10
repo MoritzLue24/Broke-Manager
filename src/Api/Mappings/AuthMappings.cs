@@ -2,6 +2,7 @@ using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Common;
 using Application.Features.Auth.Queries.Login;
 using Contracts.Features.Auth;
+using Contracts.Features.Users;
 using Mapster;
 
 namespace Api.Mappings;
@@ -16,7 +17,7 @@ public class AuthMappings : IRegister
         config.NewConfig<LoginRequest, LoginQuery>()
             .Map(dest => dest, src => src);
 
-        config.NewConfig<RegisterResult, RegisterResponse>()
-            .Map(dest => dest, src => src);
+        config.NewConfig<AuthResult, UserResponse>()
+            .Map(dest => dest, src => src.UserResult);
     }
 }
