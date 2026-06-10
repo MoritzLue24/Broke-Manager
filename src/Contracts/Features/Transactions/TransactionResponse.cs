@@ -1,6 +1,6 @@
 namespace Contracts.Features.Transactions;
 
-public record TransactionDetailResponse(
+public record TransactionResponse(
     Guid Id,
     Guid UserId,
     Guid CategoryId,
