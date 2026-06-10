@@ -1,11 +1,13 @@
+using Contracts.Features.MatchingRules;
+
 namespace Contracts.Features.Categories;
 
-public record CategoryDetailResponse(
+public record CategoryResponse(
     Guid Id,
     Guid UserId,
     string Name,
     bool IsDefault,
-    string[] Keywords,  // TODO: Use matching rule response object
+    MatchingRuleResponse[] MatchingRules,
     DateTime CreatedAt
 );
 

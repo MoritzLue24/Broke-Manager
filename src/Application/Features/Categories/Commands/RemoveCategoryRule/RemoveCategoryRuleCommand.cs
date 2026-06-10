@@ -4,11 +4,11 @@ using Domain.Common;
 using Domain.Enums;
 using MediatR;
 
-namespace Application.Features.Categories.Commands.CreateCategory;
+namespace Application.Features.Categories.Commands.RemoveCategoryRule;
 
-public record CreateCategoryCommand(
-    string Name,
-    string[] Keywords   // TODO: MatchingRule object list ??
+public record RemoveCategoryRuleCommand(
+    Guid CategoryId,
+    Guid RuleId
 ) : IRequest<Result<CategoryResult>>, IRequireAuthorization
 {
     // Admins and Users can execute this command

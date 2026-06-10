@@ -1,21 +1,11 @@
 using Domain.Entities;
-using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Persistence.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
-    // Aus irgendeinen grund brauchen wir das hier
-    private sealed class MatchingRuleConverter : ValueConverter<MatchingRule, string>
-    {
-        public MatchingRuleConverter()
-            : base(k => k.Keyword, keyword => MatchingRule.Create(keyword).Value)
-        { }
-    }
-
     public void Configure(EntityTypeBuilder<Category> builder)
     {
         builder.ToTable("categories");
@@ -49,7 +39,17 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .HasDatabaseName("ix_categories_user_id_unique_default");
 
         // Matching rules
-        // TODO: shared table with recurrence pattern
+        builder.Ignore(c => c.MatchingRules);
+        builder.HasMany<MatchingRule>("_matchingRules")
+            .WithOne()
+            .HasForeignKey("category_id")
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation("_matchingRules")
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+
+        /*
         builder.OwnsMany(c => c.MatchingRules, ruleBuilder =>
         {
             ruleBuilder.ToTable("matching_rules");
@@ -61,7 +61,6 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         });
 
         /*
-        // FIXME: own table
         // Keywords
         builder.PrimitiveCollection<List<MatchingRule>>("_matchingRules")
             .HasColumnName("matching_rules")

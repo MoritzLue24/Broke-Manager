@@ -1,3 +1,4 @@
+using Application.Features.MatchingRules.Common;
 using Domain.Entities;
 
 namespace Application.Features.Categories.Common;
@@ -7,7 +8,7 @@ public record CategoryResult(
     Guid UserId,
     string Name,
     bool IsDefault,
-    List<string> Keywords,  // TODO: Matching rule object list
+    List<MatchingRuleResult> MatchingRules,
     DateTime CreatedAt
 );
 
@@ -19,7 +20,7 @@ public static class CategoryExtension
             category.UserId,
             category.Name,
             category.IsDefault,
-            category.MatchingRules.Select(k => k.Keyword).ToList(),
+            category.MatchingRules.Select(k => k.ToResult()).ToList(),
             category.CreatedAt
         );
 }

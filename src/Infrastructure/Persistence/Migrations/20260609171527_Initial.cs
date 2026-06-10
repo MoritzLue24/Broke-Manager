@@ -1,13 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class MatchingRuleTable : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,14 +51,13 @@ namespace Infrastructure.Persistence.Migrations
                 name: "matching_rules",
                 columns: table => new
                 {
-                    category_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    keyword = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    keyword = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    category_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_matching_rules", x => new { x.category_id, x.Id });
+                    table.PrimaryKey("PK_matching_rules", x => x.id);
                     table.ForeignKey(
                         name: "FK_matching_rules_categories_category_id",
                         column: x => x.category_id,
@@ -116,6 +114,11 @@ namespace Infrastructure.Persistence.Migrations
                 column: "user_id",
                 unique: true,
                 filter: "is_default = true");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_matching_rules_category_id",
+                table: "matching_rules",
+                column: "category_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_transactions_category_id",

@@ -10,7 +10,8 @@ public class CategoryMappings : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CategoryResult, CategoryDetailResponse>()
+        config.NewConfig<CategoryResult, CategoryResponse>()
+            .Map(dest => dest.MatchingRules, src => src.MatchingRules)  // Wird automatisch gemappt?
             .Map(dest => dest, src => src);
 
         config.NewConfig<CreateCategoryRequest, CreateCategoryCommand>()

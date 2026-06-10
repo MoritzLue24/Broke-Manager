@@ -61,6 +61,29 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("categories", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.MatchingRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Keyword")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("keyword");
+
+                    b.Property<Guid>("category_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("category_id");
+
+                    b.ToTable("matching_rules", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -177,33 +200,15 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.OwnsMany("Domain.ValueObjects.MatchingRule", "MatchingRules", b1 =>
-                        {
-                            b1.Property<Guid>("category_id")
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Keyword")
-                                .IsRequired()
-                                .HasMaxLength(255)
-                                .HasColumnType("character varying(255)")
-                                .HasColumnName("keyword");
-
-                            b1.HasKey("category_id", "Id");
-
-                            b1.ToTable("matching_rules", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("category_id");
-                        });
-
-                    b.Navigation("MatchingRules");
+            modelBuilder.Entity("Domain.Entities.MatchingRule", b =>
+                {
+                    b.HasOne("Domain.Entities.Category", null)
+                        .WithMany("_matchingRules")
+                        .HasForeignKey("category_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
@@ -270,6 +275,11 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("PasswordHash")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Category", b =>
+                {
+                    b.Navigation("_matchingRules");
                 });
 #pragma warning restore 612, 618
         }

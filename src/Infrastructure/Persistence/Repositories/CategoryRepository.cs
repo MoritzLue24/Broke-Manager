@@ -16,12 +16,14 @@ public class CategoryRepository : ICategoryRepository
     public async Task<List<Category>> GetAllByUserIdAsync(Guid userId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.UserId == userId)
+            .Include("_matchingRules")
             .ToListAsync(ct);
 
     public async Task<Category?> GetByIdAsync(Guid categoryId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.Id == categoryId)
-                .FirstOrDefaultAsync(ct);
+            .Include("_matchingRules")
+            .FirstOrDefaultAsync(ct);
 
     public async Task<Guid?> GetDefaultIdByUserIdAsync(Guid userId, CancellationToken ct = default)
     {

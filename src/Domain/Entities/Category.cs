@@ -1,7 +1,6 @@
 using Domain.Common;
 using Domain.Common.Models;
 using Domain.Events.Categories;
-using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -62,19 +61,19 @@ public class Category : AggregateRoot
             return new CategoryIsDefaultError();
 
         if (this._matchingRules.Any(r => r == rule))
-            return new DuplicateKeywordError();
+            return new DuplicateRuleError();
 
         this._matchingRules.Add(rule);
         return Unit.Value;
     }
 
-    public Result<Unit> RemoveRule(MatchingRule rule)
+    public Result<Unit> RemoveRule(Guid ruleId)
     {
         if (this.IsDefault)
             return new CategoryIsDefaultError();
 
-        if (!this._matchingRules.Remove(rule))
-            return new KeywordNotFoundError();
+        if (this._matchingRules.RemoveAll(r => r.Id == ruleId) == 0)
+            return new RuleNotFoundError();
 
         return Unit.Value;
     }

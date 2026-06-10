@@ -1,13 +1,14 @@
 using Domain.Common;
 using Domain.Common.Models;
 
-namespace Domain.ValueObjects;
+namespace Domain.Entities;
 
-public sealed class MatchingRule : ValueObject
+public class MatchingRule : Entity
 {
     public string Keyword { get; }
 
-    private MatchingRule(string keyword)
+    public MatchingRule(Guid id, string keyword)
+        : base(id)
     {
         this.Keyword = keyword;
     }
@@ -17,9 +18,6 @@ public sealed class MatchingRule : ValueObject
         if (string.IsNullOrWhiteSpace(keyword))
             return new EmptyKeywordError();
 
-        return new MatchingRule(keyword);
+        return new MatchingRule(Guid.NewGuid(), keyword);
     }
-
-    protected override IEnumerable<object?> GetEqualityComponents()
-        => [this.Keyword];
 }

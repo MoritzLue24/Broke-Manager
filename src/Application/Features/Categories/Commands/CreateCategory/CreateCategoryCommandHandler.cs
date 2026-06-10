@@ -5,7 +5,6 @@ using Application.Features.Categories.Common;
 using Application.Features.Transactions.Common;
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Features.Categories.Commands.CreateCategory;
