@@ -1,3 +1,4 @@
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.Features.Transactions.Commands.UpdateTransaction;
@@ -11,7 +12,7 @@ public class UpdateTransactionCommandValidator : AbstractValidator<UpdateTransac
             .When(x => x.Amount is not null);
 
         this.RuleFor(x => x.Type)
-            .IsInEnum()
+            .IsEnumName(typeof(TransactionType), caseSensitive: false)
             .When(x => x.Type is not null);
 
         this.RuleFor(x => x.Title)

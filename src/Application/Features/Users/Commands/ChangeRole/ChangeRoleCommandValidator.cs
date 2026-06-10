@@ -1,3 +1,4 @@
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.Features.Users.Commands.ChangeRole;
@@ -10,6 +11,6 @@ public class ChangeRoleCommandValidator : AbstractValidator<ChangeRoleCommand>
             .NotEmpty();
 
         this.RuleFor(x => x.Role)
-            .IsInEnum();
+            .IsEnumName(typeof(Role), caseSensitive: false);
     }
 }

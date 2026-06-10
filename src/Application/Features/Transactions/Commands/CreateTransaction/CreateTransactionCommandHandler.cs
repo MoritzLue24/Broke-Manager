@@ -57,13 +57,17 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
             categorySource = CategorySource.Unmatched;
         }
 
+        // Transaction type parsing
+        if (!Enum.TryParse<TransactionType>(request.Type, ignoreCase: true, out var transactionType))
+            throw new InvalidOperationException();  // Because we assume the request is valid (its validated)
+
         var domainResult = Transaction.Create(
             userId,
             // TODO: Auto-categorize?
             categoryId,
             categorySource,
             request.Amount,
-            request.Type,
+            transactionType,
             request.Date,
             request.Title,
             request.Description,

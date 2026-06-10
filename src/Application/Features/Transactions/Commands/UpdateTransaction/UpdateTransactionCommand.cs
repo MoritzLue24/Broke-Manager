@@ -10,7 +10,7 @@ public record UpdateTransactionCommand(
     Guid TransactionId,
     Guid? CategoryId,
     decimal? Amount,
-    TransactionType? Type,
+    string? Type,
     DateOnly? Date,
     string? Title,
     string? Description,

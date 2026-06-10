@@ -2,6 +2,7 @@ using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Features.Users.Common;
 using Domain.Common;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Features.Users.Commands.ChangeRole;
@@ -28,7 +29,11 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Resul
         if (user is null)
             return new UserNotFoundError();
 
-        var changeResult = user.ChangeRole(request.Role);
+        // Role type parsing
+        if (!Enum.TryParse<Role>(request.Role, ignoreCase: true, out var role))
+            throw new InvalidOperationException();  // Because we assume the request is valid (its validated)
+
+        var changeResult = user.ChangeRole(role);
         if (!changeResult.Success)
             return changeResult.Cast<UserResult>();
 

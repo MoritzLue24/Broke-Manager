@@ -57,9 +57,13 @@ public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransaction
                 return domainResult.Cast<TransactionResult>();
         }
 
-        if (request.Type.HasValue)
+        if (request.Type is not null)
         {
-            var domainResult = transaction.ChangeAmount(transaction.Amount, request.Type.Value);
+            // Transaction type parsing
+            if (!Enum.TryParse<TransactionType>(request.Type, ignoreCase: true, out var transactionType))
+                throw new InvalidOperationException();  // Because we assume the request is valid (its validated)
+
+            var domainResult = transaction.ChangeAmount(transaction.Amount, transactionType);
             if (!domainResult.Success)
                 return domainResult.Cast<TransactionResult>();
         }

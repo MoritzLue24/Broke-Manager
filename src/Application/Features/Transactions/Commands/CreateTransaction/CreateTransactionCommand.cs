@@ -9,7 +9,7 @@ namespace Application.Features.Transactions.Commands.CreateTransaction;
 public record CreateTransactionCommand(
     Guid? CategoryId,
     decimal Amount,
-    TransactionType Type,
+    string Type,
     DateOnly Date,
     string Title,
     string Description,

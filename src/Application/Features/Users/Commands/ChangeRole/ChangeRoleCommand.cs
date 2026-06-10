@@ -8,8 +8,8 @@ namespace Application.Features.Users.Commands.ChangeRole;
 
 public record ChangeRoleCommand(
     Guid UserId,
-    Role Role
+    string Role
 ) : IRequest<Result<UserResult>>, IRequireAuthorization
 {
-    public Role[] Roles => [Role.Admin];
+    public Role[] Roles => [Domain.Enums.Role.Admin];
 }

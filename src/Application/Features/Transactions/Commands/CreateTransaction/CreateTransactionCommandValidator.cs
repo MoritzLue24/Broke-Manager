@@ -1,3 +1,4 @@
+using Domain.Enums;
 using FluentValidation;
 
 namespace Application.Features.Transactions.Commands.CreateTransaction;
@@ -11,7 +12,7 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
             .GreaterThan(0);
 
         this.RuleFor(x => x.Type)
-            .IsInEnum();
+            .IsEnumName(typeof(TransactionType), caseSensitive: false);
 
         this.RuleFor(x => x.Date)
             .NotEmpty();
