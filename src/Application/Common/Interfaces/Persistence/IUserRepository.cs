@@ -4,6 +4,8 @@ namespace Application.Common.Interfaces.Persistence;
 
 public interface IUserRepository
 {
+    Task<List<User>> GetAllUsersAsync(CancellationToken ct = default);
+
     Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default);
 
     Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);

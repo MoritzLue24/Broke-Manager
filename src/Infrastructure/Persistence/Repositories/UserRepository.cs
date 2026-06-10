@@ -13,6 +13,10 @@ public class UserRepository : IUserRepository
         this._dbContext = dbContext;
     }
 
+    public async Task<List<User>> GetAllUsersAsync(CancellationToken ct = default)
+        => await this._dbContext.Users
+            .ToListAsync(ct);
+
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default)
         => await this._dbContext.Users
             .Where(u => u.Id == id)
