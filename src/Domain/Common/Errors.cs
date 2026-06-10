@@ -10,6 +10,7 @@ public sealed record InvalidGuidError : Error;
 
 public sealed record InvalidEmailFormatError : Error;
 public sealed record InvalidHashFormatError : Error;
+public sealed record RoleAlreadyCurrentRoleError : Error;
 public sealed record EmptyKeywordError : Error;
 
 public sealed record InvalidAmountError : Error;
@@ -20,8 +21,8 @@ public sealed record InvalidCategorySourceError : Error;
 
 public sealed record EmptyCategoryNameError : Error;
 public sealed record CategoryIsDefaultError : Error;
-public sealed record DuplicateKeywordError : Error;
-public sealed record KeywordNotFoundError : Error;
+public sealed record DuplicateRuleError : Error;
+public sealed record RuleNotFoundError : Error;
 
 public static class ErrorsExtension
 {

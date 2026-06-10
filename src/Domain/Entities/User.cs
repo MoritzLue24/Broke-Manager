@@ -51,6 +51,9 @@ public class User : AggregateRoot
 
     public Result<Unit> ChangeRole(Role role)
     {
+        if (this.Role == role)
+            return new RoleAlreadyCurrentRoleError();
+
         var old = this.Role;
         this.Role = role;
 
