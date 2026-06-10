@@ -4,11 +4,8 @@ using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text;
 using Api.IntegrationTests.TestInfrastructure.Controllers;
-using Application.Common.Interfaces.Security;
 using Contracts.Features.Auth;
-using Domain.Entities;
-using Domain.Enums;
-using Domain.ValueObjects;
+using Contracts.Features.Users;
 using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +18,6 @@ public class AuthControllerTests : BaseTest
 {
     private readonly JwtSecurityTokenHandler _jwtHandler;
     private readonly TokenValidationParameters _jwtValidationParams;
-    private readonly IHasher _hasher;
 
     public AuthControllerTests(WebAppFactory factory) : base(factory)
     {
@@ -41,7 +37,6 @@ public class AuthControllerTests : BaseTest
                 Encoding.UTF8.GetBytes(jwtSettings.Value.Secret)
             )
         };
-        this._hasher = factory.Services.GetRequiredService<IHasher>();
     }
 
     private ClaimsPrincipal? ValidateJwtToken(string token)
@@ -57,53 +52,64 @@ public class AuthControllerTests : BaseTest
         }
     }
 
-    [Fact]
-    public async void Register_ShouldReturn201AndJwtAddUserAndCreateDefaultCategory_WhenRequestValid()
+    private static string? GetAccessToken(HttpResponseMessage response)
     {
-        var request = new RegisterRequest("valid@email.com", "mypasswd123!", "mypasswd123!");
-        var response = await this.Client.PostAsJsonAsync("/auth/register", request);
-        var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
-
-        // Assert
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.NotNull(authResponse?.UserId);
-        Assert.NotEmpty(authResponse.Token);
-
-        // Jwt token
-        var claims = this.ValidateJwtToken(authResponse.Token);
-        Assert.True(Guid.TryParse(claims?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId));
-        Assert.NotNull(claims?.FindFirst(ClaimTypes.NameIdentifier));
-        Assert.Equal(Role.User.ToString(), claims?.FindFirst(ClaimTypes.Role)?.Value);
-
-        // Persistency check
-        Assert.True(await this.Db.Users.AnyAsync(u => u.Id == userId));
-        Assert.True(await this.Db.Categories.AnyAsync(c => c.UserId == userId && c.IsDefault));
+        response.Headers.TryGetValues("Set-Cookie", out var cookies);
+        return cookies?
+            .FirstOrDefault(c => c.StartsWith($"access_token="))
+            ?.Split(';')[0]
+            .Substring("access_token=".Length); // skip "access_token="
     }
 
     [Fact]
-    public async void Login_ShouldReturn200AndJwt_WhenCredentialsValid()
+    public async void Register_ShouldReturn201AndUserAndSetCookieAndCreateDefaultCategory_WhenRequestValid()
+    {
+        var request = new RegisterRequest("valid@email.com", "mypasswd123!", "mypasswd123!");
+        var response = await this.Client.PostAsJsonAsync("/auth/register", request);
+        var userResponse = await response.Content.ReadFromJsonAsync<UserResponse>();
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.NotNull(userResponse);
+        Assert.Equal("valid@email.com", userResponse?.Email);
+        Assert.Equal("User", userResponse?.Role);
+
+        // Jwt cookie
+        var claims = this.ValidateJwtToken(GetAccessToken(response) ?? throw new InvalidOperationException());
+
+        Assert.True(Guid.TryParse(claims?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId));
+        Assert.Equal(userResponse?.Id, userId);
+        Assert.NotNull(claims?.FindFirst(ClaimTypes.NameIdentifier));
+        Assert.Equal("User", claims?.FindFirst(ClaimTypes.Role)?.Value);
+
+        // Persistency check
+        Assert.True(await this.Db.Users.AnyAsync(u => u.Id == userResponse!.Id));
+        Assert.True(await this.Db.Categories.AnyAsync(c => c.UserId == userResponse!.Id && c.IsDefault));
+    }
+
+    [Fact]
+    public async void Login_ShouldReturn200AndUserAndSetCookie_WhenCredentialsValid()
     {
         // Setup
-        this.Db.Users.Add(User.Create(
-            Email.Create("my@email.com").Value,
-            Hash.Create(this._hasher.Hash("mypasswd123!")).Value
-        ).Value);
-        await this.Db.SaveChangesAsync();
+        this.CreateMockUser("mock@mail.com", "mypasswd123!");
 
         // Execute
-        var request = new LoginRequest("my@email.com", "mypasswd123!");
+        var request = new LoginRequest("mock@mail.com", "mypasswd123!");
         var response = await this.Client.PostAsJsonAsync("/auth/login", request);
-        var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+        var userResponse = await response.Content.ReadFromJsonAsync<UserResponse>();
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(authResponse?.UserId);
-        Assert.NotEmpty(authResponse.Token);
+        Assert.NotNull(userResponse);
+        Assert.Equal("mock@mail.com", userResponse?.Email);
+        Assert.Equal("User", userResponse?.Role);
 
-        // Jwt token
-        var claims = this.ValidateJwtToken(authResponse.Token);
+        // Jwt cookie
+        var claims = this.ValidateJwtToken(GetAccessToken(response) ?? throw new InvalidOperationException());
+
         Assert.True(Guid.TryParse(claims?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId));
+        Assert.Equal(userResponse?.Id, userId);
         Assert.NotNull(claims?.FindFirst(ClaimTypes.NameIdentifier));
-        Assert.Equal(Role.User.ToString(), claims?.FindFirst(ClaimTypes.Role)?.Value);
+        Assert.Equal("User", claims?.FindFirst(ClaimTypes.Role)?.Value);
     }
 }
