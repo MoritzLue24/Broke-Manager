@@ -1,20 +1,23 @@
 info:
-  name: create-category
+  name: add-rule
   type: http
-  seq: 3
+  seq: 5
 
 http:
   method: POST
-  url: "{{baseUrl}}/categories"
+  url: "{{baseUrl}}/categories/:categoryId/rules"
   headers:
     - name: Content-Type
       value: application/json
+  params:
+    - name: categoryId
+      value: 037a560d-d8a3-4239-8c5c-7fbe14548106
+      type: path
   body:
     type: json
     data: |-
       {
-        "name": "Essen",
-        "keywords": ["rewe", "edeka"]
+        "keyword": "Aldi"
       }
   auth: inherit
 

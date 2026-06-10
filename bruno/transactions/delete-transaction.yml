@@ -1,14 +1,14 @@
 info:
-  name: delete-category
+  name: delete-transaction
   type: http
-  seq: 7
+  seq: 5
 
 http:
   method: DELETE
-  url: "{{baseUrl}}/categories/:id"
+  url: "{{baseUrl}}/transactions/:transactionId"
   params:
-    - name: id
-      value: ee38e9b4-6d2c-447d-b113-a5785a4d39a5
+    - name: transactionId
+      value: c6e8cf9a-865a-49c8-aaa5-dad9b0aa1567
       type: path
   auth: inherit
 

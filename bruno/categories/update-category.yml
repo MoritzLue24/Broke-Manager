@@ -1,7 +1,7 @@
 info:
   name: update-category
   type: http
-  seq: 5
+  seq: 4
 
 http:
   method: PATCH

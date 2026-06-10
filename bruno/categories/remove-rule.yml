@@ -1,0 +1,22 @@
+info:
+  name: remove-rule
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/categories/:categoryId/rules/:ruleId"
+  params:
+    - name: categoryId
+      value: 0b8c163f-0ef7-4889-ad53-92b1a6f00cf2
+      type: path
+    - name: ruleId
+      value: 45d49b9a-0aee-49b7-826c-1be373e64967
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
