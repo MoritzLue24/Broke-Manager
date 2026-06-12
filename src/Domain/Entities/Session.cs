@@ -13,6 +13,7 @@ public class Session : Entity
     public IReadOnlyCollection<Role> Roles => this._roles.AsReadOnly();
     public Hash TokenHash { get; } = null!;    // Used for verification, identification -> id
     public DateTime ExpiresAt { get; }
+    public DateTime LastSeen { get; private set; }
     public DateTime CreatedAt { get; }
 
     private Session() : base(Guid.Empty) { }
@@ -29,6 +30,7 @@ public class Session : Entity
         this._roles = roles;
         this.TokenHash = tokenHash;
         this.ExpiresAt = expiresAt;
+        this.LastSeen = DateTime.UtcNow;
         this.CreatedAt = DateTime.UtcNow;
     }
 

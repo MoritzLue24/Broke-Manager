@@ -10,9 +10,11 @@ public interface ISessionRepository
 
     void Add(Session session);
 
+    Task<bool> ExecuteVisitAsync(Guid sessionId, CancellationToken ct = default);
+
     void Delete(Session session);
 
-    Task DirectDeleteOldestActiveByUser(Guid userId, CancellationToken ct = default);
+    Task DirectDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default);
 
     Task DirectDeleteExpiredAsync(CancellationToken ct = default);
 }

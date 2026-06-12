@@ -1,5 +1,6 @@
 using Application.Features.Auth.Contracts;
 using Application.Features.Auth.Interfaces;
+using Application.Features.Auth.Services;
 
 namespace Api.Middlewares;
 
@@ -14,20 +15,24 @@ public class SessionMiddleware
 
     public async Task InvokeAsync(
         HttpContext context,
-        ISessionCookieService sessionService,
+        ISessionCookieParser sessionCookieParser,
+        SessionService sessionService,
         ISessionSettings sessionSettings)
     {
         var cookieValue = context.Request.Cookies[sessionSettings.CookieName];
 
-        if (!string.IsNullOrWhiteSpace(cookieValue))
+        if (sessionCookieParser.ParseCookie(cookieValue ?? string.Empty)
+            is (Guid sessionId, string sessionToken))
         {
-            SessionResult? sessionResult;
-            if ((sessionResult = await sessionService.ValidateCookieAsync(cookieValue)) is not null)
+            if (await sessionService.Validate(sessionId, sessionToken)
+                is SessionResult sessionResult)
             {
                 // TODO: not hardcoded?
                 context.Items["sessionId"] = sessionResult.Id;
                 context.Items["userId"] = sessionResult.UserId;
                 context.Items["roles"] = sessionResult.Roles;
+
+                _ = sessionService.Visit(sessionResult.Id, sessionResult.LastSeen);
             }
             else
                 context.Response.Cookies.Delete(sessionSettings.CookieName);

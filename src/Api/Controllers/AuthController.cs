@@ -18,24 +18,24 @@ public class AuthController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
     private readonly ISessionSettings _sessionSettings;
-    private readonly ISessionCookieService _sessionCookieService;
+    private readonly ISessionCookieParser _sessionCookieParser;
 
     public AuthController(
         IMediator mediator,
         IMapper mapper,
         ISessionSettings sessionSettings,
-        ISessionCookieService sessionCookieService)
+        ISessionCookieParser sessionCookieParser)
     {
         this._mediator = mediator;
         this._mapper = mapper;
         this._sessionSettings = sessionSettings;
-        this._sessionCookieService = sessionCookieService;
+        this._sessionCookieParser = sessionCookieParser;
     }
 
     private void SetSessionCookie(Guid sessionId, string sessionToken)
         => this.Response.Cookies.Append(
             this._sessionSettings.CookieName,
-            this._sessionCookieService.CreateCookieValue(sessionId, sessionToken),
+            this._sessionCookieParser.CreateCookieValue(sessionId, sessionToken),
             new CookieOptions
             {
                 HttpOnly = true,

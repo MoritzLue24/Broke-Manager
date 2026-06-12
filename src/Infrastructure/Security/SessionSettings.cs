@@ -8,6 +8,7 @@ public sealed record SessionSettings : ISessionSettings
     public string CookieName { get; init; } = null!;
     public int ExpiryHours { get; init; }
     public int MaxSessionsPerUser { get; init; }
+    public int LastSeenUpdateWindowMinutes { get; init; }
 
     public bool Validate()
     {
@@ -19,6 +20,9 @@ public sealed record SessionSettings : ISessionSettings
 
         if (this.MaxSessionsPerUser <= 0)
             throw new InvalidOperationException($"{SectionName}__MaxSessionsPerUser must be greater than 0");
+
+        if (this.LastSeenUpdateWindowMinutes <= 0)
+            throw new InvalidOperationException($"{SectionName}__LastSeenUpdateWindowMinutes must be greater than 0");
 
         return true;
     }

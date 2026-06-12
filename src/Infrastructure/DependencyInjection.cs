@@ -51,7 +51,7 @@ public static class DependencyInjection
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
 
-        services.AddHostedService<ExpiredSessionCleanupJob>();
+        services.AddHostedService<SessionCleanupJob>();
 
         return services;
     }
@@ -77,7 +77,7 @@ public static class DependencyInjection
         // Inject the session settings
         services.AddSingleton<ISessionSettings>(sessionSettings);
 
-        services.AddScoped<ISessionCookieService, SessionCookieService>();
+        services.AddScoped<ISessionCookieParser, SessionCookieParser>();
 
         // Token generator
         // Signleton because we do not have a state, just one instance for all injections is enough 

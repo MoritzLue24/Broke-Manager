@@ -57,6 +57,11 @@ public class SessionConfiguration : IEntityTypeConfiguration<Session>
             .HasColumnName("expires_at")
             .IsRequired();
 
+        // LastSeen
+        builder.Property(s => s.LastSeen)
+            .HasColumnName("last_seen")
+            .IsRequired();
+
         // CreatedAt
         builder.Property(s => s.CreatedAt)
             .HasColumnName("created_at")

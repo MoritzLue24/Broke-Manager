@@ -1,5 +1,6 @@
 using Application.Common.Behaviors;
 using Application.Common.Events;
+using Application.Features.Auth.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,9 @@ public static class DependencyInjection
             config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizeBehavior<,>));
         });
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+
+        services.AddScoped<SessionService>();
+
         return services;
     }
 }

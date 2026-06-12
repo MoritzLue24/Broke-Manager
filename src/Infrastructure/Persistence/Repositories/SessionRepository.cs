@@ -24,16 +24,24 @@ public class SessionRepository : ISessionRepository
     public void Add(Session session)
         => this._dbContext.Sessions.Add(session);
 
+    public async Task<bool> ExecuteVisitAsync(Guid sessionId, CancellationToken ct = default)
+        => await this._dbContext.Sessions
+            .Where(s => s.Id == sessionId)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(s => s.LastSeen, DateTime.UtcNow),
+                ct
+            ) == 1;
+
     public void Delete(Session session)
         => this._dbContext.Sessions.Remove(session);
 
-    public async Task DirectDeleteOldestActiveByUser(Guid userId, CancellationToken ct = default)
+    public async Task DirectDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default)
     {
         var oldestId = await this._dbContext.Sessions
-        .Where(s => s.UserId == userId && s.ExpiresAt > DateTime.UtcNow)
-        .OrderBy(s => s.CreatedAt)
-        .Select(s => s.Id)
-        .FirstOrDefaultAsync(ct);
+            .Where(s => s.UserId == userId && s.ExpiresAt > DateTime.UtcNow)
+            .OrderBy(s => s.LastSeen)
+            .Select(s => s.Id)
+            .FirstOrDefaultAsync(ct);
 
         if (oldestId != Guid.Empty)
         {

@@ -71,7 +71,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
         // TODO: maybe delete the most inactive session by a new `last_seen` column
         if (await this._sessionRepo.CountActiveByUserAsync(user.Id, cancellationToken) >
             this._sessionSettings.MaxSessionsPerUser)
-            await this._sessionRepo.DirectDeleteOldestActiveByUser(user.Id, cancellationToken);
+            await this._sessionRepo.DirectDeleteMostInactiveByUser(user.Id, cancellationToken);
 
         return new AuthResult(
             user.ToResult(),
