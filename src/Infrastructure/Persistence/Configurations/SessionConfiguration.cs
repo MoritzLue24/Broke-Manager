@@ -24,6 +24,9 @@ public class SessionConfiguration : IEntityTypeConfiguration<Session>
             .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasIndex(s => new { s.UserId, s.CreatedAt })
+            .HasDatabaseName("ix_sessions_user_id_created_at");
+
         // Roles
         builder.Ignore(c => c.Roles);
         builder.Property<List<Role>>("_roles")

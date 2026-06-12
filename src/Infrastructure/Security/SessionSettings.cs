@@ -7,6 +7,7 @@ public sealed record SessionSettings : ISessionSettings
     public const string SectionName = "SessionSettings";
     public string CookieName { get; init; } = null!;
     public int ExpiryHours { get; init; }
+    public int MaxSessionsPerUser { get; init; }
 
     public bool Validate()
     {
@@ -15,6 +16,9 @@ public sealed record SessionSettings : ISessionSettings
 
         if (this.ExpiryHours <= 0)
             throw new InvalidOperationException($"{SectionName}__ExpiryHours must be greater than 0");
+
+        if (this.MaxSessionsPerUser <= 0)
+            throw new InvalidOperationException($"{SectionName}__MaxSessionsPerUser must be greater than 0");
 
         return true;
     }
