@@ -1,3 +1,4 @@
+using System.Text;
 using FluentValidation;
 
 namespace Application.Features.Auth.Commands.Register;
@@ -13,6 +14,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 
         this.RuleFor(x => x.Password)
             .MinimumLength(8)
+            .Must(password => Encoding.UTF8.GetByteCount(password) <= 72).WithMessage("'Password' must not exceed 72 bytes")
             .Must(password => password.Any(c => char.IsLetter(c))).WithMessage("'Password' must contain at least one letter")
             .Must(password => password.Any(c => char.IsDigit(c))).WithMessage("'Password' must contain at least one digit")
             .Must(password => password.Any(c => char.IsPunctuation(c))).WithMessage("'Password' must contain at least one punctuation")
