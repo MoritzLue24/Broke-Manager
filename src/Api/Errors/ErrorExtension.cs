@@ -31,7 +31,7 @@ public static class ErrorExtension
                 statusCode: StatusCodes.Status403Forbidden,
                 title: "Forbidden"
             ),
-            UserAlreadyExistsError => controller.Problem(
+            EmailAlreadyRegisteredError => controller.Problem(
                 type: ErrorTypes.Duplicate,
                 statusCode: StatusCodes.Status409Conflict,
                 title: "Email already registered"

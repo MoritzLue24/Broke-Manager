@@ -1,4 +1,4 @@
-using Application.Features.Auth.Common;
+using Application.Features.Users.Common;
 using Domain.Common;
 using MediatR;
 
@@ -6,7 +6,7 @@ namespace Application.Features.Auth.Commands.Register;
 
 /// <summary>
 /// Adds a new user to the database, 
-/// creates a default category and generates a jwt.
+/// creates a default category.
 /// </summary>
 /// 
 /// <param name="Email">The users email, in valid email format</param>
@@ -14,7 +14,7 @@ namespace Application.Features.Auth.Commands.Register;
 /// <param name="ConfirmPassword">Must equal `Password`</param>
 /// 
 /// <returns>
-/// AuthResult on success.
+/// UserResult on success.
 /// On failure:
 /// <list type="bullet">
 ///     <item>InvalidEmailFormatError - When Email format invalid</item>
@@ -26,4 +26,4 @@ public record RegisterCommand(
     string Email,
     string Password,
     string ConfirmPassword  // Not really used, just for validation
-) : IRequest<Result<AuthResult>>;
+) : IRequest<Result<UserResult>>;

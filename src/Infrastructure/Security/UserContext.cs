@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Application.Common.Interfaces.Security;
 using Domain.Enums;
 using Microsoft.AspNetCore.Http;
@@ -14,32 +13,13 @@ public class UserContext : IUserContext
         this._httpContext = httpContext;
     }
 
+    public Guid? SessionId
+        => this._httpContext.HttpContext?.Items["sessionId"] as Guid?;
+
     public Guid? UserId
-    {
-        get
-        {
-            var user = this._httpContext.HttpContext?.User;
-
-            if (user?.Identity?.IsAuthenticated != true)
-                return null;
-
-            var value = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                ?? throw new InvalidOperationException("NameIdentifier claim not found");
-
-            return Guid.TryParse(value, out var id) ? id : null;
-        }
-    }
+        => this._httpContext.HttpContext?.Items["userId"] as Guid?;
 
     public IReadOnlyCollection<Role> UserRoles
-        => this._httpContext.HttpContext?.User?
-            .FindAll(ClaimTypes.Role)
-            .Select(c =>
-            {
-                if (Enum.TryParse(c.Value, out Role role))
-                    return role;
-                throw new InvalidOperationException("Invalid role in Role claim");
-            }).ToArray()
-            // If HttpContext is null -> User is null -> FindAll is null -> ...
-            // If this is the case, dont want to return null, but an empty collection / array
+        => this._httpContext.HttpContext?.Items["roles"] as IReadOnlyCollection<Role>
             ?? [];
 }

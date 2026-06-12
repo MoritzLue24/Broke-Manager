@@ -1,0 +1,21 @@
+using Application.Common.Interfaces.Security;
+
+namespace Infrastructure.Security;
+
+public sealed record SessionSettings : ISessionSettings
+{
+    public const string SectionName = "SessionSettings";
+    public string CookieName { get; init; } = null!;
+    public int ExpiryHours { get; init; }
+
+    public bool Validate()
+    {
+        if (string.IsNullOrWhiteSpace(this.CookieName))
+            throw new InvalidOperationException($"{SectionName}__CookieName is not set");
+
+        if (this.ExpiryHours <= 0)
+            throw new InvalidOperationException($"{SectionName}__ExpiryHours must be greater than 0");
+
+        return true;
+    }
+}

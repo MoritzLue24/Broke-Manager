@@ -1,3 +1,4 @@
+using Application.Features.Auth.Common;
 using Domain.Common.Models;
 using Domain.Entities;
 using Infrastructure.Persistence.Interceptors;
@@ -17,6 +18,7 @@ public class AppDbContext : DbContext
         this._publishDomainEventsInteceptor = publishDomainEventsInteceptor;
     }
 
+    public DbSet<Session> Sessions { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Category> Categories { get; set; }

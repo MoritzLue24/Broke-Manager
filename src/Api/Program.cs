@@ -30,6 +30,7 @@ public class Program
 
             // app.UseHttpsRedirection();
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<SessionMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

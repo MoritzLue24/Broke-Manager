@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -41,6 +42,28 @@ namespace Infrastructure.Persistence.Migrations
                     table.PrimaryKey("PK_categories", x => x.id);
                     table.ForeignKey(
                         name: "FK_categories_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "sessions",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    token_hash = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    roles = table.Column<List<string>>(type: "text[]", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_sessions", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_sessions_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id",
@@ -121,6 +144,11 @@ namespace Infrastructure.Persistence.Migrations
                 column: "category_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_sessions_user_id",
+                table: "sessions",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_transactions_category_id",
                 table: "transactions",
                 column: "category_id");
@@ -153,6 +181,9 @@ namespace Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "matching_rules");
+
+            migrationBuilder.DropTable(
+                name: "sessions");
 
             migrationBuilder.DropTable(
                 name: "transactions");

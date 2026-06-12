@@ -4,5 +4,6 @@ namespace Application.Features.Auth.Common;
 
 public record AuthResult(
     UserResult UserResult,
-    string Token
+    Guid SessionId,
+    string SessionToken
 );

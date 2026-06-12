@@ -27,6 +27,9 @@ public class UserRepository : IUserRepository
             .Where(u => u.Email.Value == email)
             .SingleOrDefaultAsync(ct);
 
+    public async Task<bool> IdExistsAsync(Guid id, CancellationToken ct = default)
+        => await this._dbContext.Users.AnyAsync(u => u.Id == id, ct);
+
     public async Task<bool> EmailExistsAsync(string email, CancellationToken ct = default)
         => await this._dbContext.Users.AnyAsync(u => u.Email.Value == email, ct);
 

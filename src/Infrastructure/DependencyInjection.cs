@@ -1,16 +1,13 @@
-using System.Text;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
+using Infrastructure.Persistence.Jobs;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Security;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure;
 
@@ -21,7 +18,6 @@ public static class DependencyInjection
         this IServiceCollection services,
         ConfigurationManager configuration)
     {
-
         services.AddPersistence(configuration);
         services.AddAuth(configuration);
 
@@ -46,9 +42,12 @@ public static class DependencyInjection
 
         services.AddScoped<PublishDomainEventsInteceptor>();    // Registered in AppDbContext
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ISessionRepository, SessionRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddHostedService<ExpiredSessionCleanupJob>();
 
         return services;
     }
@@ -57,58 +56,28 @@ public static class DependencyInjection
         this IServiceCollection services,
         ConfigurationManager configuration)
     {
-        // Jwt settings
-        var jwtSection = configuration.GetSection(JwtSettings.SectionName);
-        if (!jwtSection.Exists())
-            throw new InvalidOperationException($"Jwt-settings section '{JwtSettings.SectionName}' is not set.");
+        // Session settings
+        var sessionSettingsSection = configuration.GetSection(SessionSettings.SectionName);
+        if (!sessionSettingsSection.Exists())
+            throw new InvalidOperationException($"Session-settings section '{SessionSettings.SectionName}' is not set.");
 
-        // "Parses" the jwtSection into an actual JwtSettings object
-        var jwtSettings = jwtSection.Get<JwtSettings>()
-            ?? throw new InvalidOperationException($"Jwt-settings section '{JwtSettings.SectionName}' could not be bound.");
+        // "Parses" the session section into an actual Session settings object
+        var sessionSettings = sessionSettingsSection.Get<SessionSettings>()
+            ?? throw new InvalidOperationException($"Session-settings section '{SessionSettings.SectionName}' could not be bound.");
 
-        // It is possible that some properties of `jwtSettings` are null, if they are not set
+        // It is possible that some properties of `sessionSettings` are null, if they are not set
         // so we need to validate
-        if (!jwtSettings.Validate())
-            throw new InvalidOperationException("Jwt-settings are invalid.");
+        if (!sessionSettings.Validate())
+            throw new InvalidOperationException("Session-settings are invalid.");
 
-        // Inject the jwt settings
-        services.AddSingleton(Options.Create(jwtSettings));
+        // Inject the session settings
+        services.AddSingleton<ISessionSettings>(sessionSettings);
+
+        services.AddScoped<ISessionCookieService, SessionCookieService>();
 
         // Token generator
         // Signleton because we do not have a state, just one instance for all injections is enough 
-        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-
-        // Token validator
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidAudience = jwtSettings.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtSettings.Secret)
-                    )
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    // Called first, before token is read
-                    // We need to set the cookie here
-                    OnMessageReceived = ctx =>
-                    {
-                        var cookie = ctx.Request.Cookies[jwtSettings.CookieName];
-                        ctx.Token = cookie;
-                        return Task.CompletedTask;
-                    }
-                    // OnChallange set in api layer
-                };
-            });
-
+        services.AddSingleton<ISessionTokenGenerator, SessionTokenGenerator>();
         services.AddHttpContextAccessor();  // Because UserContext uses IHttpContextAccessor
         services.AddScoped<IUserContext, UserContext>();
 

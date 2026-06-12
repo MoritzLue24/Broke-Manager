@@ -2,10 +2,10 @@ using Application.Features.Auth.Common;
 using Domain.Common;
 using MediatR;
 
-namespace Application.Features.Auth.Queries.Login;
+namespace Application.Features.Auth.Commands.Login;
 
 /// <summary>
-/// Gets the user from the database and generates a jwt.
+/// Gets the user from the database and creates a session
 /// </summary>
 /// 
 /// <param name="Email">The users email, in valid email format</param>
@@ -18,9 +18,7 @@ namespace Application.Features.Auth.Queries.Login;
 ///     <item>InvalidCredentialsError - When email or password is incorrect</item>
 /// </list>
 /// </returns>
-public record LoginQuery(
+public record LoginCommand(
     string Email,
     string Password
 ) : IRequest<Result<AuthResult>>;
-
-// TODO: LoginCommand Validation

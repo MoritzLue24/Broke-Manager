@@ -1,13 +1,13 @@
 using Api.Errors;
+using Application.Common.Interfaces.Security;
+using Application.Features.Auth.Commands.Login;
+using Application.Features.Auth.Commands.Logout;
 using Application.Features.Auth.Commands.Register;
-using Application.Features.Auth.Queries.Login;
 using Contracts.Features.Auth;
 using Contracts.Features.Users;
-using Infrastructure.Security;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Api.Controllers;
 
@@ -17,27 +17,36 @@ public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
-    private readonly JwtSettings _jwtSettings;
+    private readonly ISessionSettings _sessionSettings;
+    private readonly ISessionCookieService _sessionCookieService;
 
-    public AuthController(IMediator mediator, IMapper mapper, IOptions<JwtSettings> jwtSettings)
+    public AuthController(
+        IMediator mediator,
+        IMapper mapper,
+        ISessionSettings sessionSettings,
+        ISessionCookieService sessionCookieService)
     {
         this._mediator = mediator;
         this._mapper = mapper;
-        this._jwtSettings = jwtSettings.Value;
+        this._sessionSettings = sessionSettings;
+        this._sessionCookieService = sessionCookieService;
     }
 
-    private void SetAuthCookie(string token)
+    private void SetSessionCookie(Guid sessionId, string sessionToken)
         => this.Response.Cookies.Append(
-            this._jwtSettings.CookieName,
-            token,
+            this._sessionSettings.CookieName,
+            this._sessionCookieService.CreateCookieValue(sessionId, sessionToken),
             new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
-                Expires = DateTime.Now.AddMinutes(this._jwtSettings.ExpiryMinutes)
+                Expires = DateTime.Now.AddHours(this._sessionSettings.ExpiryHours)
             }
         );
+
+    private void DeleteSessionCookie()
+        => this.Response.Cookies.Delete(this._sessionSettings.CookieName);
 
     [HttpPost("register")]
     public async Task<ActionResult<UserResponse>> Register(
@@ -47,31 +56,42 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<UserResponse>>(
-            authResult =>
-            {
-                this.SetAuthCookie(authResult.Token);
-                // TODO: Change to created at action
-                return this.Created(
-                    string.Empty,
-                    this._mapper.Map<UserResponse>(authResult)
-                );
-            },
+            userResult => this.Created(
+                string.Empty,
+                this._mapper.Map<UserResponse>(userResult)
+            ),
             errors => errors.ToProblem(this)
         );
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(
+    public async Task<ActionResult<UserResponse>> Login(
         [FromBody] LoginRequest request)
     {
-        var query = this._mapper.Map<LoginQuery>(request);
-        var result = await this._mediator.Send(query);
+        var command = this._mapper.Map<LoginCommand>(request);
+        var result = await this._mediator.Send(command);
 
-        return result.Match<IActionResult>(
+        return result.Match<ActionResult<UserResponse>>(
             authResult =>
             {
-                this.SetAuthCookie(authResult.Token);
-                return this.Ok(this._mapper.Map<UserResponse>(authResult));
+                this.SetSessionCookie(authResult.SessionId, authResult.SessionToken);
+                return this.Ok(this._mapper.Map<UserResponse>(authResult.UserResult));
+            },
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var command = new LogoutCommand();
+        var result = await this._mediator.Send(command);
+
+        return result.Match<IActionResult>(
+            unit =>
+            {
+                this.DeleteSessionCookie();
+                return this.NoContent();
             },
             errors => errors.ToProblem(this)
         );
