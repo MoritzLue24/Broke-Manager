@@ -1,8 +1,8 @@
 using Api.Errors;
-using Application.Common.Interfaces.Security;
 using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.Logout;
 using Application.Features.Auth.Commands.Register;
+using Application.Features.Auth.Interfaces;
 using Contracts.Features.Auth;
 using Contracts.Features.Users;
 using MapsterMapper;
@@ -45,9 +45,6 @@ public class AuthController : ControllerBase
             }
         );
 
-    private void DeleteSessionCookie()
-        => this.Response.Cookies.Delete(this._sessionSettings.CookieName);
-
     [HttpPost("register")]
     public async Task<ActionResult<UserResponse>> Register(
         [FromBody] RegisterRequest request)
@@ -88,11 +85,7 @@ public class AuthController : ControllerBase
         var result = await this._mediator.Send(command);
 
         return result.Match<IActionResult>(
-            unit =>
-            {
-                this.DeleteSessionCookie();
-                return this.NoContent();
-            },
+            unit => this.NoContent(),
             errors => errors.ToProblem(this)
         );
     }

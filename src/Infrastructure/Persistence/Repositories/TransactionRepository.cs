@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Features.Transactions.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

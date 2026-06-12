@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Security;
+using Application.Common.Behaviors;
 using Domain.Common;
 using Domain.Enums;
 using MediatR;

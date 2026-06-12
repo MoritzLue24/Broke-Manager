@@ -1,4 +1,4 @@
-namespace Application.Common.Interfaces.Security;
+namespace Application.Features.Auth.Interfaces;
 
 public interface ISessionSettings
 {

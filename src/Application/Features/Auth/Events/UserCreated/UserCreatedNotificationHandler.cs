@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Features.Categories.Interfaces;
 using Domain.Entities;
 using MediatR;
 

@@ -1,6 +1,6 @@
 using Domain.Enums;
 
-namespace Application.Common.Interfaces.Security;
+namespace Application.Common.Behaviors;
 
 // Add this to a query / command to restrict execution permission
 public interface IRequireAuthorization

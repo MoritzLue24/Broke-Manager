@@ -1,7 +1,8 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
-using Application.Features.Users.Common;
+using Application.Features.Users.Contracts;
+using Application.Features.Users.Interfaces;
 using Domain.Common;
 using Domain.Entities;
 using Domain.ValueObjects;

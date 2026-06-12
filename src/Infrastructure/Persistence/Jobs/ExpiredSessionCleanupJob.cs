@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Features.Auth.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Security;
-using Application.Features.Categories.Common;
+using Application.Common.Behaviors;
+using Application.Features.Categories.Contracts;
 using Domain.Common;
 using Domain.Enums;
 using MediatR;

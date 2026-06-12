@@ -1,9 +1,12 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
-using Application.Features.Auth.Common;
-using Application.Features.Users.Common;
+using Application.Features.Auth.Contracts;
+using Application.Features.Auth.Interfaces;
+using Application.Features.Users.Contracts;
+using Application.Features.Users.Interfaces;
 using Domain.Common;
+using Domain.Entities;
 using Domain.ValueObjects;
 using MediatR;
 
@@ -14,7 +17,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
     private readonly IUnitOfWork _uow;
     private readonly ISessionRepository _sessionRepo;
     private readonly IUserRepository _userRepo;
-    private readonly ISessionTokenGenerator _tokenGenerator;
+    private readonly ITokenGenerator _tokenGenerator;
     private readonly IHasher _hasher;
     private readonly ISessionSettings _sessionSettings;
 
@@ -22,7 +25,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
         IUnitOfWork uow,
         ISessionRepository sessionRepo,
         IUserRepository userRepo,
-        ISessionTokenGenerator tokenGenerator,
+        ITokenGenerator tokenGenerator,
         IHasher hasher,
         ISessionSettings sessionSettings)
     {

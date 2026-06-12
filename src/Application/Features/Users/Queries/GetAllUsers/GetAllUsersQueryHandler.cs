@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Features.Users.Common;
+using Application.Features.Users.Contracts;
+using Application.Features.Users.Interfaces;
 using Domain.Common;
 using MediatR;
 

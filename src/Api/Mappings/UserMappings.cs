@@ -1,7 +1,7 @@
 using Application.Features.Users.Commands.ChangePassword;
 using Application.Features.Users.Commands.ChangeRole;
 using Application.Features.Users.Commands.UpdateCurrentUser;
-using Application.Features.Users.Common;
+using Application.Features.Users.Contracts;
 using Contracts.Features.Users;
 using Mapster;
 

@@ -1,7 +1,6 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
-using Application.Features.Categories.Common;
-using Application.Features.Transactions.Common;
+using Application.Features.Categories.Contracts;
+using Application.Features.Categories.Interfaces;
 using Domain.Common;
 using MediatR;
 

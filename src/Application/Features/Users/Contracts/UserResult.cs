@@ -1,11 +1,8 @@
 using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Features.Users.Common;
+namespace Application.Features.Users.Contracts;
 
-/// Basic transaction result. Other dtos like 
-/// CreateDto, UpdateDto are now Commands / Queries.
-/// Maybe later more Dtos, like TransactionDetailResult
 public record UserResult(
     Guid Id,
     string Email,

@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Common.Interfaces.Persistence;
+namespace Application.Features.Categories.Interfaces;
 
 public interface ICategoryRepository
 {

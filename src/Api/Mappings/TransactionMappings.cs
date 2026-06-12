@@ -1,6 +1,6 @@
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Application.Features.Transactions.Commands.UpdateTransaction;
-using Application.Features.Transactions.Common;
+using Application.Features.Transactions.Contracts;
 using Contracts.Features.Transactions;
 using Mapster;
 

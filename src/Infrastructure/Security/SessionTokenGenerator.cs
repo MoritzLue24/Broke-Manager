@@ -3,7 +3,7 @@ using Application.Common.Interfaces.Security;
 
 namespace Infrastructure.Security;
 
-public class SessionTokenGenerator : ISessionTokenGenerator
+public class TokenGenerator : ITokenGenerator
 {
     public string GenToken()
     {

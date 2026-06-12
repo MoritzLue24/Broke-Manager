@@ -1,6 +1,6 @@
-using Application.Features.Auth.Common;
+using Application.Features.Auth.Contracts;
 
-namespace Application.Common.Interfaces.Security;
+namespace Application.Features.Auth.Interfaces;
 
 public interface ISessionCookieService
 {

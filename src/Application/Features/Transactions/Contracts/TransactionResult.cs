@@ -1,7 +1,7 @@
 using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Features.Transactions.Common;
+namespace Application.Features.Transactions.Contracts;
 
 /// Basic transaction result. Other dtos like 
 /// CreateDto, UpdateDto are now Commands / Queries.

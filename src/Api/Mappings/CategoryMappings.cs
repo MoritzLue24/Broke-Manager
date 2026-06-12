@@ -1,6 +1,6 @@
 using Application.Features.Categories.Commands.CreateCategory;
 using Application.Features.Categories.Commands.UpdateCategory;
-using Application.Features.Categories.Common;
+using Application.Features.Categories.Contracts;
 using Contracts.Features.Categories;
 using Mapster;
 

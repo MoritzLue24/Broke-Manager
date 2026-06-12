@@ -1,4 +1,4 @@
-using Application.Features.MatchingRules.Common;
+using Application.Features.MatchingRules.Contracts;
 using Contracts.Features.MatchingRules;
 using Mapster;
 

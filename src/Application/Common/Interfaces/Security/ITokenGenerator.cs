@@ -1,6 +1,6 @@
 namespace Application.Common.Interfaces.Security;
 
-public interface ISessionTokenGenerator
+public interface ITokenGenerator
 {
     string GenToken();
 }

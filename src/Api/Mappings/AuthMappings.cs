@@ -1,6 +1,6 @@
 using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.Register;
-using Application.Features.Auth.Common;
+using Application.Features.Auth.Contracts;
 using Contracts.Features.Auth;
 using Contracts.Features.Users;
 using Mapster;

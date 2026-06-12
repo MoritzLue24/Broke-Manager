@@ -1,7 +1,7 @@
-using Application.Features.MatchingRules.Common;
+using Application.Features.MatchingRules.Contracts;
 using Domain.Entities;
 
-namespace Application.Features.Categories.Common;
+namespace Application.Features.Categories.Contracts;
 
 public record CategoryResult(
     Guid Id,

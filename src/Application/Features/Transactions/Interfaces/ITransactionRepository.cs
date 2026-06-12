@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Common.Interfaces.Persistence;
+namespace Application.Features.Transactions.Interfaces;
 
 public interface ITransactionRepository
 {

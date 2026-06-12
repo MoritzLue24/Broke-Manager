@@ -1,6 +1,7 @@
+using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Features.Auth.Common;
+namespace Application.Features.Auth.Contracts;
 
 public record SessionResult(
     Guid Id,

@@ -1,6 +1,6 @@
-using Application.Features.Auth.Common;
+using Domain.Entities;
 
-namespace Application.Common.Interfaces.Persistence;
+namespace Application.Features.Auth.Interfaces;
 
 public interface ISessionRepository
 {

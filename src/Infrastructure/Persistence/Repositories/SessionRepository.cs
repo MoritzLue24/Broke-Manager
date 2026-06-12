@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Features.Auth.Common;
+using Application.Features.Auth.Interfaces;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;

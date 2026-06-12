@@ -1,5 +1,9 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
+using Application.Features.Auth.Interfaces;
+using Application.Features.Categories.Interfaces;
+using Application.Features.Transactions.Interfaces;
+using Application.Features.Users.Interfaces;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Jobs;
@@ -77,7 +81,7 @@ public static class DependencyInjection
 
         // Token generator
         // Signleton because we do not have a state, just one instance for all injections is enough 
-        services.AddSingleton<ISessionTokenGenerator, SessionTokenGenerator>();
+        services.AddSingleton<ITokenGenerator, TokenGenerator>();
         services.AddHttpContextAccessor();  // Because UserContext uses IHttpContextAccessor
         services.AddScoped<IUserContext, UserContext>();
 

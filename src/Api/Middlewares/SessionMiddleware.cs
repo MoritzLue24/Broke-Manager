@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Security;
-using Application.Features.Auth.Common;
+using Application.Features.Auth.Contracts;
+using Application.Features.Auth.Interfaces;
 
 namespace Api.Middlewares;
 

@@ -3,7 +3,7 @@ using Domain.Common.Models;
 using Domain.Enums;
 using Domain.ValueObjects;
 
-namespace Application.Features.Auth.Common;
+namespace Domain.Entities;
 
 public class Session : Entity
 {

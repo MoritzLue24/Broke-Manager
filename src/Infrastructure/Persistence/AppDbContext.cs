@@ -1,4 +1,3 @@
-using Application.Features.Auth.Common;
 using Domain.Common.Models;
 using Domain.Entities;
 using Infrastructure.Persistence.Interceptors;

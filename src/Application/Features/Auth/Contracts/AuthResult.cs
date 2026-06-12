@@ -1,6 +1,6 @@
-using Application.Features.Users.Common;
+using Application.Features.Users.Contracts;
 
-namespace Application.Features.Auth.Common;
+namespace Application.Features.Auth.Contracts;
 
 public record AuthResult(
     UserResult UserResult,

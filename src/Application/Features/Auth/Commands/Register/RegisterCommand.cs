@@ -1,4 +1,4 @@
-using Application.Features.Users.Common;
+using Application.Features.Users.Contracts;
 using Domain.Common;
 using MediatR;
 
