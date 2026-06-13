@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Application.Common.Events;
+namespace Application.Common.Events.Handlers;
 
 public class UnhandledEventNotificationHandler : INotificationHandler<UnhandledEventNotification>
 {

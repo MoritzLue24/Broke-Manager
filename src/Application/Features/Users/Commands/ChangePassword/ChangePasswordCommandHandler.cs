@@ -50,6 +50,8 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         if (!changeResult.Success)
             return changeResult.Cast<Unit>();
 
+        Console.WriteLine($"PASSWORD CHANGED TO: {request.NewPassword}");
+
         await this._uow.SaveChangesAsync(cancellationToken);
         return Unit.Value;
     }

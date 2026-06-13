@@ -17,4 +17,6 @@ public interface ISessionRepository
     Task DirectDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default);
 
     Task DirectDeleteExpiredAsync(CancellationToken ct = default);
+
+    Task DeleteAllByUserAsync(Guid userId, CancellationToken ct = default);
 }

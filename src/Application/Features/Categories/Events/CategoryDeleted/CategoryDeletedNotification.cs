@@ -7,7 +7,7 @@ public record CategoryDeletedNotification(
     Guid CategoryId
 ) : INotification;
 
-public static class CategoryDeletedExtension
+public static class CategoryDeletedEventExtension
 {
     public static CategoryDeletedNotification ToNotification(this CategoryDeletedEvent e)
         => new(e.CategoryId);

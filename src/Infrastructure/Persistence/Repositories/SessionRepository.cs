@@ -52,7 +52,17 @@ public class SessionRepository : ISessionRepository
     }
 
     public async Task DirectDeleteExpiredAsync(CancellationToken ct = default)
-    => await this._dbContext.Sessions
-        .Where(s => s.ExpiresAt <= DateTime.UtcNow)
-        .ExecuteDeleteAsync(ct);
+        => await this._dbContext.Sessions
+            .Where(s => s.ExpiresAt <= DateTime.UtcNow)
+            .ExecuteDeleteAsync(ct);
+
+    public async Task DeleteAllByUserAsync(Guid userId, CancellationToken ct = default)
+    {
+        var sessions = await this._dbContext.Sessions
+            .Where(s => s.UserId == userId)
+            .ToListAsync(ct);
+
+        this._dbContext.Sessions
+            .RemoveRange(sessions);
+    }
 }
