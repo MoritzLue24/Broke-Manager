@@ -12,7 +12,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         // Id
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Id).HasColumnName("id");
+        builder.Property(u => u.Id)
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         // Email
         builder.OwnsOne(u => u.Email, nav =>

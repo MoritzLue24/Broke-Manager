@@ -12,7 +12,9 @@ public class MatchingRuleConfiguration : IEntityTypeConfiguration<MatchingRule>
 
         // Id
         builder.HasKey(r => r.Id);
-        builder.Property(r => r.Id).HasColumnName("id");
+        builder.Property(r => r.Id)
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         // FK wird über shadow property gesetzt
         builder.Property<Guid>("category_id");

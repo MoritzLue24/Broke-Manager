@@ -12,7 +12,9 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         // Id
         builder.HasKey(t => t.Id);
-        builder.Property(t => t.Id).HasColumnName("id");
+        builder.Property(t => t.Id)
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         // UserId
         builder.Property(t => t.UserId).HasColumnName("user_id");

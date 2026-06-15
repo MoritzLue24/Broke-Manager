@@ -14,7 +14,9 @@ public class SessionConfiguration : IEntityTypeConfiguration<Session>
 
         // Id
         builder.HasKey(s => s.Id);
-        builder.Property(s => s.Id).HasColumnName("id");
+        builder.Property(s => s.Id)
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         // UserId
         builder.Property(s => s.UserId).HasColumnName("user_id");

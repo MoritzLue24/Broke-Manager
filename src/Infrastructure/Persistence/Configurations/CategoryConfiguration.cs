@@ -12,7 +12,9 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 
         // Id
         builder.HasKey(c => c.Id);
-        builder.Property(c => c.Id).HasColumnName("id");
+        builder.Property(c => c.Id)
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         // UserId
         builder.Property(c => c.UserId).HasColumnName("user_id");
