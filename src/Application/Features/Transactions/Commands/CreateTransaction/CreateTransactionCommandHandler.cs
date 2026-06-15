@@ -1,6 +1,8 @@
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Security;
+using Application.Features.AutoAssign.Contracts;
+using Application.Features.AutoAssign.Services;
 using Application.Features.Categories.Interfaces;
 using Application.Features.Transactions.Contracts;
 using Application.Features.Transactions.Interfaces;
@@ -12,7 +14,7 @@ using MediatR;
 namespace Application.Features.Transactions.Commands.CreateTransaction;
 
 // TODO: Use IUserContext
-public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Result<TransactionResult>>
+public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Result<AutoAssignResult>>
 {
     private readonly IUserContext _userContext;
     private readonly IUnitOfWork _uow;
@@ -31,7 +33,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         this._categoryRepo = categoryRepo;
     }
 
-    public async Task<Result<TransactionResult>> Handle(
+    public async Task<Result<AutoAssignResult>> Handle(
         CreateTransactionCommand request,
         CancellationToken cancellationToken)
     {
@@ -48,13 +50,15 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
             categoryId = request.CategoryId.Value;
             categorySource = CategorySource.Manual;
         }
-        // No category specified -> (later auto-categorize) -> source = Unmatched with default category
+        // No category specified
         else
         {
             // Get default category
             Guid? categoryIdRes = await this._categoryRepo.GetDefaultIdByUserIdAsync(userId, cancellationToken);
             if (categoryIdRes is null)
                 return new DefaultCategoryNotFoundError();
+
+            // Temporarly set category to default category, use this id later for in auto-categorization
             categoryId = categoryIdRes.Value;
             categorySource = CategorySource.Unmatched;
         }
@@ -79,10 +83,32 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         // For now, the errors are basically the same but we dont want to
         // pass domain errors into the Api layer
         if (!domainResult.Success)
-            return domainResult.Cast<TransactionResult>();
+            return domainResult.Cast<AutoAssignResult>();
+
+        var transaction = domainResult.Value;
+        var result = new AutoAssignResult(transaction.ToResult(), null);
+
+        // Auto assign when no category specified
+        if (!request.CategoryId.HasValue)
+        {
+            var categories = await this._categoryRepo.GetAllByUserIdAsync(userId, cancellationToken);
+            var match = AutoAssignService.FindMatch(transaction, categories, transaction.CategoryId);
+
+            if (match.CategoryId != transaction.CategoryId)
+            {
+                var changeCategoryResult = transaction.ChangeCategory(match.CategoryId, match.CategorySource);
+                if (!changeCategoryResult.Success)
+                    return changeCategoryResult.Cast<AutoAssignResult>();                
+            }
+
+            if (match.ConflictingCategories is not null)
+                result = new(transaction.ToResult(), match.ConflictingCategories);
+            else
+                result = new(transaction.ToResult(), null);
+        }
 
         this._transactionRepo.Add(domainResult.Value);
         await this._uow.SaveChangesAsync(cancellationToken);
-        return domainResult.Cast(t => t.ToResult());
+        return result;
     }
 }

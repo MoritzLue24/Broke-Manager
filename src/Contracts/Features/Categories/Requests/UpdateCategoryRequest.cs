@@ -1,4 +1,4 @@
-namespace Contracts.Features.Categories;
+namespace Contracts.Features.Categories.Requests;
 
 public record UpdateCategoryRequest(
     string? Name

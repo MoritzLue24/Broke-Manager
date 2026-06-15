@@ -2,7 +2,8 @@ using Application.Features.Users.Commands.ChangePassword;
 using Application.Features.Users.Commands.ChangeRole;
 using Application.Features.Users.Commands.UpdateCurrentUser;
 using Application.Features.Users.Contracts;
-using Contracts.Features.Users;
+using Contracts.Features.Users.Requests;
+using Contracts.Features.Users.Responses;
 using Mapster;
 
 namespace Api.Mappings;

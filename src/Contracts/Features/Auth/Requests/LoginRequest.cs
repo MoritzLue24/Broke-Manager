@@ -1,4 +1,4 @@
-namespace Contracts.Features.Auth;
+namespace Contracts.Features.Auth.Requests;
 
 public record LoginRequest(
     string Email,

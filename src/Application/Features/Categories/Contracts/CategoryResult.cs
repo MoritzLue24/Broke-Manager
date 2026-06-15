@@ -1,4 +1,4 @@
-using Application.Features.MatchingRules.Contracts;
+using Application.Features.AutoAssign.Contracts;
 using Domain.Entities;
 
 namespace Application.Features.Categories.Contracts;

@@ -1,5 +1,5 @@
 using Application.Common.Behaviors;
-using Application.Features.Transactions.Contracts;
+using Application.Features.AutoAssign.Contracts;
 using Domain.Common;
 using Domain.Enums;
 using MediatR;
@@ -14,7 +14,7 @@ public record CreateTransactionCommand(
     string Title,
     string Description,
     string CounterParty
-) : IRequest<Result<TransactionResult>>, IRequireAuthorization
+) : IRequest<Result<AutoAssignResult>>, IRequireAuthorization
 {
     // Admins and Users can execute this command
     // (not both roles are needed)

@@ -5,19 +5,19 @@ info:
 
 http:
   method: POST
-  url: "{{baseUrl}}/categories/:categoryId/rules"
+  url: Haushalt{{baseUrl}}/categories/:categoryId/rules
   headers:
     - name: Content-Type
       value: application/json
   params:
     - name: categoryId
-      value: 037a560d-d8a3-4239-8c5c-7fbe14548106
+      value: 3c30b5ee-c3d4-4ac9-a619-a0fe0b17bd4d
       type: path
   body:
     type: json
     data: |-
       {
-        "keyword": "Aldi"
+        "keyword": "DisneyPlus"
       }
   auth: inherit
 

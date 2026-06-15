@@ -1,8 +1,8 @@
 using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.Register;
 using Application.Features.Auth.Contracts;
-using Contracts.Features.Auth;
-using Contracts.Features.Users;
+using Contracts.Features.Auth.Requests;
+using Contracts.Features.Users.Responses;
 using Mapster;
 
 namespace Api.Mappings;

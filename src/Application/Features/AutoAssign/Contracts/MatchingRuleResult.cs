@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Features.MatchingRules.Contracts;
+namespace Application.Features.AutoAssign.Contracts;
 
 public record MatchingRuleResult(
     Guid Id,

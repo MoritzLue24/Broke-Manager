@@ -13,12 +13,6 @@ http:
     type: json
     data: |-
       {
-        "amount": 50,
-        "type": "Expense",
-        "date": "2026-06-02",
-        "title": "PH 3",
-        "description": "",
-        "counterParty": ""
       }
   auth: inherit
 

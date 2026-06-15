@@ -1,10 +1,14 @@
 using Api.Errors;
+using Application.Features.AutoAssign.Commands.AutoAssign;
 using Application.Features.Transactions.Commands.CreateTransaction;
 using Application.Features.Transactions.Commands.DeleteTransaction;
 using Application.Features.Transactions.Commands.UpdateTransaction;
 using Application.Features.Transactions.Queries.GetTransaction;
 using Application.Features.Transactions.Queries.GetTransactionsByUser;
-using Contracts.Features.Transactions;
+using Contracts.Features.AutoAssign.Requests;
+using Contracts.Features.AutoAssign.Responses;
+using Contracts.Features.Transactions.Requests;
+using Contracts.Features.Transactions.Responses;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -50,15 +54,14 @@ public class TransactionController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<TransactionResponse>> Create(
+    public async Task<ActionResult<AutoAssignResponse>> Create(
         [FromBody] CreateTransactionRequest createRequest)
     {
         var command = this._mapper.Map<CreateTransactionCommand>(createRequest);
         var result = await this._mediator.Send(command);
 
-        return result.Match<ActionResult<TransactionResponse>>(
-            // FIXME: Change to CreatedAtAction?
-            transactionResult => this.Created(string.Empty, this._mapper.Map<TransactionResponse>(transactionResult)),
+        return result.Match<ActionResult<AutoAssignResponse>>(
+            autoAssignResult => this.Created(string.Empty, this._mapper.Map<AutoAssignResponse>(autoAssignResult)),
             errors => errors.ToProblem(this)
         );
     }
@@ -86,6 +89,21 @@ public class TransactionController : ControllerBase
 
         return result.Match<IActionResult>(
             unit => this.NoContent(),
+            errors => errors.ToProblem(this)
+        );
+    }
+
+    [HttpPost("auto-assign")]
+    public async Task<ActionResult<List<AutoAssignResponse>>> AutoAssign(
+        [FromBody] AutoAssignRequest request)
+    {
+        var command = this._mapper.Map<AutoAssignCommand>(request);
+        var result = await this._mediator.Send(command);
+
+        return result.Match<ActionResult<List<AutoAssignResponse>>>(
+            autoAssignResults => this.Ok(autoAssignResults.Select(
+                r => this._mapper.Map<AutoAssignResponse>(r)
+            )),
             errors => errors.ToProblem(this)
         );
     }

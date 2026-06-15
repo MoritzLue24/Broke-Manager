@@ -1,4 +1,4 @@
-namespace Contracts.Features.Transactions;
+namespace Contracts.Features.Transactions.Requests;
 
 public record UpdateTransactionRequest(
     Guid? CategoryId,

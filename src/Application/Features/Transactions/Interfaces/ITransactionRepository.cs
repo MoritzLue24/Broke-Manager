@@ -10,6 +10,14 @@ public interface ITransactionRepository
 
     Task<List<Transaction>> GetAllByCategoryIdAsync(Guid categoryId, CancellationToken ct = default);
 
+    Task<List<Transaction>> GetWithFilterAsync(
+        Guid userId,
+        IReadOnlyCollection<Guid>? transactionIds,
+        IReadOnlyCollection<Guid>? categoryIds,
+        DateOnly? from,
+        DateOnly? to,
+        CancellationToken ct = default);
+
     void Add(Transaction transaction);
 
     void Delete(Transaction transaction);

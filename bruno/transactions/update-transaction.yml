@@ -17,7 +17,6 @@ http:
     type: json
     data: |-
       {
-        "type": "Income"
       }
   auth: inherit
 

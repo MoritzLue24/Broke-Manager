@@ -1,4 +1,4 @@
-namespace Contracts.Features.Users;
+namespace Contracts.Features.Users.Responses;
 
 public record UserResponse(
     Guid Id,

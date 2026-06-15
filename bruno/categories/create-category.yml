@@ -13,8 +13,8 @@ http:
     type: json
     data: |-
       {
-        "name": "Essen",
-        "keywords": ["rewe", "edeka"]
+        "name": "Haushalt",
+        "keywords": ["Ikea"]
       }
   auth: inherit
 

@@ -1,0 +1,15 @@
+info:
+  name: logout
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: 7d9ee9ee-a2b9-4d19-aff2-6075f12ff5e2{{baseUrl}}/auth/logout
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

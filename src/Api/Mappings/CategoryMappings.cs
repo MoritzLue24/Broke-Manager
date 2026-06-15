@@ -1,7 +1,8 @@
 using Application.Features.Categories.Commands.CreateCategory;
 using Application.Features.Categories.Commands.UpdateCategory;
 using Application.Features.Categories.Contracts;
-using Contracts.Features.Categories;
+using Contracts.Features.Categories.Responses;
+using Contracts.Features.Categories.Requests;
 using Mapster;
 
 namespace Api.Mappings;

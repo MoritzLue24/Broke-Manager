@@ -19,6 +19,12 @@ public class CategoryRepository : ICategoryRepository
             .Include("_matchingRules")
             .ToListAsync(ct);
 
+    public async Task<List<Category>> GetAllWithIdsAsync(Guid userId, IReadOnlyCollection<Guid> categoryIds, CancellationToken ct = default)
+        => await this._dbContext.Categories
+            .Where(c => c.UserId == userId)
+            .Where(c => categoryIds.Contains(c.Id))
+            .ToListAsync(ct);
+
     public async Task<Category?> GetByIdAsync(Guid categoryId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.Id == categoryId)

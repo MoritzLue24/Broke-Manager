@@ -1,4 +1,4 @@
-namespace Contracts.Features.Transactions;
+namespace Contracts.Features.Transactions.Responses;
 
 public record TransactionResponse(
     Guid Id,

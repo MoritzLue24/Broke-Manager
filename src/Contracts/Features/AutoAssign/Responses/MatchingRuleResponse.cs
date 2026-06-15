@@ -1,4 +1,4 @@
-namespace Contracts.Features.MatchingRules;
+namespace Contracts.Features.AutoAssign.Responses;
 
 public record MatchingRuleResponse(
     Guid Id,

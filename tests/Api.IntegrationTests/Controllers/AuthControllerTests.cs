@@ -6,7 +6,6 @@ using System.Text;
 using Api.IntegrationTests.TestInfrastructure.Controllers;
 using Contracts.Features.Auth;
 using Contracts.Features.Users;
-using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

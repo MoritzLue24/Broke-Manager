@@ -26,6 +26,29 @@ public class TransactionRepository : ITransactionRepository
             .Where(t => t.CategoryId == categoryId)
             .ToListAsync(ct);
 
+    public async Task<List<Transaction>> GetWithFilterAsync(
+        Guid userId,
+        IReadOnlyCollection<Guid>? transactionIds,
+        IReadOnlyCollection<Guid>? categoryIds,
+        DateOnly? from,
+        DateOnly? to,
+        CancellationToken ct = default)
+    {
+        var query = this._dbContext.Transactions.AsQueryable()
+            .Where(t => t.UserId == userId);
+
+        if (transactionIds is not null)
+            query = query.Where(t => transactionIds.Contains(t.Id));
+        if (categoryIds is not null)
+            query = query.Where(t => categoryIds.Contains(t.CategoryId));
+        if (from.HasValue)
+            query = query.Where(t => t.Date >= from.Value);
+        if (to.HasValue)
+            query = query.Where(t => t.Date <= to.Value);
+        
+        return await query.ToListAsync(ct);
+    }
+
     public void Add(Transaction transaction)
         => this._dbContext.Transactions.Add(transaction);
 

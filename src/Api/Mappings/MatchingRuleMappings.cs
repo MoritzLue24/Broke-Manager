@@ -1,5 +1,5 @@
-using Application.Features.MatchingRules.Contracts;
-using Contracts.Features.MatchingRules;
+using Application.Features.AutoAssign.Contracts;
+using Contracts.Features.AutoAssign.Responses;
 using Mapster;
 
 namespace Api.Mappings;

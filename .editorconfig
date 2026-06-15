@@ -44,6 +44,12 @@ csharp_using_directive_placement = outside_namespace:warning
 # Unnecessary usings — fail the build
 dotnet_diagnostic.IDE0005.severity = error
 
+# Wrong namespace paths
+dotnet_diagnostic.IDE0130.severity = error
+
+# Substring can be simplified
+dotnet_diagnostic.IDE0057.severity = none
+
 
 # ------------------
 # --- FORMATTING ---

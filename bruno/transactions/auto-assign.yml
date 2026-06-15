@@ -1,11 +1,11 @@
 info:
-  name: login
+  name: auto-assign
   type: http
-  seq: 2
+  seq: 6
 
 http:
   method: POST
-  url: "{{baseUrl}}/auth/login"
+  url: "{{baseUrl}}/transactions/auto-assign"
   headers:
     - name: Content-Type
       value: application/json
@@ -13,8 +13,10 @@ http:
     type: json
     data: |-
       {
-        "email": "valid@email.com",
-        "password": "Asd2401!"
+        "filter": {
+          "transactionIds": ["7d9ee9ee-a2b9-4d19-aff2-6075f12ff5e2"]
+        },
+        "overwriteManual": false
       }
   auth: inherit
 
