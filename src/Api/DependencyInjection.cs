@@ -17,7 +17,6 @@ public static class DependencyInjection
         services.AddProblemDetails();   // To inject `IProblemDetailsService` to `ExceptionMiddleware`
         services.AddControllers();
         services.ConfigureOptions<InvalidModelStateConfiguration>(); // For custom problem responses for Mapping errors
-        services.ConfigureOptions<JwtBearerOptionsConfiguration>(); // For custom unauthorized response
         return services;
     }
 }
