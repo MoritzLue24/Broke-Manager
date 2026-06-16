@@ -14,9 +14,9 @@ public interface ISessionRepository
 
     void Delete(Session session);
 
-    Task DirectDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default);
+    Task ExecuteDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default);
 
-    Task DirectDeleteExpiredAsync(CancellationToken ct = default);
+    Task ExecuteDeleteExpiredAsync(CancellationToken ct = default);
 
     Task DeleteAllByUserAsync(Guid userId, CancellationToken ct = default);
 }

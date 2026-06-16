@@ -35,7 +35,7 @@ public class SessionRepository : ISessionRepository
     public void Delete(Session session)
         => this._dbContext.Sessions.Remove(session);
 
-    public async Task DirectDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default)
+    public async Task ExecuteDeleteMostInactiveByUser(Guid userId, CancellationToken ct = default)
     {
         var oldestId = await this._dbContext.Sessions
             .Where(s => s.UserId == userId && s.ExpiresAt > DateTime.UtcNow)
@@ -51,7 +51,7 @@ public class SessionRepository : ISessionRepository
         }
     }
 
-    public async Task DirectDeleteExpiredAsync(CancellationToken ct = default)
+    public async Task ExecuteDeleteExpiredAsync(CancellationToken ct = default)
         => await this._dbContext.Sessions
             .Where(s => s.ExpiresAt <= DateTime.UtcNow)
             .ExecuteDeleteAsync(ct);
