@@ -32,10 +32,9 @@ public class SummaryQueryHandler : IRequestHandler<SummaryQuery, Result<SummaryR
         (DateOnly? from, DateOnly? to) = AnalyticsService.CalculatePeriod(range, request.Period.From, request.Period.To);
         var transactions = await this._transactionRepo.GetWithFilterAsync(userId, null, null, from, to, cancellationToken);
 
-        var balance = transactions.Sum(t => t.Type == TransactionType.Income ? t.Amount : -t.Amount);
         var income = transactions.Sum(t => t.Type == TransactionType.Income ? t.Amount : 0);
-        var expenses = transactions.Sum(t => t.Type == TransactionType.Income ? 0 : t.Amount);
+        var expenses = transactions.Sum(t => t.Type == TransactionType.Expense ? t.Amount : 0);
 
-        return new SummaryResult(balance, income, expenses);
+        return new SummaryResult(income - expenses, income, expenses);
     }
 }
