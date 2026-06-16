@@ -20,7 +20,7 @@ public class SessionCleanupJob : BackgroundService
             using var scope = this._scopeFactory.CreateScope();
             var sessionRepo = scope.ServiceProvider.GetRequiredService<ISessionRepository>();
 
-            await sessionRepo.DirectDeleteExpiredAsync(ct);
+            await sessionRepo.ExecuteDeleteExpiredAsync(ct);
             await Task.Delay(TimeSpan.FromMinutes(30), ct);
         }
     }
