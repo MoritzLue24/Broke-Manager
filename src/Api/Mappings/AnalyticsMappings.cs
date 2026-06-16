@@ -1,4 +1,5 @@
 using Application.Features.Analytics.Contracts;
+using Application.Features.Analytics.Queries.CategoryBreakdown;
 using Application.Features.Analytics.Queries.Summary;
 using Contracts.Features.Analytics.Requests;
 using Contracts.Features.Analytics.Responses;
@@ -18,5 +19,12 @@ public class AnalyticsMappings : IRegister
 
         config.NewConfig<SummaryResult, SummaryResponse>()
             .Map(dest => dest, src => src);
+
+        config.NewConfig<AnalyticsPeriodRequest, CategoryBreakdownQuery>()
+            .Map(dest => dest.Period, src => src);
+
+        config.NewConfig<CategoryBreakdownResult, CategoryBreakdownResponse>()
+            .Map(dest => dest, src => src)
+            .Map(dest => dest.Category, src => src.CategoryResult);
     }
 }
