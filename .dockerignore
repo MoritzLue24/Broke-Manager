@@ -1,0 +1,14 @@
+**/.git
+**/.github
+**/bin
+**/obj
+**/.vs
+**/.vscode
+**/.dockerignore
+**/tests
+.env
+README.md
+tmp-merge.cs
+/docs
+/scripts
+LICENSE

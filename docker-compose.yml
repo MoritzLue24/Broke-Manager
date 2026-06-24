@@ -1,0 +1,75 @@
+services:
+    api:
+        container_name: broke-manager-api
+        build:
+            context: .          
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        ports:
+            - "5180:5033"
+        networks:
+            - broke-manager-network
+        depends_on:
+            postgres:
+                condition: service_healthy 
+            migrate:
+                condition: service_completed_successfully
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    migrate:
+        container_name: broke-manger-migrate
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: build
+        restart: "no"
+        depends_on:
+            postgres:
+                condition: service_healthy
+        command: >
+            bash -c "dotnet tool install --global dotnet-ef --version 8.0.0 &&
+            /root/.dotnet/tools/dotnet-ef database update --project src/Infrastructure --startup-project src/Api --connection 'Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}'"
+        environment:
+            - ConnectionStrings__DefaultConnection=Server="${ConnectionStrings__DefaultConnection}"
+        networks:
+            - broke-manager-network
+    
+    postgres:
+        container_name: postgres
+        image: postgres:16-alpine 
+        restart: unless-stopped
+        ports:
+            - "${POSTGRES_PORT}:5432"
+        networks:
+            - broke-manager-network
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    pgadmin:
+        container_name: pgadmin
+        image: dpage/pgadmin4
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+        networks:
+            - broke-manager-network
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+
+networks:
+    broke-manager-network:
+        driver: bridge
+
+volumes:
+    postgres-data:
