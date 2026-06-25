@@ -164,12 +164,18 @@ public class Transaction : AggregateRoot
 
     public Result<Unit> ChangeDescription(string description)
     {
+        if (description is null)
+            return new TransactionDescriptionNullError();
+
         this.Description = description;
         return Unit.Value;
     }
 
     public Result<Unit> ChangeCounterParty(string counterParty)
     {
+        if (counterParty is null)
+            return new TransactionCounterPartyNullError();
+
         this.CounterParty = counterParty;
         return Unit.Value;
     }
