@@ -4,7 +4,7 @@ using Application.Common.Interfaces.Security;
 using Application.Features.Categories.Contracts;
 using Application.Features.Categories.Interfaces;
 using Domain.Common;
-using Domain.Entities;
+using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Features.Categories.Commands.AddCategoryRule;

@@ -4,6 +4,7 @@ using Application.Common.Interfaces.Security;
 using Application.Features.Categories.Contracts;
 using Application.Features.Categories.Interfaces;
 using Domain.Common;
+using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Features.Categories.Commands.RemoveCategoryRule;
@@ -35,7 +36,11 @@ public class RemoveCategoryRuleCommandHandler : IRequestHandler<RemoveCategoryRu
         if (category is null || category.UserId != userId)
             return new CategoryNotFoundError();
 
-        var removeResult = category.RemoveRule(request.RuleId);
+        var ruleResult = MatchingRule.Create(request.Keyword);
+        if (!ruleResult.Success)
+            return new RuleNotFoundError();
+
+        var removeResult = category.RemoveRule(ruleResult.Value);
         if (!removeResult.Success)
             return removeResult.Cast<CategoryResult>();
 

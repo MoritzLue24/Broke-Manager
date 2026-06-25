@@ -8,7 +8,7 @@ namespace Application.Features.Categories.Commands.RemoveCategoryRule;
 
 public record RemoveCategoryRuleCommand(
     Guid CategoryId,
-    Guid RuleId
+    string Keyword
 ) : IRequest<Result<CategoryResult>>, IRequireAuthorization
 {
     // Admins and Users can execute this command

@@ -96,12 +96,12 @@ public class CategoryController : ControllerBase
         );
     }
 
-    [HttpDelete("{categoryId}/rules/{ruleId}")]
+    [HttpDelete("{categoryId}/rules")]
     public async Task<IActionResult> RemoveRule(
         [FromRoute] Guid categoryId,
-        [FromRoute] Guid ruleId)
+        [FromQuery] RemoveRuleRequest request)
     {
-        var command = new RemoveCategoryRuleCommand(categoryId, ruleId);
+        var command = new RemoveCategoryRuleCommand(categoryId, request.Keyword);
         var result = await this._mediator.Send(command);
 
         return result.Match<IActionResult>(

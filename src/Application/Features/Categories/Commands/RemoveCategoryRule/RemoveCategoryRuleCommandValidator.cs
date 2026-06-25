@@ -9,7 +9,7 @@ public class RemoveCategoryRuleCommandValidator : AbstractValidator<RemoveCatego
         this.RuleFor(x => x.CategoryId)
             .NotEmpty();
 
-        this.RuleFor(x => x.RuleId)
+        this.RuleFor(x => x.Keyword)
             .NotEmpty();
     }
 }

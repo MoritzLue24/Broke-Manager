@@ -16,7 +16,6 @@ public class CategoryRepository : ICategoryRepository
     public async Task<List<Category>> GetAllByUserIdAsync(Guid userId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.UserId == userId)
-            .Include("_matchingRules")
             .ToListAsync(ct);
 
     public async Task<List<Category>> GetAllWithIdsAsync(Guid userId, IReadOnlyCollection<Guid> categoryIds, CancellationToken ct = default)
@@ -28,7 +27,6 @@ public class CategoryRepository : ICategoryRepository
     public async Task<Category?> GetByIdAsync(Guid categoryId, CancellationToken ct = default)
         => await this._dbContext.Categories
             .Where(c => c.Id == categoryId)
-            .Include("_matchingRules")
             .FirstOrDefaultAsync(ct);
 
     public async Task<Guid?> GetDefaultIdByUserIdAsync(Guid userId, CancellationToken ct = default)

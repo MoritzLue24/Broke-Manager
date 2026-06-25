@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -41,14 +42,23 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .HasDatabaseName("ix_categories_user_id_unique_default");
 
         // Matching rules
-        builder.Ignore(c => c.MatchingRules);
-        builder.HasMany<MatchingRule>("_matchingRules")
-            .WithOne()
-            .HasForeignKey("category_id")
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.OwnsMany(c => c.MatchingRules, b =>
+        {
+            b.ToTable("matching_rules");
+            b.UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.Navigation("_matchingRules")
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
+            // Shadow FK, VO gets loaded with category
+            b.WithOwner().HasForeignKey("category_id");
+
+            // Shadow composite primary key
+            b.HasKey("category_id", nameof(MatchingRule.Keyword));
+
+            b.Property(r => r.Keyword)
+                .IsRequired()
+                .HasColumnName("keyword")
+                .HasMaxLength(255);
+
+        });
 
 
         /*

@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.Common.Models;
 using Domain.Events.Categories;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
@@ -67,12 +68,12 @@ public class Category : AggregateRoot
         return Unit.Value;
     }
 
-    public Result<Unit> RemoveRule(Guid ruleId)
+    public Result<Unit> RemoveRule(MatchingRule rule)
     {
         if (this.IsDefault)
             return new CategoryIsDefaultError();
 
-        if (this._matchingRules.RemoveAll(r => r.Id == ruleId) == 0)
+        if (!this._matchingRules.Remove(rule))
             return new RuleNotFoundError();
 
         return Unit.Value;
