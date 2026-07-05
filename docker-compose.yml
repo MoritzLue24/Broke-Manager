@@ -29,7 +29,7 @@ services:
                 condition: service_healthy
         command: >
             bash -c "dotnet tool install --global dotnet-ef --version 8.0.0 &&
-            /root/.dotnet/tools/dotnet-ef database update --project src/Infrastructure --startup-project src/Api --connection 'Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}'"
+            /root/.dotnet/tools/dotnet-ef database update --project src/Infrastructure --connection 'Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}'"
         environment:
             - ConnectionStrings__DefaultConnection=Server="${ConnectionStrings__DefaultConnection}"
         networks:
