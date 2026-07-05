@@ -13,7 +13,7 @@ public class Session : Entity
     public IReadOnlyCollection<Role> Roles => this._roles.AsReadOnly();
     public Hash TokenHash { get; } = null!;    // Used for verification, identification -> id
     public DateTime ExpiresAt { get; }
-    public DateTime LastSeen { get; private set; }
+    public DateTime LastSeen { get; private set; } // No setter, because directly set by efcore
     public DateTime CreatedAt { get; }
 
     private Session() : base(Guid.Empty) { }
