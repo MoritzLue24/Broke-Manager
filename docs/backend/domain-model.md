@@ -139,6 +139,9 @@ classDiagram
     Transaction "n" --> "1" Category
     StandingOrder "n" --> "0/1" Category
 
+    Session --> Hash : uses
+    Session --> Role : uses
+
 	Category --> MatchingRule : uses
 	StandingOrder --> Interval : uses
     StandingOrder --> StandingOrderPause : uses
