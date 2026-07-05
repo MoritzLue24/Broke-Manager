@@ -211,7 +211,7 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("Domain.ValueObjects.MatchingRule", "MatchingRules", b1 =>
+                    b.OwnsMany("Domain.Entities.Category.MatchingRules#Domain.ValueObjects.MatchingRule", "MatchingRules", b1 =>
                         {
                             b1.Property<Guid>("category_id")
                                 .HasColumnType("uuid");
@@ -240,7 +240,7 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.ValueObjects.Hash", "TokenHash", b1 =>
+                    b.OwnsOne("Domain.Entities.Session.TokenHash#Domain.ValueObjects.Hash", "TokenHash", b1 =>
                         {
                             b1.Property<Guid>("SessionId")
                                 .HasColumnType("uuid");
@@ -253,7 +253,7 @@ namespace Infrastructure.Persistence.Migrations
 
                             b1.HasKey("SessionId");
 
-                            b1.ToTable("sessions");
+                            b1.ToTable("sessions", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("SessionId");
@@ -280,26 +280,7 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.OwnsOne("Domain.ValueObjects.Hash", "PasswordHash", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(128)
-                                .HasColumnType("character varying(128)")
-                                .HasColumnName("password_hash");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsOne("Domain.ValueObjects.Email", "Email", b1 =>
+                    b.OwnsOne("Domain.Entities.User.Email#Domain.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -316,7 +297,26 @@ namespace Infrastructure.Persistence.Migrations
                                 .IsUnique()
                                 .HasDatabaseName("ix_users_email");
 
-                            b1.ToTable("users");
+                            b1.ToTable("users", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsOne("Domain.Entities.User.PasswordHash#Domain.ValueObjects.Hash", "PasswordHash", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(128)
+                                .HasColumnType("character varying(128)")
+                                .HasColumnName("password_hash");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("users", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

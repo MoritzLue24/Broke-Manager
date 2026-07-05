@@ -21,6 +21,11 @@ public sealed record InvalidCategorySourceError : Error;
 
 public sealed record EmptyCategoryNameError : Error;
 public sealed record CategoryIsDefaultError : Error;
+
+public sealed record EmptyStandingOrderNameError : Error;
+public sealed record DateFromGreaterThanToError : Error;
+public sealed record InvalidExecutionDayError : Error;
+
 public sealed record DuplicateRuleError : Error;
 public sealed record RuleNotFoundError : Error;
 
