@@ -1,11 +1,11 @@
 # Architecture
-How our system is managed, organized, and how it interacts to keep the system maintainable, scalable and adaptable to change over time.
+How our backend is managed, organized, and how it interacts to keep the backend maintainable, scalable and adaptable to change over time.
 
 ## 1. Overview
 We have 4 distinct layers:
 - [**Api:**](api.md) Boundary to the outside world, communicates with the frontend
-- **Application:** All application logic and use cases
-- [**Infrastructure:**](infrastructure.md) Technical implementations such as persistence (DB access), JWT tokens, hashing
+- **Application:** All application logic and use cases, orchestrates, validates, authorizes
+- [**Infrastructure:**](infrastructure.md) Technical implementations such as persistence (DB access), Tokens, hashing, logging, etc. Implements interfaces defined in Application layer.
 - [**Domain:**](domain.md) The core of the software system. Defines all entities, enums and value objects, including their rules (e.g. an email must contain an @ symbol). Has no dependencies on other layers.
 
 Each layer has its own .NET project, all bundled in a single solution. This also ensures that layers are genuinely self-contained. It strengthens precise testing and brings much more structure overall. Connections are created with `dotnet add Api reference Application`, but **only** the connections that are architecturally correct:
@@ -18,19 +18,19 @@ flowchart TD
     APP["`Application Layer<br>(Use Cases, Services)`"]
     DOMAIN["`Domain Layer<br>(Entities, Business Rules)`"]
     INF["`Infrastructure Layer<br>(DB, Logger, Hasher, JWT)`"]
-    
+
     %% ===== Dependency Rules (all point inward) =====
     API --> APP
     API -->|DI| INF
     APP --> DOMAIN
     INF --> DOMAIN
     INF -->|impl| APP
-    
+
     %% Optional styling for clarity
     classDef core fill:#2b6cb0,color:#fff,stroke:#1a365d,stroke-width:2px;
     classDef app fill:#4c51bf,color:#fff,stroke:#2a2a72,stroke-width:2px;
     classDef outer fill:#718096,color:#fff,stroke:#2d3748,stroke-width:2px;
-    
+
     class API outer;
     class DOMAIN core;
 
@@ -44,9 +44,12 @@ These implementations are then injected with DI (dependency-injection) by the Ap
 1. Client sends HTTP request
 2. ASP.NET maps it to DTO & validates
     - If validation fails, don't execute controller code, send back "bad request", 400
-3. Controller code executes, calls appropriate use case from 'Application'
-4. Use case executes business logic
-    - On business errors, returns a `Result` with `Result.Error`
+3. Controller code executes, maps to the use case from 'Application' using Mapster
+4. Use case executes
+    - Validates query / command
+    - Authorizes user from IUserContext
+    - On expected errors, returns a `Result` with `Result.Error`
+    - On success, returns a result
 5. External dependencies (DB, etc.) are accessed via interfaces
 6. Domain entities are modified
     * Business errors could occur -> returns a error result
@@ -60,13 +63,11 @@ We imagine a request (or requests) coming to the Api with certain rule violation
 * Password field missing
 + Deleting the default category
 
-All formatting / basic validation errors are handled by the DTO validation, **before** the controller code is run. This includes e.g. Password field missing (and wrong email format too maybe).
+All syntaxical validation errors are handled by the DTO validation, **before** the controller code is run. This includes e.g. fields missing for example, `}` missing.
 
-All other rule violations, e.g. trying to delete the default category, are handled in the Domain layer, in our core. The resulting result is passed through the layers upwards, where it gets mapped to the corresponding HTTP error.
+The second validation stage is inside the Application layer, where we validate the request against semantic rules. For example, if the email format is invalid, amount is smaller than 0 etc.
 
-Sometimes, rules are enforced across the Api and Domain layer, or maybe even more. And that's okay, i guess.
-
-(for our business rules see [Domain.md](domain.md) or the corresponding feature [Api.md](api.md))
+Other rule violations, e.g. trying to delete the default category, are handled in the Domain layer, in our core. The resulting result is passed through the layers upwards, where it gets mapped to the corresponding HTTP error.
 
 
 ## 4. Error propagation

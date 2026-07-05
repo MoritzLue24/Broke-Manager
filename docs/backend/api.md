@@ -23,7 +23,7 @@ Kuss an claude
     - [POST /categories](#post-categories)
     - [PATCH /categories/{categoryId}](#patch-categoriescategoryid)
     - [POST /categories/{categoryId}/rules](#post-categoriescategoryidrules)
-    - [DELETE /categories/{categoryId}/rules/{ruleId}](#delete-categoriescategoryidrulesruleid)
+    - [DELETE /categories/{categoryId}/rules?keyword={keyword}](#delete-categoriescategoryidruleskeywordkeyword)
     - [DELETE /categories/{categoryId}](#delete-categoriescategoryid)
 
 - [5. Transactions](#5-transactions)
@@ -186,7 +186,7 @@ Erstellt eine neue Regel für eine Kategorie.
 
 ---
 
-### `DELETE /categories/{categoryId}/rules/{ruleId}`
+### `DELETE /categories/{categoryId}/rules?keyword={keyword}`
 Löscht eine Regel einer Kategorie.
 
 **Response:** `204 No Content`
@@ -343,7 +343,16 @@ Alle Felder optional
   "userId": "...",
   "name": "Essen",
   "isDefault": false,
-  "keywords": ["rewe", "edeka"],
+  "matchingRules": [
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "keyword": "rewe"
+    },
+    {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "keyword": "edeka"
+    }
+  ],
   "createdAt": "2026-01-01T00:00:00Z"
 }
 ```

@@ -42,17 +42,7 @@ The user can:
 	- Timeline with expenses, income & net per grouping (=day / week / month / TODO)
 	- TODO: considered with estimated development of expenses / incomes of categories
 
----
-**Details**
-For further details, see
-- [auto-categorization.md](auto-categorization.md)
-- [transfer.md](backend/features/transfer.md)
-- [standing-order-reminder.md](standing-order-reminder.md)
-- [analytics-summary.md](./Features/analytics-summary.md)
-- [analytics-category-history.md](analytics-category-history.md)
-- [analytics-forecast](./Features/analytics-forecast.md)
-
-> And for the accessibility, see [api.md](./layers/api.md)  
+> for the accessibility, see [api.md](./api.md)  
 
 ## 2. Technical implementation
 **Stack**
@@ -62,7 +52,8 @@ For further details, see
 - API: *ASP.NET Core Web Api*
 - ORM: *Entity Framework Core 8*
 - Database: *PostgreSQL*
-- Testing: *xUnit*
+- Hashing: *BCrypt.NET*
+- Authentication: *Session-Based*
 
 **Architecture**
 We follow Domain-Driven-Design (DDD) principles, with a Clean Architecture layering. See [Architecture.md](architecture.md) for more.
