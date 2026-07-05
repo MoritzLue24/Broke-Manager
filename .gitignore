@@ -1,6 +1,7 @@
 # Build results
 bin/
 obj/
+*.lscache
 
 # VS Code
 .vscode/
