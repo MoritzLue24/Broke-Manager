@@ -13,7 +13,6 @@ using MediatR;
 
 namespace Application.Features.Transactions.Commands.CreateTransaction;
 
-// TODO: Use IUserContext
 public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Result<AutoAssignResult>>
 {
     private readonly IUserContext _userContext;

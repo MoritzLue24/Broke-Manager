@@ -10,7 +10,6 @@ using MediatR;
 
 namespace Application.Features.Transactions.Commands.UpdateTransaction;
 
-// TODO: Use IUserContext
 public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, Result<TransactionResult>>
 {
     private readonly IUserContext _userContext;

@@ -9,7 +9,6 @@ using MediatR;
 
 namespace Application.Features.Users.Commands.UpdateCurrentUser;
 
-// TODO: Use IUserContext
 public class UpdateCurrentUserCommandHandler : IRequestHandler<UpdateCurrentUserCommand, Result<UserResult>>
 {
     private readonly IUserContext _userContext;

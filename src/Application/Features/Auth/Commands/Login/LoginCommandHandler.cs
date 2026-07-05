@@ -68,7 +68,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
         await this._uow.SaveChangesAsync(cancellationToken);
 
         // Delete oldest session if capacity is reached
-        // TODO: maybe delete the most inactive session by a new `last_seen` column
         if (await this._sessionRepo.CountActiveByUserAsync(user.Id, cancellationToken) >
             this._sessionSettings.MaxSessionsPerUser)
             await this._sessionRepo.ExecuteDeleteMostInactiveByUser(user.Id, cancellationToken);

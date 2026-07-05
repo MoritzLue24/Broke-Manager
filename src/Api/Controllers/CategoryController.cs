@@ -61,7 +61,6 @@ public class CategoryController : ControllerBase
         var result = await this._mediator.Send(command);
 
         return result.Match<ActionResult<CategoryResponse>>(
-            // FIXME: Change to CreatedAtAction?
             categoryResult => this.Created(string.Empty, this._mapper.Map<CategoryResponse>(categoryResult)),
             errors => errors.ToProblem(this)
         );

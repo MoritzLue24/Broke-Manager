@@ -9,7 +9,6 @@ using MediatR;
 
 namespace Application.Features.Categories.Commands.RemoveCategoryRule;
 
-// TODO: Use IUserContext
 public class RemoveCategoryRuleCommandHandler : IRequestHandler<RemoveCategoryRuleCommand, Result<CategoryResult>>
 {
     private readonly IUserContext _userContext;

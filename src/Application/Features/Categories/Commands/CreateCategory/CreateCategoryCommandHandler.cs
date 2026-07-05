@@ -10,7 +10,6 @@ using MediatR;
 
 namespace Application.Features.Categories.Commands.CreateCategory;
 
-// TODO: Use IUserContext
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<CategoryResult>>
 {
     private readonly IUserContext _userContext;
@@ -33,7 +32,6 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
     {
         var userId = this._userContext.UserId!.Value;
 
-        // TODO: Check in domain?????? idk
         if (await this._categoryRepo.NameExistsForUserAsync(userId, request.Name, cancellationToken))
             return new CategoryNameAlreadyExistsError();
 

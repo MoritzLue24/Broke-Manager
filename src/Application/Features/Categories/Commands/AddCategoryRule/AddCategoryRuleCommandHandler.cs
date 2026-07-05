@@ -9,7 +9,6 @@ using MediatR;
 
 namespace Application.Features.Categories.Commands.AddCategoryRule;
 
-// TODO: Use IUserContext
 public class AddCategoryRuleCommandHandler : IRequestHandler<AddCategoryRuleCommand, Result<CategoryResult>>
 {
     private readonly IUserContext _userContext;

@@ -8,7 +8,6 @@ using MediatR;
 
 namespace Application.Features.Categories.Commands.UpdateCategory;
 
-// TODO: Use IUserContext
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result<CategoryResult>>
 {
     private readonly IUserContext _userContext;

@@ -90,7 +90,7 @@ public static class ErrorExtension
             // Rules
             // DuplicateRuleError should not happen -> internal server error 
             RuleNotFoundError => controller.Problem(    // Handeled by Validator -> should not be used
-                type: ErrorTypes.NotFound,  // FIXME?: maybe change to a more specific URN like `..:rule:not-found`
+                type: ErrorTypes.NotFound,
                 statusCode: StatusCodes.Status404NotFound,
                 title: "Rule not found"
             ),

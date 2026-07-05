@@ -8,7 +8,6 @@ using Unit = Domain.Common.Unit;
 
 namespace Application.Features.Users.Commands.DeleteUser;
 
-// TODO: Use IUserContext
 public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Result<Unit>>
 {
     private readonly IUnitOfWork _uow;
