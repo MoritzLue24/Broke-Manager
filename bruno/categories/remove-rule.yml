@@ -5,13 +5,13 @@ info:
 
 http:
   method: DELETE
-  url: "{{baseUrl}}/categories/:categoryId/rules/:ruleId"
+  url: "{{baseUrl}}/categories/:categoryId/rules?keyword=DisneyasdPlus"
   params:
+    - name: keyword
+      value: DisneyasdPlus
+      type: query
     - name: categoryId
-      value: 0b8c163f-0ef7-4889-ad53-92b1a6f00cf2
-      type: path
-    - name: ruleId
-      value: 45d49b9a-0aee-49b7-826c-1be373e64967
+      value: 3c30b5ee-c3d4-4ac9-a619-a0fe0b17bd4d
       type: path
   auth: inherit
 

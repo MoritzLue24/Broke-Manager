@@ -8,7 +8,7 @@ http:
   url: "{{baseUrl}}/categories/:id"
   params:
     - name: id
-      value: ee38e9b4-6d2c-447d-b113-a5785a4d39a5
+      value: 3c30b5ee-c3d4-4ac9-a619-a0fe0b17bd4d
       type: path
   auth: inherit
 
