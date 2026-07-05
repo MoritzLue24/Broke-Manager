@@ -12,6 +12,7 @@ public class Program
         {
             builder.Configuration.AddEnvironmentVariables();
 
+            builder.Services.AddHealthChecks();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -31,8 +32,11 @@ public class Program
             // app.UseHttpsRedirection();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<SessionMiddleware>();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHealthChecks("/health");
             app.MapControllers();
             app.Run();
         }
