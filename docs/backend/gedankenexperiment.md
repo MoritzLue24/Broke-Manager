@@ -8,14 +8,18 @@ Annahmen haben:
 
 ---
 
-**1. Als neue Features**
-1. Neue Entities: Annahme, Annahmenwert
-2. Werden für Analytics, also z.B. die Prognose, verwendet. Dadurch nimmt die Prognose Rücksicht auf Annahmen wie z.B. die Inflationsrate.
-3. Geschätze Entwicklung von Ausgaben wie die Miete, welche von mehreren Annahmen abhängen.
+**Veränderungen**
 
-**2. Kompletter Umbau**
-1. Annahmen sind der Kern der Anwendung. Verwaltung von Annahmen und Annahmewerten ist die zentrale Aufgabe der Anwendung.
-2. Entities: Annahme, Annahmewert
+Aktuell beziehen sich die Beträge von Transaktionen auf die Gegenwart bzw. Vergangenheit.
+Alles was in die Zukunft geht, ist mit einer Annahme verknüpfbar.
+(z.B. Standing Orders, Analytics-Prognose)
+
+1. Bleibt: Categories, Transactions, StandingOrders, ..
+    Aber mit der Möglichkeit, dass die Beträge von Annahmen abhängen, gerade auch bei Analytics-Prognosen & StandingOrders.
+1. Neue Entities: Annahme, Annahmenwert, Annahmeformel(?)
+2. Könnten für Analytics, also z.B. die Prognose, verwendet werden. Dadurch nimmt die Prognose Rücksicht auf Annahmen wie z.B. die Inflationsrate.
+3. Auch gut für die geschätze Entwicklung von Ausgaben wie die Miete, welche von mehreren Annahmen abhängen könnten (z.B: Strompreis, Mietpreisentwicklung, Inflation, etc.)
+4. So kann z.B. `StandingOrder.TransactionAmount` durch eine Annahme ersetzt werden. Dadurch kann der Betrag der Transaktion in der Zukunft variieren, z.B. durch Mietpreisentwicklung.
 
 
 ## Datenmodell
@@ -68,9 +72,10 @@ classDiagram
     DerivedAssumption "1" --> "0..*" Assumption : inputAssumptions
 ```
 
-**Mögliche Probleme zum beachten**
+**Mögliche Probleme zum beachten / offene Fragen**
 - Circular dependencies zwischen `Assumption` -> `DerivedAssumption` - > `Assumption`
-
+- Lücken in den Zeiträumen der `AssumptionValue`'s & Überlappungen
+- Formel Auswertung?
 
 ## Datenbankdesign
 
@@ -124,3 +129,63 @@ classDiagram
 | `ix_derived_assumptions_assumption_id` | INDEX | `assumption_id` | btree, ASC |
 
 
+## Umsetzung
+
+**Zirkuläre Abhängigkeiten Verhindern**
+
+(alles VOR dem Speichern der Annahme prüfen)
+1. Graph erstellen:
+    - Knoten = Annahme
+    - Kante = "input von" (wenn Annahme A von Annahme B abhängt, dann Kante von A nach B)
+2. Prüfen, ob der Graph zyklisch ist:
+```python
+# (pseudo code)
+# node.state = 0 for all nodes (unvisited)
+# state = 1: visiting
+# state = 2: done
+def isCyclic(node, graph):
+    if (node.state = 1)
+        return true
+    else if (node.state = 2)
+        return false
+
+    node.state = 1
+
+    for (neighbor in graph.getNeighbors(node))
+        if (isCyclic(neighbor, graph))
+            return true
+
+    node.state = 2
+    return false
+```
+
+---
+
+**Formel Auswertung**
+
+Nicht über Eval (zu unsicher, Angreifer könnten Code injizieren), sondern über einen eigenen Formel-Interpreter.
+
+Wir gehen davon aus dass keine zirkulären Abhängigkeiten zwischen Annahmen bestehen.
+
+1. Parsen: 
+    - Tokenisierung: Zerlegung der Formel in Tokens
+        - Floats
+        - Referencen (z.B. als index in der Liste der InputAssumptions `$0 * $1`)
+        - Arithmetische Operatoren: +, -, *, /
+        - Klammern: (, )
+    - Syntaxanalyse: Aufbau eines abstrakten Syntaxbaums (AST) aus den Tokens
+2. Auswertung:
+    - Traversierung des AST und Berechnung des Ergebnisses basierend auf den Werten
+    - (falls nötig) Rekursive Auswertung von InputAssumptions, um deren Werte zu erhalten (wichtig dass der Graph hier nicht zyklisch ist, sonst Endlosschleife)
+
+---
+
+**Lücken in den Zeiträumen der `AssumptionValue`'s & Überlappungen**
+
+Für **Überlappungen**:
+Bei überlappende Zeiträume ist es unklar, welcher Wert für den Zeitraum gilt.
+Deswegen: nicht erlauben, beim Erstellen/Ändern von Annahmen muss der Benutzer sicherstellen, dass die Zeiträume nicht überlappen, sonst Fehler.
+
+Ansätze für **Lücken**:
+1. Lücken zulassen, dann wird der Wert der Annahme für den Zeitraum als "unbekannt" behandelt. Das gewünschte Verhalten muss der Benutzter spezifieren können (z.B. "letzte bekannte Annahme verwenden", "Fehler werfen", "Durchschnitt berechnen" etc.)
+2. Lücken nicht zulassen, dann muss der Benutzer beim Erstellen/Ändern von Annahmen sicherstellen, dass die Zeiträume lückenlos sind.
