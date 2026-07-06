@@ -70,6 +70,9 @@ classDiagram
     Assumption "1" --> "0..*" AssumptionValue
     Assumption "1" --> "0..1" DerivedAssumption
     DerivedAssumption "1" --> "0..*" Assumption : inputAssumptions
+
+    Assumption --> AssumptionUnit
+    Assumption --> AssumptionType
 ```
 
 **Mögliche Probleme zum beachten / offene Fragen**
