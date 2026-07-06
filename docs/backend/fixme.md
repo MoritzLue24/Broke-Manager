@@ -10,7 +10,7 @@
 * **Testing besser organisieren:** nicht für jede schicht ein Unit-Test- & eventuell Integration-Test-Projekt, sondern gezielt überlegen wo & welches testing sinnvoll ist. Für jedes Feature viele verschiedene Tests auf jeder ebene zu schreiben ist zu aufwendig.
 
 **Probleme beim Wachstum:**
-* Häufige & uneffiziente, teilweise nicht optimierte / durchdachte **Datenbankabfragen**, die bei vielen Datensätzen zu Performanceproblemen führen könnten. Um das zu vermeiden könnte man Caching einführen, Datenbankenabfragen optimieren mit **Indexe**, Joins, usw. Gezielt nachgucken welche Abfragen häufiger sind & wie langsam sie sind.
+* Häufige & uneffiziente, teilweise nicht optimierte / durchdachte **Datenbankabfragen**, die bei vielen Datensätzen zu Performanceproblemen führen könnten. Um das zu vermeiden könnte man **Caching** einführen, Datenbankenabfragen optimieren mit **Indexe**, Joins, usw. Gezielt nachgucken welche Abfragen häufiger sind & wie langsam sie sind.
 
 * **Pagination** bei Transactions fehlt noch. Gerade werden bei `GET /transactions` alle Transaktionen eines Users zurückgegeben. Bei vielen 100en Transaktionen wird das zu viel, gerade müsste Pagination das Frontend übernehmen.
 
@@ -18,7 +18,7 @@
 
 * **Soft deleting** fehlt, wenn sachen gelöscht werden sind sie nicht wiederherstellbar.
 
-* **Zeitzonen & sprache** nicht berücksichtigt, wird problematisch wenn ein französischer Benutzter ein User erstellt & eine Default kategorie mit englischen & deutschen namen erstellt wird.
+* **Zeitzonen & sprache** nicht berücksichtigt, wird problematisch wenn ein französischer Client ein User erstellt & eine Default kategorie mit englischen / deutschen namen erstellt wird.
 
 * Noch kein **logging**, keine Metriken usw. Wenn ein Problem auftritt, ist es schwer zu debuggen, gerade bei Production da Exceptions nur als http status 500 zurückgegeben werden.
 
