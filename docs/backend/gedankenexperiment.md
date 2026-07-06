@@ -76,9 +76,11 @@ classDiagram
 ```
 
 **Mögliche Probleme zum beachten / offene Fragen**
-- Circular dependencies zwischen `Assumption` -> `DerivedAssumption` - > `Assumption`
-- Lücken in den Zeiträumen der `AssumptionValue`'s & Überlappungen
-- Formel Auswertung?
+> Circular dependencies zwischen `Assumption` -> `DerivedAssumption` - > `Assumption`?
+
+> Lücken in den Zeiträumen der `AssumptionValue`'s & Überlappungen?
+
+>Formel Auswertung?
 
 ## Datenbankdesign
 
@@ -180,6 +182,9 @@ Wir gehen davon aus dass keine zirkulären Abhängigkeiten zwischen Annahmen bes
 2. Auswertung:
     - Traversierung des AST und Berechnung des Ergebnisses basierend auf den Werten
     - (falls nötig) Rekursive Auswertung von InputAssumptions, um deren Werte zu erhalten (wichtig dass der Graph hier nicht zyklisch ist, sonst Endlosschleife)
+
+> Soll Zulässig sein dass ungültige Formeln gespeichert werden, oder soll das beim Speichern geprüft werden?
+
 
 ---
 
