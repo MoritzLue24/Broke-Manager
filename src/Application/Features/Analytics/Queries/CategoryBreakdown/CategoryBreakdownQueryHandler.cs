@@ -53,8 +53,8 @@ public class CategoryBreakdownQueryHandler : IRequestHandler<CategoryBreakdownQu
         results = results.Select(r=> new CategoryBreakdownResult(
             r.CategoryResult,
             r.Expenses,
-            (double)r.Expenses / (double)totalExpenses)
-        ).ToList();
+            totalExpenses == 0 ? 0 : (double)r.Expenses / (double)totalExpenses
+        )).ToList();
 
         return results;
     }

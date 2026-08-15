@@ -33,7 +33,7 @@ public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransaction
 
         var transaction = await this._transactionRepo.GetByIdAsync(request.Id, cancellationToken);
         if (transaction is null || transaction.UserId != userId)
-            return new CategoryNotFoundError();
+            return new TransactionNotFoundError();
 
         var domainResult = transaction.Delete();
         if (!domainResult.Success)
